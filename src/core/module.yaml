@@ -1,0 +1,19 @@
+code: core
+name: "PR Review Core Module"
+header: "PR Review Core Configuration"
+subheader: "Configure the core settings for your PR Review installation.\nThese settings will be used across all modules and agents."
+
+user_name:
+  prompt: "What should reviewers call you? (Use your name or a team name)"
+  default: "Reviewer"
+  result: "{value}"
+
+communication_language:
+  prompt: "What language should agents use when chatting with you?"
+  default: "English"
+  result: "{value}"
+
+output_folder:
+  prompt: "Where should output files be saved?"
+  default: "_prr-output"
+  result: "{project-root}/{value}"

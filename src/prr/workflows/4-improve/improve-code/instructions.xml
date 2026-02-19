@@ -1,0 +1,59 @@
+<workflow>
+  <critical>Workflow engine rules: {project-root}/_prr/core/tasks/workflow.xml</critical>
+  <critical>Communicate all responses in {communication_language}</critical>
+  <critical>Every suggestion MUST include: BEFORE code and AFTER code — not just description</critical>
+  <critical>Focus on impactful improvements — not style nitpicks. Each suggestion must save real time or prevent real bugs</critical>
+
+  <step n="1" goal="Load PR context and diff">
+    <check if="{pr_context} does not exist">
+      <output>❌ No PR selected. Please run [SP] Select PR first.</output>
+      <stop/>
+    </check>
+    <action>Read {pr_context} and load full git diff</action>
+    <action>If diff_strategy is 'chunked': process one file at a time</action>
+    <output>💡 Generating Code Improvement Suggestions
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Each suggestion includes BEFORE and AFTER code
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</output>
+  </step>
+
+  <step n="2" goal="Generate concrete improvement suggestions">
+    <action>For each changed file or chunk, identify improvements in these categories:</action>
+    <categories>
+      <category name="bugs">Logic errors that could cause incorrect behavior or exceptions</category>
+      <category name="quality">Simplifications that make code more readable or maintainable</category>
+      <category name="performance">Changes that reduce time/space complexity</category>
+      <category name="best-practices">Patterns that align with language/framework best practices</category>
+    </categories>
+
+    <output-format>
+Each suggestion must follow this format:
+
+**[CATEGORY] `file.js:lineN`** — One-line description
+
+```
+// BEFORE
+{current_code}
+```
+
+```
+// AFTER
+{improved_code}
+```
+
+> Why: {brief explanation of the improvement and its benefit}
+    </output-format>
+
+    <note>For large diffs: process file by file, generate 3-5 highest-impact suggestions per file</note>
+  </step>
+
+  <step n="3" goal="Compile and write suggestions">
+    <action>Group suggestions by category: Bugs | Quality | Performance | Best Practices</action>
+    <action>Sort within each category by impact (most impactful first)</action>
+    <action>Write all suggestions to {output_file}</action>
+    <action>Update {pr_context}: add 'improve-code' to completed list</action>
+    <output>💡 Code improvement suggestions generated.
+{total_count} suggestions: {bug_count} bugs, {quality_count} quality, {perf_count} performance, {bp_count} best practices.
+Run [RR] Generate Report or [PC] Post Comments to share these with the PR author.</output>
+  </step>
+</workflow>

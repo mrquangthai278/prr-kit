@@ -1,0 +1,68 @@
+<workflow>
+  <critical>Workflow engine rules: {project-root}/_prr/core/tasks/workflow.xml</critical>
+  <critical>Communicate all responses in {communication_language}</critical>
+  <critical>Focus on IMPACTFUL performance issues — skip micro-optimizations that add complexity without measurable benefit</critical>
+  <critical>Quantify impact when possible: "this adds ~Xms per request" or "X MB memory per session"</critical>
+
+  <step n="1" goal="Load PR context and diff">
+    <check if="{pr_context} does not exist">
+      <output>❌ No PR selected. Please run [SP] Select PR first.</output>
+      <stop/>
+    </check>
+    <action>Read {pr_context} and load git diff</action>
+    <output>⚡ Starting Performance Review
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Focus: N+1 queries | Memory | Async | Bundle size | Caching
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</output>
+  </step>
+
+  <step n="2" goal="Database and query performance">
+    <check-list id="database">
+      <item>N+1 queries: DB call inside a loop? Should use batch/join instead</item>
+      <item>Missing pagination: queries that could return unbounded result sets</item>
+      <item>SELECT *: fetching all columns when only a few are needed</item>
+      <item>Missing index: filtering/sorting on non-indexed columns</item>
+      <item>Unnecessary queries: data already available in context/cache but re-fetched</item>
+      <item>Transaction missing: multiple DB writes without transaction (data integrity risk)</item>
+    </check-list>
+  </step>
+
+  <step n="3" goal="Async and concurrency patterns">
+    <check-list id="async">
+      <item>Sequential awaits in loop: `for (x of arr) { await fn(x) }` should be Promise.all</item>
+      <item>Unnecessary await: async function that doesn't need to be async</item>
+      <item>Missing error handling on async operations</item>
+      <item>Blocking operations on main thread/event loop</item>
+      <item>Race conditions: shared state mutated from multiple async paths</item>
+    </check-list>
+  </step>
+
+  <step n="4" goal="Memory management">
+    <check-list id="memory">
+      <item>Event listener cleanup: listeners added but not removed (memory leak pattern)</item>
+      <item>Large objects held in closure/module scope unnecessarily</item>
+      <item>Accumulating arrays/objects without cleanup</item>
+      <item>setInterval/setTimeout without clearInterval/clearTimeout</item>
+      <item>Frontend: components not cleaning up on unmount</item>
+    </check-list>
+  </step>
+
+  <step n="5" goal="Frontend performance (if applicable)">
+    <check-list id="frontend">
+      <item>Bundle size: large new dependencies imported? Is tree-shaking possible?</item>
+      <item>Unnecessary re-renders: state changes causing full component re-renders</item>
+      <item>Images/assets: unoptimized media, missing lazy loading</item>
+      <item>Blocking scripts or render-blocking resources</item>
+      <item>Expensive computations in render path (should be memoized)</item>
+    </check-list>
+  </step>
+
+  <step n="6" goal="Compile and write findings">
+    <action>For each finding: estimate impact (high/medium/low) with brief rationale</action>
+    <action>Distinguish: impactful issues vs micro-optimizations (flag only impactful)</action>
+    <action>Write findings to {output_file}</action>
+    <action>Update {pr_context}: add 'performance-review' to completed list</action>
+    <output>⚡ Performance review complete.
+Run [RR] Generate Report to compile all findings.</output>
+  </step>
+</workflow>

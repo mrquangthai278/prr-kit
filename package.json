@@ -1,0 +1,60 @@
+{
+  "name": "prr-kit",
+  "version": "1.0.0",
+  "description": "AI-driven Pull Request Review Framework — structured agent workflows for thorough, consistent code review",
+  "main": "tools/cli/prr-cli.js",
+  "bin": {
+    "prr-kit": "tools/prr-npx-wrapper.js",
+    "pr-review": "tools/prr-npx-wrapper.js"
+  },
+  "scripts": {
+    "prr:install": "node tools/cli/prr-cli.js install",
+    "prr:uninstall": "node tools/cli/prr-cli.js uninstall",
+    "prr:status": "node tools/cli/prr-cli.js status",
+    "test": "node test/test-agent-schema.js && node test/test-installation-components.js",
+    "test:schemas": "node test/test-agent-schema.js",
+    "test:install": "node test/test-installation-components.js",
+    "lint": "eslint . --ext .js,.cjs,.mjs --max-warnings=0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "files": [
+    "src/",
+    "tools/",
+    "docs/assets/"
+  ],
+  "keywords": [
+    "code-review",
+    "pull-request",
+    "ai",
+    "agent",
+    "workflow",
+    "claude",
+    "cursor",
+    "windsurf",
+    "github",
+    "gitlab"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrquangthai278/prr-kit.git"
+  },
+  "homepage": "https://github.com/mrquangthai278/prr-kit#readme",
+  "bugs": {
+    "url": "https://github.com/mrquangthai278/prr-kit/issues"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@clack/prompts": "^0.10.0",
+    "chalk": "^4.1.2",
+    "commander": "^14.0.0",
+    "csv-parse": "^6.1.0",
+    "fs-extra": "^11.3.0",
+    "glob": "^11.0.3",
+    "yaml": "^2.7.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0"
+  }
+}

@@ -1,0 +1,70 @@
+<workflow>
+  <critical>Workflow engine rules: {project-root}/_prr/core/tasks/workflow.xml</critical>
+  <critical>Communicate all responses in {communication_language}</critical>
+  <critical>For EVERY security finding: state WHAT, WHERE (file+line), HOW it could be exploited, and HOW to fix it</critical>
+  <critical>Think like an attacker — what could an adversary do with this vulnerability?</critical>
+
+  <step n="1" goal="Load PR context and prepare security analysis">
+    <check if="{pr_context} does not exist">
+      <output>❌ No PR selected. Please run [SP] Select PR first.</output>
+      <stop/>
+    </check>
+    <action>Read {pr_context}</action>
+    <action>Run: git diff {base_branch}...{target_branch} in {target_repo}</action>
+    <output>🔒 Starting Security Review — Thinking like an attacker
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+OWASP Top 10 scan + secrets detection + auth review
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</output>
+  </step>
+
+  <step n="2" goal="Scan for hardcoded secrets and sensitive data exposure">
+    <critical>This is the MOST CRITICAL check — do this FIRST</critical>
+    <check-list id="secrets">
+      <item>API keys, tokens, passwords hardcoded in source code</item>
+      <item>Private keys, certificates embedded in code</item>
+      <item>Database connection strings with credentials</item>
+      <item>Secrets in config files that should be in environment variables</item>
+      <item>Sensitive data logged to console (passwords, tokens, PII)</item>
+      <item>Stack traces exposed to end users (reveals internal structure)</item>
+    </check-list>
+  </step>
+
+  <step n="3" goal="OWASP A01-A05: Broken Access Control, Crypto, Injection, Insecure Design, Misconfiguration">
+    <check-list id="owasp-1-5">
+      <item>A01 Broken Access Control: authorization checks present? role-based? privilege escalation possible?</item>
+      <item>A02 Cryptographic Failures: weak hashing (MD5/SHA1)? HTTP instead of HTTPS? key management?</item>
+      <item>A03 Injection: SQL injection? XSS? command injection? template injection? all inputs sanitized?</item>
+      <item>A04 Insecure Design: security by obscurity? missing security controls at design level?</item>
+      <item>A05 Security Misconfiguration: debug mode enabled? default credentials? unnecessary features exposed?</item>
+    </check-list>
+  </step>
+
+  <step n="4" goal="OWASP A06-A10: Vulnerable Components, Auth, Integrity, Logging, SSRF">
+    <check-list id="owasp-6-10">
+      <item>A06 Vulnerable Components: new dependencies added? check for known CVEs</item>
+      <item>A07 Auth Failures: session management? password policies? brute force protection? JWT validation?</item>
+      <item>A08 Integrity Failures: deserialization of untrusted data? unsigned data accepted?</item>
+      <item>A09 Logging/Monitoring: security events logged? sensitive data excluded from logs?</item>
+      <item>A10 SSRF: user-controlled URLs fetched? internal services accessible?</item>
+    </check-list>
+  </step>
+
+  <step n="5" goal="Rate limiting and input validation">
+    <check-list id="input-rate">
+      <item>Rate limiting on auth endpoints (login, register, password reset)</item>
+      <item>Input length limits enforced server-side</item>
+      <item>File upload: type validation, size limits, storage location security</item>
+      <item>CORS configuration: not wildcard (*) on sensitive endpoints</item>
+    </check-list>
+  </step>
+
+  <step n="6" goal="Compile and write security findings">
+    <action>Group findings by severity: Critical → High → Medium → Low → Info</action>
+    <action>For each finding include: WHAT, WHERE (file+line), IMPACT (how exploitable), HOW TO FIX</action>
+    <action>Write to {output_file}</action>
+    <action>Update {pr_context}: add 'security-review' to completed list</action>
+    <output>🔒 Security review complete.
+{critical_count} critical, {high_count} high, {medium_count} medium findings.
+Run [RR] Generate Report to compile all findings.</output>
+  </step>
+</workflow>

@@ -1,0 +1,136 @@
+# Augment Code Review Guidelines for PR Review Framework
+# https://docs.augmentcode.com/codereview/overview
+# Focus: Workflow validation and quality
+
+file_paths_to_ignore:
+  # --- Shared baseline: tool configs ---
+  - ".coderabbit.yaml"
+  - ".augment/**"
+  - "eslint.config.mjs"
+  # --- Shared baseline: build output ---
+  - "dist/**"
+  - "build/**"
+  - "coverage/**"
+  # --- Shared baseline: vendored/generated ---
+  - "node_modules/**"
+  - "**/*.min.js"
+  - "**/*.generated.*"
+  # --- Shared baseline: package metadata ---
+  - "package-lock.json"
+  # --- Shared baseline: binary/media ---
+  - "*.png"
+  - "*.jpg"
+  - "*.svg"
+  # --- Shared baseline: test fixtures ---
+  - "test/fixtures/**"
+  # --- Shared baseline: non-project dirs ---
+  - "_prr*/**"
+  - "_prr-output*/**"
+  # --- Shared baseline: AI assistant dirs ---
+  - ".claude/**"
+  - ".codex/**"
+  - ".agent/**"
+  - ".kiro/**"
+  - ".roo/**"
+  - ".github/chatmodes/**"
+  # --- Shared baseline: generated reports ---
+  - "CHANGELOG.md"
+
+areas:
+  # ============================================
+  # WORKFLOW STRUCTURE RULES
+  # ============================================
+  workflow_structure:
+    description: "Workflow folder organization and required components"
+    globs:
+      - "src/**/workflows/**"
+    rules:
+      - id: "workflow_entry_point_required"
+        description: "Every workflow folder must have workflow.yaml or workflow.md as entry point"
+        severity: "high"
+
+      - id: "sharded_workflow_steps_folder"
+        description: "Sharded workflows (using workflow.md) must have steps/ folder with numbered files (step-01-*.md, step-02-*.md)"
+        severity: "high"
+
+      - id: "workflow_step_limit"
+        description: "Workflows should have 5-10 steps maximum to prevent context loss in LLM execution"
+        severity: "medium"
+
+  # ============================================
+  # WORKFLOW ENTRY FILE RULES
+  # ============================================
+  workflow_definitions:
+    description: "Workflow entry files (workflow.yaml, workflow.md)"
+    globs:
+      - "src/**/workflows/**/workflow.yaml"
+      - "src/**/workflows/**/workflow.md"
+    rules:
+      - id: "workflow_name_required"
+        description: "Workflow entry files must define 'name' field in frontmatter"
+        severity: "high"
+
+      - id: "workflow_description_required"
+        description: "Workflow entry files must include 'description' explaining the workflow's purpose"
+        severity: "high"
+
+      - id: "valid_step_references"
+        description: "Step file references in workflow entry must point to existing files"
+        severity: "high"
+
+  # ============================================
+  # WORKFLOW STEP RULES
+  # ============================================
+  workflow_steps:
+    description: "Individual step files in sharded workflows"
+    globs:
+      - "src/**/workflows/**/steps/step-*.md"
+    rules:
+      - id: "step_next_step_reference"
+        description: "Step files should reference the next step file path for sequential execution"
+        severity: "medium"
+
+      - id: "step_no_forward_loading"
+        description: "Steps must NOT load future step files until current step completes - just-in-time loading only"
+        severity: "high"
+
+      - id: "step_naming"
+        description: "Step files must be named step-NN-description.md (e.g., step-01-fetch.md)"
+        severity: "medium"
+
+  # ============================================
+  # AGENT DEFINITIONS
+  # ============================================
+  agent_definitions:
+    description: "Agent YAML configuration files"
+    globs:
+      - "src/**/*.agent.yaml"
+    rules:
+      - id: "agent_metadata_required"
+        description: "Agent files must have metadata section with id, name, title"
+        severity: "high"
+
+      - id: "agent_persona_required"
+        description: "Agent files must define persona with role and identity"
+        severity: "high"
+
+      - id: "agent_menu_valid_workflows"
+        description: "Menu triggers must reference valid workflow paths"
+        severity: "high"
+
+  # ============================================
+  # SEVERITY FORMAT
+  # ============================================
+  finding_format:
+    description: "Review finding format consistency"
+    globs:
+      - "src/**/workflows/**/*.xml"
+      - "src/**/workflows/**/*.md"
+    rules:
+      - id: "severity_emoji_format"
+        description: "Findings must use standard severity: 🔴 Blocker | 🟡 Warning | 🟢 Suggestion | 📌 Question"
+        severity: "medium"
+
+      - id: "finding_file_line_reference"
+        description: "Every finding must cite a file + line number reference"
+        severity: "high"

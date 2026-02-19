@@ -1,0 +1,38 @@
+code: prr
+name: "PR Review Module"
+description: "AI-driven code review for pull requests"
+default_selected: true
+
+# Variables inherited from Core Config:
+## user_name
+## communication_language
+## output_folder
+
+project_name:
+  prompt: "What is your project called?"
+  default: "{directory_name}"
+  result: "{value}"
+
+target_repo:
+  prompt: "Path to the git repository to review? (relative or absolute, default: current directory)"
+  default: "."
+  result: "{value}"
+
+platform:
+  prompt: "Git platform? (auto-detect, github, gitlab, azure, bitbucket, none)"
+  default: "auto"
+  result: "{value}"
+
+platform_repo:
+  prompt: "Repository identifier for posting comments? Format: owner/repo (GitHub/GitLab/Bitbucket) or org/project/repo (Azure). Leave blank to skip."
+  default: ""
+  result: "{value}"
+
+review_output:
+  prompt: "Where should review reports be stored?"
+  default: "{output_folder}/reviews"
+  result: "{project-root}/{value}"
+
+# Directories to create during installation
+directories:
+  - "{review_output}"

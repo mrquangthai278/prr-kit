@@ -1,0 +1,63 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+
+language: "en-US"
+early_access: true
+reviews:
+  profile: chill
+  high_level_summary: false
+  request_changes_workflow: false
+  review_status: false
+  commit_status: false
+  walkthrough: false
+  poem: false
+  auto_review:
+    enabled: true
+    drafts: false
+    auto_incremental_review: false
+    base_branches:
+      - main
+  path_filters:
+    # --- Shared baseline: tool configs ---
+    - "!.coderabbit.yaml"
+    - "!.augment/**"
+    - "!eslint.config.mjs"
+    # --- Shared baseline: build output ---
+    - "!dist/**"
+    - "!build/**"
+    - "!coverage/**"
+    # --- Shared baseline: vendored/generated ---
+    - "!**/node_modules/**"
+    - "!**/*.min.js"
+    - "!**/*.generated.*"
+    # --- Shared baseline: package metadata ---
+    - "!package-lock.json"
+    # --- Shared baseline: binary/media ---
+    - "!*.png"
+    - "!*.jpg"
+    - "!*.svg"
+    # --- Shared baseline: test fixtures ---
+    - "!test/fixtures/**"
+    # --- Shared baseline: non-project dirs ---
+    - "!_prr*/**"
+    - "!_prr-output*/**"
+    # --- Shared baseline: AI assistant dirs ---
+    - "!.claude/**"
+    - "!.codex/**"
+    - "!.agent/**"
+    - "!.kiro/**"
+    - "!.roo/**"
+    - "!.github/chatmodes/**"
+    # --- Shared baseline: generated reports ---
+    - "!CHANGELOG.md"
+  path_instructions:
+    - path: "**/*"
+      instructions: |
+        Review workflow files, agent definitions, and CLI tooling for the PR Review Framework.
+        Focus on: correctness of step-file chaining, severity format consistency (🔴🟡🟢📌),
+        file path references using {variable} placeholders, and CLI installer correctness.
+        Flag any hardcoded paths that should use {project-root} or {review_output} variables.
+chat:
+  auto_reply: true
+issue_enrichment:
+  auto_enrich:
+    enabled: false

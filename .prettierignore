@@ -1,0 +1,6 @@
+# Test fixtures with intentionally broken/malformed files
+test/fixtures/**
+
+# PRR runtime folders (user-specific, not in repo)
+_prr/
+_prr*/

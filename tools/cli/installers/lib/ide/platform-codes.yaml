@@ -1,0 +1,76 @@
+# PR Review Platform Codes Configuration
+# IDE/tool registry — defines where to install agent/workflow launchers
+
+platforms:
+  claude-code:
+    name: "Claude Code"
+    preferred: true
+    category: cli
+    description: "Anthropic's official CLI for Claude"
+    installer:
+      target_dir: .claude/commands
+      template_type: default
+
+  cursor:
+    name: "Cursor"
+    preferred: true
+    category: ide
+    description: "AI-first code editor"
+    installer:
+      target_dir: .cursor/commands
+      template_type: default
+
+  windsurf:
+    name: "Windsurf"
+    preferred: true
+    category: ide
+    description: "AI-powered IDE with cascade flows"
+    installer:
+      target_dir: .windsurf/workflows
+      template_type: windsurf
+
+  cline:
+    name: "Cline"
+    preferred: false
+    category: ide
+    description: "AI coding assistant"
+    installer:
+      target_dir: .clinerules/workflows
+      template_type: windsurf
+
+  roo:
+    name: "Roo Cline"
+    preferred: false
+    category: ide
+    description: "Enhanced Cline fork"
+    installer:
+      target_dir: .roo/commands
+      template_type: default
+
+  gemini:
+    name: "Gemini CLI"
+    preferred: false
+    category: cli
+    description: "Google's CLI for Gemini"
+    installer:
+      target_dir: .gemini/commands
+      template_type: default
+
+  kiro:
+    name: "Kiro"
+    preferred: false
+    category: ide
+    description: "Amazon's AI-powered IDE"
+    installer:
+      target_dir: .kiro/steering
+      template_type: default
+
+categories:
+  ide:
+    name: "Integrated Development Environment"
+  cli:
+    name: "Command Line Interface"
+
+conventions:
+  code_format: "lowercase-kebab-case"
+  name_format: "Title Case"

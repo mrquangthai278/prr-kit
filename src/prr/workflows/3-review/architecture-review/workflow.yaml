@@ -1,0 +1,18 @@
+name: architecture-review
+description: "Architecture-focused review: SOLID principles, layering, coupling, codebase consistency"
+author: "PR Review Framework"
+
+config_source: "{project-root}/_prr/prr/config.yaml"
+user_name: "{config_source}:user_name"
+communication_language: "{config_source}:communication_language"
+target_repo: "{config_source}:target_repo"
+review_output: "{config_source}:review_output"
+date: system-generated
+
+installed_path: "{project-root}/_prr/prr/workflows/3-review/architecture-review"
+instructions: "{installed_path}/instructions.xml"
+validation: "{installed_path}/checklist.md"
+
+pr_context: "{review_output}/current-pr-context.yaml"
+project_context: "{review_output}/project-context.yaml"
+output_file: "{review_output}/architecture-review-{date}.md"

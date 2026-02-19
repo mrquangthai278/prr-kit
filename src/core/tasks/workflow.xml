@@ -1,0 +1,22 @@
+<workflow-engine>
+  <rules>
+    <rule>NEVER load multiple step files simultaneously — one at a time only</rule>
+    <rule>ALWAYS read entire step/workflow file before taking any action</rule>
+    <rule>NEVER skip steps or optimize the sequence</rule>
+    <rule>ALWAYS update frontmatter state when writing output</rule>
+    <rule>ALWAYS halt at decision points and wait for user input</rule>
+    <rule>ALWAYS load config variables before starting any workflow</rule>
+  </rules>
+
+  <variable-resolution>
+    <pattern>{config_source}:variable_name</pattern>
+    <action>Read the YAML file at config_source path, extract the named key value</action>
+  </variable-resolution>
+
+  <step-file-protocol>
+    <load>Read the complete step file</load>
+    <execute>Follow ALL numbered sections in order</execute>
+    <state>Update frontmatter stepsCompleted array</state>
+    <next>Load next step file only when explicitly directed</next>
+  </step-file-protocol>
+</workflow-engine>

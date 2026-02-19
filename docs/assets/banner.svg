@@ -1,0 +1,179 @@
+<svg width="1200" height="300" viewBox="0 0 1200 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d1117"/>
+      <stop offset="100%" style="stop-color:#161b22"/>
+    </linearGradient>
+
+    <!-- Accent gradient (purple → blue) -->
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#a855f7"/>
+      <stop offset="100%" style="stop-color:#3b82f6"/>
+    </linearGradient>
+
+    <!-- Glow filter for accent line -->
+    <filter id="glow" x="-20%" y="-200%" width="140%" height="500%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Subtle grid pattern -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff" stroke-width="0.3" opacity="0.04"/>
+    </pattern>
+
+    <!-- Corner dot pattern -->
+    <pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="#ffffff" opacity="0.06"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="300" fill="url(#bg)"/>
+
+  <!-- Grid overlay -->
+  <rect width="1200" height="300" fill="url(#grid)"/>
+
+  <!-- Dot pattern on right side -->
+  <rect x="800" y="0" width="400" height="300" fill="url(#dots)"/>
+
+  <!-- Decorative circles (blurred, background) -->
+  <circle cx="980" cy="80" r="120" fill="#a855f7" opacity="0.06"/>
+  <circle cx="1100" cy="220" r="80" fill="#3b82f6" opacity="0.06"/>
+  <circle cx="150" cy="240" r="100" fill="#a855f7" opacity="0.04"/>
+
+  <!-- Top accent line -->
+  <rect x="0" y="0" width="1200" height="3" fill="url(#accent)" filter="url(#glow)"/>
+
+  <!-- Left vertical accent bar -->
+  <rect x="64" y="60" width="3" height="180" fill="url(#accent)" opacity="0.8" filter="url(#glow)"/>
+
+  <!-- Icon area: magnifying glass SVG path -->
+  <g transform="translate(100, 110)">
+    <circle cx="28" cy="28" r="26" fill="none" stroke="url(#accent)" stroke-width="3" opacity="0.9"/>
+    <circle cx="28" cy="28" r="18" fill="none" stroke="url(#accent)" stroke-width="1.5" opacity="0.3"/>
+    <line x1="47" y1="47" x2="62" y2="62" stroke="url(#accent)" stroke-width="4" stroke-linecap="round" opacity="0.9"/>
+    <!-- Code lines inside glass -->
+    <line x1="18" y1="23" x2="38" y2="23" stroke="#a855f7" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+    <line x1="18" y1="30" x2="32" y2="30" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+    <line x1="18" y1="37" x2="36" y2="37" stroke="#a855f7" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+  </g>
+
+  <!-- Main title -->
+  <text x="190" y="145" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="52" font-weight="700" letter-spacing="-1" fill="#ffffff">
+    PR Review Framework
+  </text>
+
+  <!-- Accent underline under title -->
+  <rect x="190" y="157" width="420" height="2" fill="url(#accent)" opacity="0.5" rx="1"/>
+
+  <!-- Subtitle -->
+  <text x="192" y="192" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="20" font-weight="400" fill="#8b949e" letter-spacing="0.3">
+    AI-driven Pull Request review — structured, multi-perspective, actionable
+  </text>
+
+  <!-- Badges row -->
+  <!-- Badge 1: Claude Code -->
+  <g transform="translate(192, 218)">
+    <rect width="112" height="26" rx="13" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+    <circle cx="18" cy="13" r="5" fill="#a855f7" opacity="0.9"/>
+    <text x="30" y="17.5" font-family="monospace" font-size="11" fill="#8b949e">Claude Code</text>
+  </g>
+
+  <!-- Badge 2: Cursor -->
+  <g transform="translate(314, 218)">
+    <rect width="74" height="26" rx="13" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+    <circle cx="18" cy="13" r="5" fill="#3b82f6" opacity="0.9"/>
+    <text x="30" y="17.5" font-family="monospace" font-size="11" fill="#8b949e">Cursor</text>
+  </g>
+
+  <!-- Badge 3: Windsurf -->
+  <g transform="translate(398, 218)">
+    <rect width="86" height="26" rx="13" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+    <circle cx="18" cy="13" r="5" fill="#06b6d4" opacity="0.9"/>
+    <text x="30" y="17.5" font-family="monospace" font-size="11" fill="#8b949e">Windsurf</text>
+  </g>
+
+  <!-- Badge 4: Node.js -->
+  <g transform="translate(494, 218)">
+    <rect width="90" height="26" rx="13" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+    <circle cx="18" cy="13" r="5" fill="#22c55e" opacity="0.9"/>
+    <text x="30" y="17.5" font-family="monospace" font-size="11" fill="#8b949e">Node 18+</text>
+  </g>
+
+  <!-- Right side: review flow diagram -->
+  <g transform="translate(820, 55)" opacity="0.85">
+    <!-- Flow boxes -->
+    <!-- SP -->
+    <rect x="0" y="0" width="80" height="30" rx="6" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+    <text x="40" y="20" text-anchor="middle" font-family="monospace" font-size="12" fill="#a855f7" font-weight="600">SP</text>
+
+    <!-- Arrow -->
+    <line x1="80" y1="15" x2="110" y2="15" stroke="#30363d" stroke-width="1.5" marker-end="url(#arr)"/>
+
+    <!-- DP -->
+    <rect x="110" y="0" width="80" height="30" rx="6" fill="#21262d" stroke="#30363d" stroke-width="1"/>
+    <text x="150" y="20" text-anchor="middle" font-family="monospace" font-size="12" fill="#3b82f6" font-weight="600">DP</text>
+
+    <!-- Row 2: review types -->
+    <!-- Vertical line down from DP -->
+    <line x1="150" y1="30" x2="150" y2="55" stroke="#30363d" stroke-width="1.5"/>
+    <!-- Horizontal line -->
+    <line x1="30" y1="55" x2="270" y2="55" stroke="#30363d" stroke-width="1.5"/>
+
+    <!-- GR -->
+    <line x1="30" y1="55" x2="30" y2="75" stroke="#30363d" stroke-width="1.5"/>
+    <rect x="-10" y="75" width="80" height="28" rx="6" fill="#21262d" stroke="#a855f7" stroke-width="1" opacity="0.8"/>
+    <text x="30" y="93" text-anchor="middle" font-family="monospace" font-size="11" fill="#a855f7">GR</text>
+
+    <!-- SR -->
+    <line x1="110" y1="55" x2="110" y2="75" stroke="#30363d" stroke-width="1.5"/>
+    <rect x="70" y="75" width="80" height="28" rx="6" fill="#21262d" stroke="#ef4444" stroke-width="1" opacity="0.8"/>
+    <text x="110" y="93" text-anchor="middle" font-family="monospace" font-size="11" fill="#ef4444">SR</text>
+
+    <!-- PR -->
+    <line x1="190" y1="55" x2="190" y2="75" stroke="#30363d" stroke-width="1.5"/>
+    <rect x="150" y="75" width="80" height="28" rx="6" fill="#21262d" stroke="#f59e0b" stroke-width="1" opacity="0.8"/>
+    <text x="190" y="93" text-anchor="middle" font-family="monospace" font-size="11" fill="#f59e0b">PR</text>
+
+    <!-- AR -->
+    <line x1="270" y1="55" x2="270" y2="75" stroke="#30363d" stroke-width="1.5"/>
+    <rect x="230" y="75" width="80" height="28" rx="6" fill="#21262d" stroke="#06b6d4" stroke-width="1" opacity="0.8"/>
+    <text x="270" y="93" text-anchor="middle" font-family="monospace" font-size="11" fill="#06b6d4">AR</text>
+
+    <!-- Converge line -->
+    <line x1="30" y1="103" x2="30" y2="130" stroke="#30363d" stroke-width="1.5"/>
+    <line x1="110" y1="103" x2="110" y2="130" stroke="#30363d" stroke-width="1.5"/>
+    <line x1="190" y1="103" x2="190" y2="130" stroke="#30363d" stroke-width="1.5"/>
+    <line x1="270" y1="103" x2="270" y2="130" stroke="#30363d" stroke-width="1.5"/>
+    <line x1="30" y1="130" x2="270" y2="130" stroke="#30363d" stroke-width="1.5"/>
+    <line x1="150" y1="130" x2="150" y2="150" stroke="#30363d" stroke-width="1.5"/>
+
+    <!-- RR -->
+    <rect x="110" y="150" width="80" height="30" rx="6" fill="#21262d" stroke="#22c55e" stroke-width="1"/>
+    <text x="150" y="170" text-anchor="middle" font-family="monospace" font-size="12" fill="#22c55e" font-weight="600">RR</text>
+
+    <!-- Arrow to PC -->
+    <line x1="190" y1="165" x2="220" y2="165" stroke="#30363d" stroke-width="1.5"/>
+
+    <!-- PC -->
+    <rect x="220" y="150" width="80" height="30" rx="6" fill="#21262d" stroke="#8b949e" stroke-width="1"/>
+    <text x="260" y="170" text-anchor="middle" font-family="monospace" font-size="12" fill="#8b949e" font-weight="600">PC</text>
+
+    <!-- Labels -->
+    <text x="40" y="-10" font-family="monospace" font-size="10" fill="#484f58">Select PR</text>
+    <text x="115" y="-10" font-family="monospace" font-size="10" fill="#484f58">Describe</text>
+    <text x="0" y="118" font-family="monospace" font-size="9" fill="#484f58">Reviews</text>
+    <text x="110" y="200" font-family="monospace" font-size="10" fill="#484f58">Report</text>
+    <text x="225" y="200" font-family="monospace" font-size="10" fill="#484f58">GitHub</text>
+  </g>
+
+  <!-- Bottom accent line -->
+  <rect x="0" y="297" width="1200" height="3" fill="url(#accent)" opacity="0.4"/>
+</svg>

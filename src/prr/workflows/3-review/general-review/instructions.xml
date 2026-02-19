@@ -1,0 +1,68 @@
+<workflow>
+  <critical>Workflow engine rules: {project-root}/_prr/core/tasks/workflow.xml</critical>
+  <critical>Communicate all responses in {communication_language}</critical>
+  <critical>Load PR context from {pr_context} before starting review</critical>
+  <critical>Every finding MUST include: file path + line/function reference + severity + suggested fix</critical>
+
+  <step n="1" goal="Load PR context and diff">
+    <check if="{pr_context} does not exist">
+      <output>❌ No PR selected. Please run [SP] Select PR first.</output>
+      <stop/>
+    </check>
+
+    <action>Read {pr_context} to get: target_branch, base_branch, diff_strategy, files_changed</action>
+    <action>Run: git diff {base_branch}...{target_branch} in {target_repo}</action>
+    <action>Note diff_strategy: if 'chunked', process file by file</action>
+
+    <output>🔍 Starting General Code Review
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PR: {target_branch} → {base_branch}
+Strategy: {diff_strategy}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</output>
+  </step>
+
+  <step n="2" goal="Review code logic and correctness">
+    <action>For each changed file (or chunk if diff_strategy=chunked):</action>
+    <check-list id="logic">
+      <item>Logical errors: conditions, edge cases, off-by-one errors</item>
+      <item>Null/undefined handling: are all possible null states handled?</item>
+      <item>Error handling: are errors caught and handled appropriately?</item>
+      <item>Return values: are return paths complete and correct?</item>
+      <item>Data validation: is user input properly validated?</item>
+    </check-list>
+    <output-format>
+For each finding:
+🔴/🟡/🟢 [SEVERITY] `file.js:lineN` — **Description**
+→ Suggested fix: `code example`
+    </output-format>
+  </step>
+
+  <step n="3" goal="Review code quality and maintainability">
+    <check-list id="quality">
+      <item>Naming: are variable/function/class names clear and meaningful?</item>
+      <item>Function size: are functions doing one thing? (>30 lines is a yellow flag)</item>
+      <item>DRY violations: is logic duplicated that should be extracted?</item>
+      <item>Magic numbers/strings: should be named constants</item>
+      <item>Comments: missing where logic is complex; unnecessary where code is clear</item>
+      <item>Dead code: unreachable code, unused variables, TODO comments left</item>
+    </check-list>
+  </step>
+
+  <step n="4" goal="Review test coverage">
+    <check-list id="tests">
+      <item>New logic: is it covered by unit tests?</item>
+      <item>Edge cases: are boundary conditions tested?</item>
+      <item>Error paths: are error/exception paths tested?</item>
+      <item>Test quality: do tests actually test behavior, not just coverage?</item>
+    </check-list>
+  </step>
+
+  <step n="5" goal="Compile and write findings">
+    <action>Group all findings by severity: 🔴 Blockers first, then 🟡 Warnings, then 🟢 Suggestions</action>
+    <action>Add positive observations: acknowledge good practices found</action>
+    <action>Write findings to {output_file} using the standard review report format</action>
+    <action>Update {pr_context}: add 'general-review' to completed reviews list</action>
+    <output>✅ General review complete. {blocker_count} blockers, {warning_count} warnings, {suggestion_count} suggestions.
+Run [RR] Generate Report to compile all findings, or continue with another review type.</output>
+  </step>
+</workflow>

@@ -1,0 +1,68 @@
+<workflow>
+  <critical>Workflow engine rules: {project-root}/_prr/core/tasks/workflow.xml</critical>
+  <critical>Communicate all responses in {communication_language}</critical>
+  <critical>Consistency with EXISTING codebase patterns is paramount — avoid over-engineering or introducing new patterns without strong justification</critical>
+  <critical>Always consider: would a new team member understand where this code belongs and why?</critical>
+
+  <step n="1" goal="Load PR context and understand the codebase structure">
+    <check if="{pr_context} does not exist">
+      <output>❌ No PR selected. Please run [SP] Select PR first.</output>
+      <stop/>
+    </check>
+    <action>Read {pr_context} and load git diff</action>
+    <action>Also examine surrounding non-changed files to understand existing patterns</action>
+    <output>🏗️ Starting Architecture Review
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Focus: Layer violations | Coupling | SOLID | Codebase consistency
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</output>
+  </step>
+
+  <step n="2" goal="Check layer/separation of concerns violations">
+    <check-list id="layers">
+      <item>Business logic in controllers/routes (should be in services)</item>
+      <item>Database queries in wrong layer (direct DB access from controller bypassing service)</item>
+      <item>Presentation logic in backend (HTML generation in services)</item>
+      <item>Infrastructure concerns mixed with domain logic</item>
+      <item>Each function/class: does it have a single clear responsibility?</item>
+    </check-list>
+  </step>
+
+  <step n="3" goal="Check coupling and cohesion">
+    <check-list id="coupling">
+      <item>Tight coupling: does this change force changes in many unrelated files?</item>
+      <item>New module dependencies: are new imports appropriate? circular dependencies introduced?</item>
+      <item>Interface design: are public APIs (function signatures, REST endpoints) clean and stable?</item>
+      <item>Shared mutable state: global state introduced or modified across modules?</item>
+    </check-list>
+  </step>
+
+  <step n="4" goal="Check consistency with existing codebase patterns">
+    <check-list id="consistency">
+      <item>Naming conventions: matches existing naming style (camelCase vs snake_case, etc.)?</item>
+      <item>File/folder structure: new files placed where convention dictates?</item>
+      <item>Error handling pattern: matches how errors are handled elsewhere in the codebase?</item>
+      <item>API response format: matches existing response structure?</item>
+      <item>New patterns: is a new pattern introduced? Is it justified and documented?</item>
+    </check-list>
+  </step>
+
+  <step n="5" goal="SOLID principles (only flag real violations, not theoretical ones)">
+    <check-list id="solid">
+      <item>SRP: class/module doing more than one thing AND causing maintenance problems?</item>
+      <item>OCP: existing code modified instead of extended (when extension was clearly better)?</item>
+      <item>LSP: subclass behavior violates parent contract?</item>
+      <item>ISP: interface forces implementors to depend on methods they don't use?</item>
+      <item>DIP: high-level module depends directly on low-level implementation (not abstraction)?</item>
+    </check-list>
+    <note>Only flag SOLID violations when they cause REAL maintainability or extensibility problems — not theoretical purity</note>
+  </step>
+
+  <step n="6" goal="Compile and write findings">
+    <action>Group findings: Layer Violations | Coupling Issues | Consistency Problems | SOLID Violations</action>
+    <action>For each finding: reference the EXISTING pattern that should be followed instead</action>
+    <action>Write findings to {output_file}</action>
+    <action>Update {pr_context}: add 'architecture-review' to completed list</action>
+    <output>🏗️ Architecture review complete.
+Run [RR] Generate Report to compile all findings.</output>
+  </step>
+</workflow>

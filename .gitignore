@@ -1,0 +1,18 @@
+node_modules/
+*.log
+.DS_Store
+Thumbs.db
+
+# PR Review runtime outputs (generated per-project, not committed to this repo)
+_prr/
+_prr-output/
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Desktop.ini
