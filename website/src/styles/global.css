@@ -29,6 +29,12 @@ pre, code {
   font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
 }
 
+pre, code {
+  background: transparent !important;
+  margin: 0 !important;
+  border: none !important;
+}
+
 /* Selection */
 ::selection {
   background: rgba(255, 255, 255, 0.2);

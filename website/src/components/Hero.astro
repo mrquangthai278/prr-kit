@@ -1,5 +1,10 @@
 ---
 import { Button, Badge } from 'webcoreui/astro'
+
+const preferredIDEs = ['Claude Code', 'Cursor', 'Windsurf']
+const otherIDEs = [
+  'Cline', 'GitHub Copilot', 'Gemini CLI', 'Roo Cline', 'Codex', 'Trae', 'Kiro', '+9 more'
+]
 ---
 
 <section class="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
@@ -13,7 +18,7 @@ import { Button, Badge } from 'webcoreui/astro'
   <div class="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-black to-transparent pointer-events-none z-10"></div>
 
   <!-- Content -->
-  <div class="relative z-20 max-w-5xl mx-auto px-6 text-center pt-24 pb-16">
+  <div class="relative z-20 max-w-5xl mx-auto px-6 text-center pt-24 flex flex-col justify-center items-center">
     <!-- Main headline -->
     <h1 class="font-black tracking-tight leading-[0.9] mb-8">
       <span class="block text-[clamp(3rem,10vw,7rem)] text-white">AI-Driven</span>
@@ -27,9 +32,9 @@ import { Button, Badge } from 'webcoreui/astro'
 
     <!-- Subtitle -->
     <p class="text-lg md:text-xl text-white/40 max-w-2xl mx-auto leading-relaxed mb-12 font-light">
-      Structured, multi-perspective, actionable code review —
+      Structured, multi-perspective, actionable code review.
       <br class="hidden md:block" />
-      powered by your AI IDE. No server. No API keys.
+      Powered by your AI IDE. No server. No API keys.
     </p>
 
     <!-- Install command -->
@@ -53,7 +58,7 @@ import { Button, Badge } from 'webcoreui/astro'
     </div>
 
     <!-- CTA Buttons -->
-    <div class="flex items-center justify-center gap-4 flex-wrap mb-20">
+    <div class="flex items-center justify-center gap-4 flex-wrap mb-8">
       <a
         href="#quick-start"
         class="inline-flex items-center gap-2 px-7 py-3.5 bg-white text-black! text-sm font-bold rounded-xl hover:bg-white/90 active:scale-[0.98] transition-all duration-150"
@@ -77,18 +82,23 @@ import { Button, Badge } from 'webcoreui/astro'
       </a>
     </div>
 
-    <!-- Stats -->
-    <div class="flex items-center justify-center gap-12 pt-8 border-t border-white/8">
-      {[
-        { value: '4', label: 'Review Agents' },
-        { value: '4', label: 'Platforms' },
-        { value: '18', label: 'IDEs' },
-      ].map(s => (
-        <div class="text-center">
-          <div class="text-3xl font-black text-white tabular-nums">{s.value}</div>
-          <div class="text-xs text-white/30 mt-1 tracking-wide">{s.label}</div>
-        </div>
-      ))}
+    <!-- IDE Support Badges -->
+    <div class="flex flex-col items-center gap-3 mb-20">
+      <p class="text-xs text-white/25 uppercase tracking-widest font-medium">Works with</p>
+      <div class="flex flex-wrap items-center justify-center gap-2">
+        {preferredIDEs.map((ide) => (
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/10 border border-white/25 rounded-full text-xs font-semibold text-white/80">
+            <span class="w-1.5 h-1.5 rounded-full bg-white/60 flex-shrink-0"></span>
+            {ide}
+          </span>
+        ))}
+        <span class="text-white/15 text-xs select-none">·</span>
+        {otherIDEs.map((ide) => (
+          <span class="px-2.5 py-1 bg-white/[0.04] border border-white/10 rounded-full text-xs text-white/35">
+            {ide}
+          </span>
+        ))}
+      </div>
     </div>
   </div>
 
