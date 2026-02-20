@@ -150,7 +150,7 @@ ${body}
     }
 
     const prr = this.prrFolderName;
-    const section = `# PR Review Framework — Project Instructions
+    const section = `# PR Review Kit — Project Instructions
 
 ## Project Configuration
 

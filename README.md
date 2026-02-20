@@ -1,7 +1,7 @@
-# PR Review Framework
+# PR Review Kit
 
 <p align="center">
-  <img src="docs/assets/banner.svg" alt="PR Review Framework" width="100%"/>
+  <img src="docs/assets/banner.svg" alt="PR Review Kit" width="100%"/>
 </p>
 
 > AI-driven Pull Request code review — structured, multi-perspective, actionable.

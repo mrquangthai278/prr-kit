@@ -52,7 +52,7 @@ reviews:
   path_instructions:
     - path: "**/*"
       instructions: |
-        Review workflow files, agent definitions, and CLI tooling for the PR Review Framework.
+        Review workflow files, agent definitions, and CLI tooling for the PR Review Kit.
         Focus on: correctness of step-file chaining, severity format consistency (🔴🟡🟢📌),
         file path references using {variable} placeholders, and CLI installer correctness.
         Flag any hardcoded paths that should use {project-root} or {review_output} variables.

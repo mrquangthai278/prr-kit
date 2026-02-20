@@ -1,6 +1,6 @@
 name: performance-review
 description: "Performance-focused code review: N+1 queries, memory leaks, async patterns, bundle size, caching"
-author: "PR Review Framework"
+author: "PR Review Kit"
 
 config_source: "{project-root}/_prr/prr/config.yaml"
 user_name: "{config_source}:user_name"

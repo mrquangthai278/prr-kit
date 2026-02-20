@@ -102,7 +102,7 @@ function findAgentFiles(dir) {
 }
 
 console.log('='.repeat(50));
-console.log('PR Review Framework — Agent Schema Validation');
+console.log('PR Review Kit — Agent Schema Validation');
 console.log('='.repeat(50));
 
 const agentFiles = findAgentFiles(SRC_DIR);
