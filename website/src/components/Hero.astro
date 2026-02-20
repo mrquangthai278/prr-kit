@@ -3,7 +3,7 @@ import { Button, Badge } from 'webcoreui/astro'
 
 const preferredIDEs = ['Claude Code', 'Cursor', 'Windsurf']
 const otherIDEs = [
-  'Cline', 'GitHub Copilot', 'Gemini CLI', 'Roo Cline', 'Codex', 'Trae', 'Kiro', '+9 more'
+  'GitHub Copilot', 'Antigravity', 'Cline', 'Gemini CLI', 'Roo Cline', 'Trae', 'Kiro', '+8 more'
 ]
 ---
 
@@ -86,15 +86,8 @@ const otherIDEs = [
     <div class="flex flex-col items-center gap-3 mb-20">
       <p class="text-xs text-white/25 uppercase tracking-widest font-medium">Works with</p>
       <div class="flex flex-wrap items-center justify-center gap-2">
-        {preferredIDEs.map((ide) => (
-          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/10 border border-white/25 rounded-full text-xs font-semibold text-white/80">
-            <span class="w-1.5 h-1.5 rounded-full bg-white/60 flex-shrink-0"></span>
-            {ide}
-          </span>
-        ))}
-        <span class="text-white/15 text-xs select-none">·</span>
-        {otherIDEs.map((ide) => (
-          <span class="px-2.5 py-1 bg-white/[0.04] border border-white/10 rounded-full text-xs text-white/35">
+        {[...preferredIDEs, ...otherIDEs].map((ide) => (
+          <span class="px-3 py-1.5 bg-white/8 border border-white/20 rounded-full text-xs font-medium text-white/60">
             {ide}
           </span>
         ))}
