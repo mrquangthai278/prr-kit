@@ -1,0 +1,92 @@
+---
+import { Badge } from 'webcoreui/astro'
+
+const platforms = [
+  {
+    name: 'GitHub',
+    cli: 'gh',
+    logo: `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>`,
+    features: ['List open PRs', 'Load diff', 'Inline reviews', 'Approve/reject'],
+    full: true,
+  },
+  {
+    name: 'GitLab',
+    cli: 'glab',
+    logo: `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M4.845.904c-.435 0-.82.28-.955.692L.012 13.69a1.004 1.004 0 00.36 1.09l11.55 8.403a.998.998 0 001.165 0l11.55-8.402a1.004 1.004 0 00.36-1.09L21.088 1.6a1.004 1.004 0 00-.955-.692h-15.288zM12 15.52L8.09 4.125h7.818L12 15.52z"/></svg>`,
+    features: ['List open MRs', 'Load diff', 'MR discussions', 'Approve/reject'],
+    full: true,
+  },
+  {
+    name: 'Azure DevOps',
+    cli: 'az',
+    logo: `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M0 17.965v-12.32l4.32-4.32H19.2L24 6.13v11.557l-4.335 4.32H4.32L0 17.965zm19.657-1.097l2.538-2.546V7.323L19.2 5.04H5.46L1.806 8.58v6.89l2.514 2.398h15.337z"/></svg>`,
+    features: ['List open PRs', 'Git fallback diff', 'PR threads', 'Approve/reject'],
+    full: true,
+  },
+  {
+    name: 'Bitbucket',
+    cli: 'bb / curl',
+    logo: `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M.778 1.213a.768.768 0 00-.768.892l3.263 19.81c.084.5.515.868 1.022.873H19.95a.772.772 0 00.77-.646l3.27-20.03a.768.768 0 00-.768-.891L.778 1.213zM14.52 15.53H9.522L8.17 8.466h7.561l-1.211 7.064z"/></svg>`,
+    features: ['List PRs', 'Git fallback diff', 'Inline comments', 'Core review'],
+    full: false,
+  },
+]
+
+const capabilities = [
+  { label: 'Core review (diff analysis)', github: true, gitlab: true, azure: true, bitbucket: true },
+  { label: 'Auto-detect from remote URL', github: true, gitlab: true, azure: true, bitbucket: true },
+  { label: 'List open PRs/MRs', github: true, gitlab: true, azure: true, bitbucket: true },
+  { label: 'Select PR by number', github: true, gitlab: true, azure: true, bitbucket: true },
+  { label: 'Post inline code comments', github: true, gitlab: true, azure: true, bitbucket: true },
+  { label: 'Approve / request changes', github: true, gitlab: true, azure: true, bitbucket: false },
+]
+---
+
+<section id="platforms" class="py-24 px-6 border-t border-white/10">
+  <div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-16">
+      <Badge theme="outline" rounded className="text-xs mb-6">Platform Support</Badge>
+      <h2 class="text-4xl md:text-5xl font-black tracking-tight text-white mb-4">
+        Works where you work
+      </h2>
+      <p class="text-white/50 text-lg max-w-xl mx-auto">
+        Full support for the four major Git platforms. Or use local mode with no platform CLI at all.
+      </p>
+    </div>
+
+    <!-- Platform cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      {platforms.map((platform) => (
+        <div class="p-6 bg-white/3 border border-white/10 rounded-2xl hover:border-white/20 hover:bg-white/5 transition-all group text-center">
+          <div class="flex justify-center mb-4 text-white/60 group-hover:text-white/80 transition-colors" set:html={platform.logo} />
+          <div class="font-bold text-white text-sm mb-1">{platform.name}</div>
+          <div class="font-mono text-xs text-white/30 mb-4">{platform.cli}</div>
+          <div class="space-y-1.5">
+            {platform.features.map((f) => (
+              <div class="flex items-center gap-2 text-xs text-white/40">
+                <svg class="w-3 h-3 text-white/30 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                </svg>
+                {f}
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Local mode callout -->
+    <div class="p-6 bg-white/3 border border-white/10 rounded-2xl flex items-center gap-4">
+      <div class="flex-shrink-0 w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+        </svg>
+      </div>
+      <div>
+        <div class="font-bold text-white text-sm mb-1">None / Local mode</div>
+        <p class="text-xs text-white/40">All review analysis runs locally via <code class="font-mono bg-white/10 px-1.5 py-0.5 rounded">git diff</code> — no platform CLI required. Findings are saved to <code class="font-mono bg-white/10 px-1.5 py-0.5 rounded">_prr-output/reviews/</code> only.</p>
+      </div>
+    </div>
+  </div>
+</section>

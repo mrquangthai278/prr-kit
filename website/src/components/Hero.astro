@@ -1,0 +1,335 @@
+---
+import { Button, Badge } from 'webcoreui/astro'
+---
+
+<section class="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
+  <!-- Three.js canvas -->
+  <canvas id="hero-canvas" class="absolute inset-0 w-full h-full"></canvas>
+
+  <!-- Vignette overlay -->
+  <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,#000_100%)] pointer-events-none z-10"></div>
+
+  <!-- Bottom fade -->
+  <div class="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-black to-transparent pointer-events-none z-10"></div>
+
+  <!-- Content -->
+  <div class="relative z-20 max-w-5xl mx-auto px-6 text-center pt-24 pb-16">
+    <!-- Main headline -->
+    <h1 class="font-black tracking-tight leading-[0.9] mb-8">
+      <span class="block text-[clamp(3rem,10vw,7rem)] text-white">AI-Driven</span>
+      <span class="block text-[clamp(3rem,10vw,7rem)]" style="
+        background: linear-gradient(135deg, #fff 0%, #aaa 40%, #555 70%, #fff 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      ">PR Review</span>
+    </h1>
+
+    <!-- Subtitle -->
+    <p class="text-lg md:text-xl text-white/40 max-w-2xl mx-auto leading-relaxed mb-12 font-light">
+      Structured, multi-perspective, actionable code review —
+      <br class="hidden md:block" />
+      powered by your AI IDE. No server. No API keys.
+    </p>
+
+    <!-- Install command -->
+    <div class="flex justify-center mb-10">
+      <div class="group flex items-center gap-3 bg-white/[0.06] hover:bg-white/[0.09] border border-white/10 hover:border-white/20 rounded-xl px-6 py-4 font-mono text-sm text-white/70 transition-all duration-300 cursor-text backdrop-blur-sm">
+        <span class="text-white/25 select-none">$</span>
+        <span id="install-cmd" class="text-white/80">npx prr-kit install</span>
+        <button
+          id="copy-btn"
+          class="ml-2 text-white/25 hover:text-white transition-colors cursor-pointer flex-shrink-0"
+          title="Copy"
+        >
+          <svg id="copy-icon" class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+          <svg id="check-icon" class="w-4 h-4 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- CTA Buttons -->
+    <div class="flex items-center justify-center gap-4 flex-wrap mb-20">
+      <a
+        href="#quick-start"
+        class="inline-flex items-center gap-2 px-7 py-3.5 bg-white text-black! text-sm font-bold rounded-xl hover:bg-white/90 active:scale-[0.98] transition-all duration-150"
+      style="color: #000 !important;"
+      >
+        Get Started
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+        </svg>
+      </a>
+      <a
+        href="https://github.com/mrquangthai278/prr-kit"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 px-7 py-3.5 bg-transparent text-white text-sm font-semibold rounded-xl border border-white/20 hover:border-white/40 hover:bg-white/5 active:scale-[0.98] transition-all duration-150"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+        </svg>
+        View on GitHub
+      </a>
+    </div>
+
+    <!-- Stats -->
+    <div class="flex items-center justify-center gap-12 pt-8 border-t border-white/8">
+      {[
+        { value: '4', label: 'Review Agents' },
+        { value: '4', label: 'Platforms' },
+        { value: '18', label: 'IDEs' },
+      ].map(s => (
+        <div class="text-center">
+          <div class="text-3xl font-black text-white tabular-nums">{s.value}</div>
+          <div class="text-xs text-white/30 mt-1 tracking-wide">{s.label}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 animate-bounce">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="text-white/20">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7" />
+    </svg>
+  </div>
+</section>
+
+<script>
+import * as THREE from 'three'
+
+const canvas = document.getElementById('hero-canvas') as HTMLCanvasElement
+if (!canvas) throw new Error('Canvas not found')
+
+// ── Renderer ──────────────────────────────────────────────────────────────────
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true })
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+renderer.setSize(window.innerWidth, window.innerHeight)
+renderer.setClearColor(0x000000, 1)
+
+// ── Scene + Camera ─────────────────────────────────────────────────────────
+const scene = new THREE.Scene()
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100)
+camera.position.set(0, 0, 18)
+
+// ── Particle config ────────────────────────────────────────────────────────
+const PARTICLE_COUNT = 180
+const SPREAD = 22
+const CONNECTION_DIST = 4.5
+const MAX_CONNECTIONS = 5
+
+// ── Generate particles ─────────────────────────────────────────────────────
+const positions: number[] = []
+const sizes: number[] = []
+const alphas: number[] = []
+const velocities: THREE.Vector3[] = []
+const phases: number[] = []
+
+for (let i = 0; i < PARTICLE_COUNT; i++) {
+  const x = (Math.random() - 0.5) * SPREAD
+  const y = (Math.random() - 0.5) * SPREAD * 0.6
+  const z = (Math.random() - 0.5) * SPREAD * 0.5
+  positions.push(x, y, z)
+  sizes.push(Math.random() * 2.5 + 0.5)
+  alphas.push(Math.random() * 0.5 + 0.2)
+  velocities.push(new THREE.Vector3(
+    (Math.random() - 0.5) * 0.003,
+    (Math.random() - 0.5) * 0.002,
+    (Math.random() - 0.5) * 0.002
+  ))
+  phases.push(Math.random() * Math.PI * 2)
+}
+
+// ── Point cloud ────────────────────────────────────────────────────────────
+const pointGeo = new THREE.BufferGeometry()
+const posArr = new Float32Array(positions)
+pointGeo.setAttribute('position', new THREE.BufferAttribute(posArr, 3))
+pointGeo.setAttribute('size', new THREE.BufferAttribute(new Float32Array(sizes), 1))
+
+const pointMat = new THREE.ShaderMaterial({
+  uniforms: { uTime: { value: 0 } },
+  vertexShader: `
+    attribute float size;
+    uniform float uTime;
+    varying float vAlpha;
+    void main() {
+      vAlpha = 0.4 + 0.3 * sin(uTime * 0.8 + position.x * 0.5 + position.y * 0.3);
+      vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+      gl_PointSize = size * (280.0 / -mvPos.z);
+      gl_Position = projectionMatrix * mvPos;
+    }
+  `,
+  fragmentShader: `
+    varying float vAlpha;
+    void main() {
+      float d = length(gl_PointCoord - vec2(0.5));
+      if (d > 0.5) discard;
+      float glow = 1.0 - smoothstep(0.0, 0.5, d);
+      gl_FragColor = vec4(1.0, 1.0, 1.0, glow * glow * vAlpha);
+    }
+  `,
+  transparent: true,
+  depthWrite: false,
+  blending: THREE.AdditiveBlending,
+})
+
+const points = new THREE.Points(pointGeo, pointMat)
+scene.add(points)
+
+// ── Connection lines ───────────────────────────────────────────────────────
+const MAX_LINE_VERTS = PARTICLE_COUNT * MAX_CONNECTIONS * 2
+const linePositions = new Float32Array(MAX_LINE_VERTS * 3)
+const lineAlphas = new Float32Array(MAX_LINE_VERTS)
+
+const lineGeo = new THREE.BufferGeometry()
+lineGeo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3))
+lineGeo.setAttribute('alpha', new THREE.BufferAttribute(lineAlphas, 1))
+
+const lineMat = new THREE.ShaderMaterial({
+  vertexShader: `
+    attribute float alpha;
+    varying float vAlpha;
+    void main() {
+      vAlpha = alpha;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    varying float vAlpha;
+    void main() {
+      gl_FragColor = vec4(1.0, 1.0, 1.0, vAlpha);
+    }
+  `,
+  transparent: true,
+  depthWrite: false,
+  blending: THREE.AdditiveBlending,
+})
+
+const lines = new THREE.LineSegments(lineGeo, lineMat)
+scene.add(lines)
+
+// ── Mouse ──────────────────────────────────────────────────────────────────
+const mouse = { x: 0, y: 0 }
+const target = { x: 0, y: 0 }
+
+window.addEventListener('mousemove', (e) => {
+  mouse.x = (e.clientX / window.innerWidth - 0.5) * 2
+  mouse.y = -(e.clientY / window.innerHeight - 0.5) * 2
+})
+
+// ── Resize ─────────────────────────────────────────────────────────────────
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight
+  camera.updateProjectionMatrix()
+  renderer.setSize(window.innerWidth, window.innerHeight)
+})
+
+// ── Animate ────────────────────────────────────────────────────────────────
+const clock = new THREE.Clock()
+const tempVec = new THREE.Vector3()
+const HALF_SPREAD = SPREAD / 2
+
+function animate() {
+  requestAnimationFrame(animate)
+  const elapsed = clock.getElapsedTime()
+
+  // Smooth mouse follow
+  target.x += (mouse.x - target.x) * 0.04
+  target.y += (mouse.y - target.y) * 0.04
+
+  // Slow global rotation
+  scene.rotation.y = target.x * 0.12 + elapsed * 0.018
+  scene.rotation.x = target.y * 0.08
+
+  // Update shader time
+  pointMat.uniforms.uTime.value = elapsed
+
+  // Move particles
+  const pos = pointGeo.attributes.position as THREE.BufferAttribute
+  for (let i = 0; i < PARTICLE_COUNT; i++) {
+    const i3 = i * 3
+    posArr[i3]     += velocities[i].x
+    posArr[i3 + 1] += velocities[i].y
+    posArr[i3 + 2] += velocities[i].z
+
+    // Wrap around bounds
+    if (posArr[i3]     >  HALF_SPREAD) posArr[i3]     = -HALF_SPREAD
+    if (posArr[i3]     < -HALF_SPREAD) posArr[i3]     =  HALF_SPREAD
+    if (posArr[i3 + 1] >  HALF_SPREAD * 0.6) posArr[i3 + 1] = -HALF_SPREAD * 0.6
+    if (posArr[i3 + 1] < -HALF_SPREAD * 0.6) posArr[i3 + 1] =  HALF_SPREAD * 0.6
+    if (posArr[i3 + 2] >  HALF_SPREAD * 0.5) posArr[i3 + 2] = -HALF_SPREAD * 0.5
+    if (posArr[i3 + 2] < -HALF_SPREAD * 0.5) posArr[i3 + 2] =  HALF_SPREAD * 0.5
+  }
+  pos.needsUpdate = true
+
+  // Update connection lines
+  let lineIdx = 0
+  const lp = lineGeo.attributes.position as THREE.BufferAttribute
+  const la = lineGeo.attributes.alpha as THREE.BufferAttribute
+
+  for (let i = 0; i < PARTICLE_COUNT; i++) {
+    const ax = posArr[i * 3], ay = posArr[i * 3 + 1], az = posArr[i * 3 + 2]
+    let connections = 0
+
+    for (let j = i + 1; j < PARTICLE_COUNT && connections < MAX_CONNECTIONS; j++) {
+      const bx = posArr[j * 3], by = posArr[j * 3 + 1], bz = posArr[j * 3 + 2]
+      const dx = ax - bx, dy = ay - by, dz = az - bz
+      const dist = Math.sqrt(dx * dx + dy * dy + dz * dz)
+
+      if (dist < CONNECTION_DIST && lineIdx < MAX_LINE_VERTS - 2) {
+        const strength = (1 - dist / CONNECTION_DIST) * 0.25
+
+        linePositions[lineIdx * 3]     = ax
+        linePositions[lineIdx * 3 + 1] = ay
+        linePositions[lineIdx * 3 + 2] = az
+        lineAlphas[lineIdx] = strength
+        lineIdx++
+
+        linePositions[lineIdx * 3]     = bx
+        linePositions[lineIdx * 3 + 1] = by
+        linePositions[lineIdx * 3 + 2] = bz
+        lineAlphas[lineIdx] = strength
+        lineIdx++
+
+        connections++
+      }
+    }
+  }
+
+  // Clear leftover vertices
+  for (let i = lineIdx; i < MAX_LINE_VERTS; i++) {
+    linePositions[i * 3] = linePositions[i * 3 + 1] = linePositions[i * 3 + 2] = 0
+    lineAlphas[i] = 0
+  }
+
+  lp.needsUpdate = true
+  la.needsUpdate = true
+  lineGeo.setDrawRange(0, lineIdx)
+
+  renderer.render(scene, camera)
+}
+
+animate()
+
+// ── Copy button ────────────────────────────────────────────────────────────
+const copyBtn = document.getElementById('copy-btn')
+const copyIcon = document.getElementById('copy-icon')
+const checkIcon = document.getElementById('check-icon')
+
+copyBtn?.addEventListener('click', () => {
+  navigator.clipboard.writeText('npx prr-kit install')
+  copyIcon?.classList.add('hidden')
+  checkIcon?.classList.remove('hidden')
+  if (copyBtn instanceof HTMLElement) copyBtn.style.color = 'rgba(255,255,255,0.7)'
+  setTimeout(() => {
+    copyIcon?.classList.remove('hidden')
+    checkIcon?.classList.add('hidden')
+    if (copyBtn instanceof HTMLElement) copyBtn.style.color = ''
+  }, 2000)
+})
+</script>

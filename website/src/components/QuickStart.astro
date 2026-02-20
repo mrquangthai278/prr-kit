@@ -1,0 +1,85 @@
+---
+import { Badge } from 'webcoreui/astro'
+
+const steps = [
+  {
+    number: '1',
+    title: 'Install into your repo',
+    code: `npx prr-kit install`,
+    description: 'Interactive wizard — select modules, IDE, and configuration path.',
+  },
+  {
+    number: '2',
+    title: 'Configure the kit',
+    code: `# Edit _prr/prr/config.yaml
+user_name: YourName
+platform: auto          # auto-detects GitHub/GitLab/etc.
+platform_repo: "owner/repo"`,
+    description: 'Set your name, platform, and repository slug.',
+  },
+  {
+    number: '3',
+    title: 'Start reviewing',
+    code: `/prr-master`,
+    description: 'Open your IDE and run the master agent slash command.',
+  },
+]
+---
+
+<section id="quick-start" class="py-24 px-6 border-t border-white/10">
+  <div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-16">
+      <Badge theme="outline" rounded className="text-xs mb-6">Quick Start</Badge>
+      <h2 class="text-4xl md:text-5xl font-black tracking-tight text-white mb-4">
+        Up in 3 steps
+      </h2>
+      <p class="text-white/50 text-lg max-w-xl mx-auto">
+        Install the kit, configure it once, and start getting structured AI reviews on every PR.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6 mb-12">
+      {steps.map((step) => (
+        <div class="relative">
+          <!-- Step number -->
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-8 h-8 bg-white text-black rounded-full flex items-center justify-center text-sm font-black flex-shrink-0">
+              {step.number}
+            </div>
+            <h3 class="font-bold text-white text-sm">{step.title}</h3>
+          </div>
+
+          <!-- Code block -->
+          <div class="bg-white/5 border border-white/10 rounded-xl overflow-hidden mb-3">
+            <div class="flex items-center gap-1.5 px-4 py-2.5 border-b border-white/10">
+              <div class="w-2.5 h-2.5 rounded-full bg-white/15"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-white/15"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-white/15"></div>
+            </div>
+            <pre class="p-4 text-xs font-mono text-white/70 overflow-x-auto leading-relaxed"><code>{step.code}</code></pre>
+          </div>
+
+          <p class="text-xs text-white/40 leading-relaxed">{step.description}</p>
+        </div>
+      ))}
+    </div>
+
+    <!-- Alternative: silent install -->
+    <div class="p-6 bg-white/3 border border-white/10 rounded-2xl">
+      <div class="text-xs font-bold text-white/30 uppercase tracking-widest mb-3">Silent install (non-interactive)</div>
+      <div class="bg-black/50 border border-white/10 rounded-lg overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-2.5 border-b border-white/10">
+          <span class="text-xs text-white/30 font-mono">bash</span>
+          <button
+            onclick={`navigator.clipboard.writeText("npx prr-kit install --directory /path/to/repo --modules prr --tools claude-code --yes")`}
+            class="text-xs text-white/30 hover:text-white transition-colors cursor-pointer"
+          >
+            Copy
+          </button>
+        </div>
+        <pre class="p-4 text-xs font-mono text-white/60 overflow-x-auto"><code><span class="text-white/30">$</span> npx prr-kit install <span class="text-white/50">--directory</span> /path/to/repo <span class="text-white/50">--modules</span> prr <span class="text-white/50">--tools</span> claude-code <span class="text-white/50">--yes</span></code></pre>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,6 @@
+@use 'webcoreui/styles' as *;
+
+// Disable webcoreui utilities — Tailwind CSS handles them
+@include setup((
+    includeUtilities: false,
+));
