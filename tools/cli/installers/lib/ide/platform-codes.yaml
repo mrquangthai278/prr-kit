@@ -2,6 +2,7 @@
 # IDE/tool registry — defines where to install agent/workflow launchers
 
 platforms:
+  # Recommended Platforms
   claude-code:
     name: "Claude Code"
     preferred: true
@@ -29,6 +30,25 @@ platforms:
       target_dir: .windsurf/workflows
       template_type: windsurf
 
+  # Other IDEs and Tools
+  antigravity:
+    name: "Google Antigravity"
+    preferred: false
+    category: ide
+    description: "Google's AI development environment"
+    installer:
+      target_dir: .agent/workflows
+      template_type: antigravity
+
+  auggie:
+    name: "Auggie"
+    preferred: false
+    category: cli
+    description: "AI development tool"
+    installer:
+      target_dir: .augment/commands
+      template_type: default
+
   cline:
     name: "Cline"
     preferred: false
@@ -37,6 +57,86 @@ platforms:
     installer:
       target_dir: .clinerules/workflows
       template_type: windsurf
+
+  codex:
+    name: "Codex"
+    preferred: false
+    category: cli
+    description: "OpenAI Codex CLI"
+    # No installer config - uses custom codex.js
+
+  crush:
+    name: "Crush"
+    preferred: false
+    category: ide
+    description: "AI development assistant"
+    installer:
+      target_dir: .crush/commands
+      template_type: default
+
+  gemini:
+    name: "Gemini CLI"
+    preferred: false
+    category: cli
+    description: "Google's CLI for Gemini"
+    installer:
+      target_dir: .gemini/commands
+      template_type: gemini
+
+  github-copilot:
+    name: "GitHub Copilot"
+    preferred: false
+    category: ide
+    description: "GitHub's AI pair programmer"
+    # No installer config - uses custom github-copilot.js
+
+  iflow:
+    name: "iFlow"
+    preferred: false
+    category: ide
+    description: "AI workflow automation"
+    installer:
+      target_dir: .iflow/commands
+      template_type: default
+
+  kilo:
+    name: "KiloCoder"
+    preferred: false
+    category: ide
+    description: "AI coding platform"
+    # No installer config - uses custom kilo.js
+
+  kiro:
+    name: "Kiro"
+    preferred: false
+    category: ide
+    description: "Amazon's AI-powered IDE"
+    installer:
+      target_dir: .kiro/steering
+      template_type: kiro
+
+  opencode:
+    name: "OpenCode"
+    preferred: false
+    category: ide
+    description: "OpenCode terminal coding assistant"
+    installer:
+      targets:
+        - target_dir: .opencode/agent
+          template_type: opencode
+          artifact_types: [agents]
+        - target_dir: .opencode/command
+          template_type: opencode
+          artifact_types: [workflows]
+
+  qwen:
+    name: "QwenCoder"
+    preferred: false
+    category: ide
+    description: "Qwen AI coding assistant"
+    installer:
+      target_dir: .qwen/commands
+      template_type: default
 
   roo:
     name: "Roo Cline"
@@ -47,23 +147,23 @@ platforms:
       target_dir: .roo/commands
       template_type: default
 
-  gemini:
-    name: "Gemini CLI"
-    preferred: false
-    category: cli
-    description: "Google's CLI for Gemini"
-    installer:
-      target_dir: .gemini/commands
-      template_type: default
-
-  kiro:
-    name: "Kiro"
+  rovo-dev:
+    name: "Rovo Dev"
     preferred: false
     category: ide
-    description: "Amazon's AI-powered IDE"
+    description: "Atlassian's Rovo development environment"
     installer:
-      target_dir: .kiro/steering
-      template_type: default
+      target_dir: .rovodev/workflows
+      template_type: rovodev
+
+  trae:
+    name: "Trae"
+    preferred: false
+    category: ide
+    description: "AI coding tool"
+    installer:
+      target_dir: .trae/rules
+      template_type: trae
 
 categories:
   ide:
