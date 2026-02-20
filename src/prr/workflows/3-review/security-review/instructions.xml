@@ -4,16 +4,20 @@
   <critical>For EVERY security finding: state WHAT, WHERE (file+line), HOW it could be exploited, and HOW to fix it</critical>
   <critical>Think like an attacker — what could an adversary do with this vulnerability?</critical>
 
-  <step n="1" goal="Load PR context and prepare security analysis">
+  <step n="1" goal="Load PR context, knowledge base, and prepare security analysis">
     <check if="{pr_context} does not exist">
       <output>❌ No PR selected. Please run [SP] Select PR first.</output>
       <stop/>
     </check>
     <action>Read {pr_context}</action>
+    <action>Load PR-specific knowledge base from {pr_knowledge_base}</action>
+    <action>Extract security guidelines from knowledge_base.relevant_guidelines</action>
+    <action>Check for security annotations from knowledge_base.inline_context (@security:)</action>
     <action>Run: git diff {base_branch}...{target_branch} in {target_repo}</action>
     <output>🔒 Starting Security Review — Thinking like an attacker
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 OWASP Top 10 scan + secrets detection + auth review
+Context: Loaded security guidelines from CLAUDE.md/CONTRIBUTING.md
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</output>
   </step>
 

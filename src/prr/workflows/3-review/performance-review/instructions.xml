@@ -4,15 +4,18 @@
   <critical>Focus on IMPACTFUL performance issues — skip micro-optimizations that add complexity without measurable benefit</critical>
   <critical>Quantify impact when possible: "this adds ~Xms per request" or "X MB memory per session"</critical>
 
-  <step n="1" goal="Load PR context and diff">
+  <step n="1" goal="Load PR context, knowledge base, and diff">
     <check if="{pr_context} does not exist">
       <output>❌ No PR selected. Please run [SP] Select PR first.</output>
       <stop/>
     </check>
     <action>Read {pr_context} and load git diff</action>
+    <action>Load PR-specific knowledge base from {pr_knowledge_base}</action>
+    <action>Extract performance guidelines from knowledge_base.relevant_guidelines</action>
     <output>⚡ Starting Performance Review
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Focus: N+1 queries | Memory | Async | Bundle size | Caching
+Context: Loaded performance best practices from docs
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</output>
   </step>
 

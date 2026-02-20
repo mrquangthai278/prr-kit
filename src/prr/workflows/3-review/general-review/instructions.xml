@@ -4,24 +4,30 @@
   <critical>Load PR context from {pr_context} before starting review</critical>
   <critical>Every finding MUST include: file path + line/function reference + severity + suggested fix</critical>
 
-  <step n="1" goal="Load PR context and diff">
+  <step n="1" goal="Load PR context, knowledge base, and diff">
     <check if="{pr_context} does not exist">
       <output>❌ No PR selected. Please run [SP] Select PR first.</output>
       <stop/>
     </check>
 
-    <action>Read {pr_context} to get: target_branch, base_branch, diff_strategy, files_changed</action>
+    <action>Read {pr_context} to get: target_branch, base_branch, diff_strategy, files_changed, pr_knowledge_base</action>
+    <action>Load PR-specific knowledge base from {pr_knowledge_base} (e.g., pr-123-context.yaml)</action>
+    <note>Knowledge base contains: relevant ESLint rules, guidelines from CLAUDE.md/CONTRIBUTING.md/ARCHITECTURE.md, inline annotations, external rules</note>
     <action>Run: git diff {base_branch}...{target_branch} in {target_repo}</action>
     <action>Note diff_strategy: if 'chunked', process file by file</action>
 
     <output>🔍 Starting General Code Review
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 PR: {target_branch} → {base_branch}
+Context: Loaded fresh PR-specific knowledge base
 Strategy: {diff_strategy}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</output>
   </step>
 
-  <step n="2" goal="Review code logic and correctness">
+  <step n="2" goal="Review code logic and correctness with PR-specific context">
+    <action>Apply ESLint rules from knowledge_base.relevant_rules.eslint</action>
+    <action>Apply guidelines from knowledge_base.relevant_guidelines</action>
+    <action>Check inline annotations from knowledge_base.inline_context</action>
     <action>For each changed file (or chunk if diff_strategy=chunked):</action>
     <check-list id="logic">
       <item>Logical errors: conditions, edge cases, off-by-one errors</item>

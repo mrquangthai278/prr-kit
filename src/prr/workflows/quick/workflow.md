@@ -11,12 +11,12 @@ Only pause for user input when selecting the branch. Everything else runs automa
 
 ## INITIALIZATION
 
-Load config from {main_config}: `user_name`, `communication_language`, `target_repo`, `review_output`, `project_context`.
+Load config from {main_config}: `user_name`, `communication_language`, `target_repo`, `review_output`.
 
 Set `date` = today's date (YYYY-MM-DD).
 
-If `project_context` file exists at `{review_output}/project-context.yaml`, load it silently.
-If it does not exist, notify: "⚠️ No project context found — run [CP] Collect Project Context first for better reviews. Continuing without it."
+**Note:** Context will be collected dynamically in Phase 2.5 after describing the PR.
+No pre-collected context file needed. Context is always fresh and PR-specific.
 
 ---
 
@@ -143,10 +143,83 @@ Print to screen:
 
 ---
 
+## PHASE 2.5 — COLLECT PR-SPECIFIC CONTEXT
+*Execute automatically, no user input. This is the key innovation.*
+
+**Goal:** Dynamically collect fresh context relevant only to THIS PR's changed files.
+
+### 2.5a. Analyze changed files
+Determine:
+- File types and extensions (`.vue`, `.js`, `.ts`, etc.)
+- File categories (`pinia-store`, `vue-component`, `test`, etc.)
+- Affected domains (`state-management`, `ui-components`, `security`, `api`, etc.)
+- Inline code annotations (`@context:`, `@security:`, `@pattern:`, `@rule:`)
+
+### 2.5b. Collect relevant context
+From multiple sources based on files changed:
+
+**1. Primary documentation:**
+- `CLAUDE.md` - Extract sections matching domains
+- `AGENTS.md` - Extract agent-specific rules
+- `.github/CLAUDE_CODE_RULES.md`
+
+**2. Config files (based on file types):**
+- `.eslintrc*` - For `.vue`, `.js`, `.ts` files
+- `.prettierrc*` - For code files
+- `tsconfig.json` - For `.ts` files
+- `vite.config.*` / `webpack.config.*` - Build configs
+
+**3. Standards docs (based on domains):**
+- `CONTRIBUTING.md` - Extract relevant sections
+- `ARCHITECTURE.md` - Extract patterns for affected areas
+- `docs/{domain}-guidelines.md` - Domain-specific docs
+
+**4. Inline annotations:**
+Extract from changed lines:
+```javascript
+// @context: This module handles authentication
+// @security: All inputs must be validated
+// @pattern: Use repository pattern
+```
+
+**5. External sources (if configured):**
+- Company standards APIs
+- Confluence/Wiki pages
+
+### 2.5c. Build PR-specific knowledge base
+Create structured context file: `{review_output}/pr-{pr_number}-context.yaml`
+
+Contains:
+- Files analysis (types, domains, categories)
+- Relevant ESLint/Prettier rules ONLY for these file types
+- Guidelines from docs relevant to changed domains
+- Inline annotations from code
+- External rules (if any)
+- Review priorities specific to this PR
+
+Show summary:
+```
+✅ PR-Specific Context Ready
+   📊 ESLint rules: {n} | Guidelines: {m} | Annotations: {k}
+   🎯 Domains: {domains}
+   📚 Sources: {source_count} (CLAUDE.md, .eslintrc.js, ARCHITECTURE.md, ...)
+
+   ✓ Context is fresh and PR-specific
+```
+
+**Why this phase matters:**
+- ✅ Context is always latest (no stale cached rules)
+- ✅ Only relevant rules (not entire project context)
+- ✅ Includes inline code annotations
+- ✅ No manual refresh needed
+
+---
+
 ## PHASE 3 — REVIEW
 *Execute all review types automatically, one by one.*
 
 For each review, read the corresponding instructions file and apply it to `{pr_diff}`.
+**Important:** Reviews now load `pr-{pr_number}-context.yaml` from Phase 2.5.
 
 ### 3a. General Review
 Load and follow: `{project-root}/_prr/prr/workflows/3-review/general-review/instructions.xml`

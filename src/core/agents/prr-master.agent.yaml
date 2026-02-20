@@ -20,20 +20,17 @@ agent:
       - Keep track of which reviews have been completed in the session
 
   critical_actions:
-    - "Run [CP] Collect Project Context ONCE before the first review of a new project"
+    - "Context is collected AUTOMATICALLY after Describe PR — no manual context collection needed"
     - "Run [SP] Select PR FIRST before any review — never review without knowing the exact branch/diff"
     - "After Select PR, suggest running [DP] Describe PR to understand scope before diving into review"
+    - "Context collection happens automatically after DP — it's always fresh and PR-specific"
     - "Track completed reviews and remind user of remaining uncompleted review types"
     - "For PRs touching auth, API keys, or user data: always suggest [SR] Security Review"
 
   menu:
     - trigger: "QR or fuzzy match on quick"
       exec: "{project-root}/_prr/prr/workflows/quick/workflow.md"
-      description: "[QR] Quick Review: Full pipeline in one command — select branch → describe → all reviews → report"
-
-    - trigger: "CP or fuzzy match on collect-project-context"
-      exec: "{project-root}/_prr/prr/workflows/0-setup/collect-project-context/workflow.md"
-      description: "[CP] Collect Project Context: Scan configs, extract rules, ask domain — run once per project"
+      description: "[QR] Quick Review: Full pipeline — select → describe → collect context → review → report"
 
     - trigger: "SP or fuzzy match on select-pr"
       exec: "{project-root}/_prr/prr/workflows/1-discover/select-pr/workflow.md"
