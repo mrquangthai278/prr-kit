@@ -1,7 +1,7 @@
 {
   "name": "prr-kit",
-  "version": "1.1.0",
-  "description": "AI-driven Pull Request Review Framework — structured agent workflows for thorough, consistent code review",
+  "version": "1.1.1",
+  "description": "AI-driven Pull Request Review Kit — structured agent workflows for thorough, consistent code review",
   "main": "tools/cli/prr-cli.js",
   "bin": {
     "prr-kit": "tools/prr-npx-wrapper.js",

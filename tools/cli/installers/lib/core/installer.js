@@ -1,6 +1,6 @@
 /**
  * Installer — main installation orchestrator
- * Main installation orchestrator for PR Review Framework
+ * Main installation orchestrator for PR Review Kit
  */
 const path = require('node:path');
 const fs = require('fs-extra');

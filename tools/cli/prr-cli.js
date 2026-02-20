@@ -31,6 +31,6 @@ for (const file of commandFiles) {
 program
   .name('pr-review')
   .version(packageJson.version)
-  .description('PR Review Framework — AI-driven code review agent system');
+  .description('PR Review Kit — AI-driven code review agent system');
 
 program.parse(process.argv);

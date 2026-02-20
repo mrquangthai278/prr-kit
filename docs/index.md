@@ -1,10 +1,10 @@
-# PR Review Framework
+# PR Review Kit
 
 AI-driven Pull Request code review framework with specialized reviewer agents.
 
 ## Overview
 
-PR Review Framework (`prr`) provides specialized AI reviewer agents for comprehensive code review:
+PR Review Kit (`prr`) provides specialized AI reviewer agents for comprehensive code review:
 
 | Agent | Trigger | Focus |
 |-------|---------|-------|

@@ -1,6 +1,6 @@
 name: improve-code
 description: "Generate concrete inline code suggestions with before/after diffs — focused on actionable improvements"
-author: "PR Review Framework"
+author: "PR Review Kit"
 
 config_source: "{project-root}/_prr/prr/config.yaml"
 user_name: "{config_source}:user_name"

@@ -1,6 +1,6 @@
 # Contributors
 
-Thank you to everyone who has contributed to PR Review Framework!
+Thank you to everyone who has contributed to PR Review Kit!
 
 ## Core Team
 

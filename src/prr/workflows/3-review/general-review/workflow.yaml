@@ -1,6 +1,6 @@
 name: general-review
 description: "General code quality review: logic, naming, readability, error handling, DRY, test coverage"
-author: "PR Review Framework"
+author: "PR Review Kit"
 
 config_source: "{project-root}/_prr/prr/config.yaml"
 user_name: "{config_source}:user_name"

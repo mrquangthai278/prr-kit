@@ -1,4 +1,4 @@
-# Contributing to PR Review Framework
+# Contributing to PR Review Kit
 
 Thank you for your interest in contributing! This document explains how to get involved.
 

@@ -1,6 +1,6 @@
 name: security-review
 description: "Security-focused code review: OWASP top 10, injection, auth, secrets, dependencies"
-author: "PR Review Framework"
+author: "PR Review Kit"
 
 config_source: "{project-root}/_prr/prr/config.yaml"
 user_name: "{config_source}:user_name"
