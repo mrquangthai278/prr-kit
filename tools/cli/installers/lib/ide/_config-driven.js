@@ -17,6 +17,11 @@ class ConfigDrivenIdeSetup extends BaseIdeSetup {
   async setup(projectDir, prrDir, options = {}) {
     if (!this.installerConfig) return { success: false, reason: 'no-config' };
 
+    // Multi-target support (e.g. opencode: agents → one dir, workflows → another)
+    if (this.installerConfig.targets) {
+      return this._setupMultiTarget(projectDir, prrDir, options);
+    }
+
     await this.cleanup(projectDir, options);
 
     const { target_dir, template_type } = this.installerConfig;
@@ -110,6 +115,71 @@ class ConfigDrivenIdeSetup extends BaseIdeSetup {
       JSON.stringify(installedFiles, null, 2),
       'utf8'
     );
+
+    return { success: true, results };
+  }
+
+  async _setupMultiTarget(projectDir, prrDir, options = {}) {
+    const results = { agents: 0, workflows: 0 };
+    const selectedModules = options.selectedModules || ['prr'];
+    const allModules = ['core', ...selectedModules.filter((m) => m !== 'core')];
+
+    for (const target of this.installerConfig.targets) {
+      const { target_dir, template_type, artifact_types } = target;
+      const targetPath = path.join(projectDir, target_dir);
+      await this.ensureDir(targetPath);
+
+      const installAgents = !artifact_types || artifact_types.includes('agents');
+      const installWorkflows = !artifact_types || artifact_types.includes('workflows');
+
+      if (installAgents) {
+        for (const mod of allModules) {
+          const agentsDir = path.join(prrDir, mod, 'agents');
+          if (!(await fs.pathExists(agentsDir))) continue;
+          const agentFiles = await glob('**/*.md', { cwd: agentsDir });
+          for (const agentFile of agentFiles) {
+            const agentContent = await fs.readFile(path.join(agentsDir, agentFile), 'utf8');
+            if (/^no-launcher:\s*true/m.test(agentContent)) continue;
+            const nameMatch = agentContent.match(/^name:\s*[\"']?([^\"'\n]+)[\"']?/m);
+            const descMatch = agentContent.match(/^description:\s*[\"']?([^\"'\n]+)[\"']?/m);
+            const agentName = nameMatch?.[1]?.trim() || path.basename(agentFile, '.md');
+            const agentDesc = descMatch?.[1]?.trim() || `${agentName} reviewer`;
+            const relAgentPath = `${mod}/agents/${agentFile}`.replaceAll('\\', '/');
+            const launcherContent = this.generateAgentLauncher(agentName, agentDesc, relAgentPath, template_type);
+            const launcherFileName = `${path.basename(agentFile, '.md')}.md`;
+            await fs.writeFile(path.join(targetPath, launcherFileName), launcherContent, 'utf8');
+            results.agents++;
+          }
+        }
+      }
+
+      if (installWorkflows) {
+        for (const mod of allModules) {
+          const workflowsDir = path.join(prrDir, mod, 'workflows');
+          if (!(await fs.pathExists(workflowsDir))) continue;
+          const workflowFiles = await glob('**/workflow{.md,.yaml}', { cwd: workflowsDir });
+          for (const wfFile of workflowFiles) {
+            const wfContent = await fs.readFile(path.join(workflowsDir, wfFile), 'utf8');
+            let wfName = path.basename(path.dirname(wfFile));
+            let wfDesc = '';
+            if (wfFile.endsWith('.yaml')) {
+              try { const d = require('yaml').parse(wfContent); wfName = d.name || wfName; wfDesc = d.description || ''; } catch { /* ignore */ }
+            } else {
+              const normalized = wfContent.replace(/\r\n/g, '\n');
+              const fmMatch = normalized.match(/^---\n([\s\S]*?)\n---/);
+              if (fmMatch) { try { const fm = require('yaml').parse(fmMatch[1]); wfName = fm.name || wfName; wfDesc = fm.description || ''; } catch { /* ignore */ } }
+            }
+            const dirParts = path.dirname(wfFile).split(path.sep).filter(Boolean);
+            const leafDir = dirParts.at(-1) || wfName;
+            const relWfPath = `${mod}/workflows/${wfFile}`.replaceAll('\\', '/');
+            const launcherContent = this.generateWorkflowLauncher(wfName, wfDesc, relWfPath, template_type);
+            const launcherFileName = `prr-${leafDir}.md`;
+            await fs.writeFile(path.join(targetPath, launcherFileName), launcherContent, 'utf8');
+            results.workflows++;
+          }
+        }
+      }
+    }
 
     return { success: true, results };
   }

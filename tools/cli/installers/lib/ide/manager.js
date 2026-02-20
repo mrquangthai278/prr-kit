@@ -1,5 +1,9 @@
 /**
  * IDE Manager — dynamically loads and manages IDE handlers
+ *
+ * Loading strategy:
+ * 1. Custom installer files (github-copilot.js, codex.js, kilo.js) — unique installation logic
+ * 2. Config-driven handlers (from platform-codes.yaml) — standard IDE installation patterns
  */
 const path = require('node:path');
 const fs = require('fs-extra');
@@ -30,6 +34,36 @@ class IdeManager {
   }
 
   async loadHandlers() {
+    // 1. Load custom installer files first
+    await this._loadCustomHandlers();
+
+    // 2. Load config-driven handlers from platform-codes.yaml (skips platforms with custom handlers)
+    await this._loadConfigDrivenHandlers();
+  }
+
+  async _loadCustomHandlers() {
+    const customFiles = ['github-copilot.js', 'codex.js', 'kilo.js'];
+    const ideDir = __dirname;
+
+    for (const file of customFiles) {
+      const filePath = path.join(ideDir, file);
+      if (!fs.existsSync(filePath)) continue;
+
+      try {
+        const HandlerModule = require(filePath);
+        const HandlerClass = HandlerModule.default || Object.values(HandlerModule)[0];
+        if (!HandlerClass) continue;
+
+        const instance = new HandlerClass();
+        if (typeof instance.setPrrFolderName === 'function') {
+          instance.setPrrFolderName(this.prrFolderName);
+        }
+        this.handlers.set(instance.name, instance);
+      } catch { /* ignore load errors */ }
+    }
+  }
+
+  async _loadConfigDrivenHandlers() {
     const platformCodesPath = path.join(__dirname, 'platform-codes.yaml');
     const content = await fs.readFile(platformCodesPath, 'utf8');
     const config = yaml.parse(content);
@@ -37,7 +71,9 @@ class IdeManager {
     const { ConfigDrivenIdeSetup } = require('./_config-driven');
 
     for (const [code, info] of Object.entries(config.platforms || {})) {
-      if (!info.installer) continue;
+      if (!info.installer) continue;          // No installer = custom handler only
+      if (this.handlers.has(code)) continue;  // Already loaded as custom handler
+
       const handler = new ConfigDrivenIdeSetup(code, info);
       handler.setPrrFolderName(this.prrFolderName);
       this.handlers.set(code, handler);

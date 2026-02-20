@@ -178,10 +178,11 @@ When `[PC] Post Comments` is run with `platform_repo` configured, it posts findi
 
 ## Supported IDEs
 
-- **Claude Code** (preferred)
-- **Cursor** (preferred)
-- **Windsurf** (preferred)
-- Cline, Roo, Gemini CLI, Kiro
+**Preferred:**
+- **Claude Code**, **Cursor**, **Windsurf**
+
+**Also supported:**
+- Antigravity, Auggie, Cline, Codex, Crush, Gemini CLI, GitHub Copilot, iFlow, Kilo, Kiro, OpenCode, QwenCoder, Roo Cline, Rovo Dev, Trae
 
 ## Requirements
 
