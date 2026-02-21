@@ -15,6 +15,8 @@ platform_repo: "org/repo-name"       # Used for gh pr list, gh pr view, etc.
 
 # ─── Output ────────────────────────────────────────────────────────────────
 review_output: ./_prr-output/reviews # Where review reports are written
+auto_post_comment: false             # Set to true to auto-post findings to GitHub/GitLab after every review
+                                     # (skips the "PC" prompt in quick workflow)
 
 # ─── Context Collection ────────────────────────────────────────────────────
 context_collection:

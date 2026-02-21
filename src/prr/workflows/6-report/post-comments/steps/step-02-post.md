@@ -9,40 +9,69 @@ description: "Post comments via platform CLI/API, verify, clean up"
 
 ### 1. Post Based on Platform
 
+**⚠️ Always use `{gh_path}` (the resolved full path from step-01), not bare `gh`.**
+**⚠️ Always quote paths containing spaces.**
+
+---
+
 **GitHub:**
 ```bash
-gh api repos/{platform_repo}/pulls/{pr_number}/reviews \
+"{gh_path}" api repos/{platform_repo}/pulls/{pr_number}/reviews \
   --method POST \
   --header "Accept: application/vnd.github+json" \
-  --input {review_output}/.prr-payload.json
+  --input "{temp_dir}/prr-payload.json"
 ```
 
-Handle 422 (line not in diff): remove the offending inline comment from payload, add to summary body, retry.
+**Handle 422 errors — two known cases:**
+
+**Case A — Self-review** (`"Review Can not request changes on your own pull request"`):
+- The authenticated user is the PR author. GitHub disallows `REQUEST_CHANGES` on own PRs.
+- Fix: Update `event` in the payload from `"REQUEST_CHANGES"` to `"COMMENT"` and retry once.
+- Use whichever runtime is available (`{detected_runtime}` from step A earlier):
+
+```bash
+# Node.js
+node -e "const fs=require('fs'); const p=JSON.parse(fs.readFileSync('{temp_dir}/prr-payload.json','utf-8')); p.event='COMMENT'; fs.writeFileSync('{temp_dir}/prr-payload.json',JSON.stringify(p,null,2)); console.log('event → COMMENT')"
+
+# Python3
+python3 -c "import json; f=open('{temp_dir}/prr-payload.json','r+'); p=json.load(f); p['event']='COMMENT'; f.seek(0); json.dump(p,f,ensure_ascii=False,indent=2); f.truncate(); print('event → COMMENT')"
+```
+Then retry the POST above.
+
+**Case B — Line not in diff** (`"Pull Request Review thread not found"` / line outside diff hunk):
+- Remove the offending comment from the payload (the one with the invalid `path`/`line`), append its body to the summary `body` field as a fallback, then retry.
+- Repeat until all comments are either posted inline or moved to summary.
+
+---
 
 **GitLab:**
 ```bash
 # Post summary as MR note
-glab mr note {pr_number} --repo {platform_repo} --message "$(cat {review_output}/.prr-summary.md)"
+glab mr note {pr_number} --repo {platform_repo} --message "$(cat '{temp_dir}/prr-summary.md')"
 
 # Post each inline comment
-for payload in {review_output}/.prr-payload-*.json; do
+for payload in "{temp_dir}/prr-payload-"*.json; do
   glab api projects/{encoded_repo}/merge_requests/{pr_number}/discussions \
     --method POST --input "$payload"
 done
 ```
 Where `{encoded_repo}` = `{platform_repo}` with `/` replaced by `%2F`.
 
+---
+
 **Azure DevOps:**
 ```bash
 # Post summary as PR comment
-az repos pr comment add --id {pr_number} --comment "$(cat {review_output}/.prr-summary.md)"
+az repos pr comment add --id {pr_number} --comment "$(cat '{temp_dir}/prr-summary.md')"
 
 # Post each inline thread
-for payload in {review_output}/.prr-thread-*.json; do
+for payload in "{temp_dir}/prr-thread-"*.json; do
   az repos pr thread create --id {pr_number} \
     --template-file "$payload"
 done
 ```
+
+---
 
 **Bitbucket:**
 ```bash
@@ -51,10 +80,10 @@ curl -s -X POST \
   "https://api.bitbucket.org/2.0/repositories/{platform_repo}/pullrequests/{pr_number}/comments" \
   -H "Authorization: Bearer {BB_TOKEN}" \
   -H "Content-Type: application/json" \
-  -d "{\"content\": {\"raw\": \"$(cat {review_output}/.prr-summary.md)\"}}"
+  -d "{\"content\": {\"raw\": \"$(cat '{temp_dir}/prr-summary.md')\"}}"
 
 # Post each inline comment
-for payload in {review_output}/.prr-bb-*.json; do
+for payload in "{temp_dir}/prr-bb-"*.json; do
   curl -s -X POST \
     "https://api.bitbucket.org/2.0/repositories/{platform_repo}/pullrequests/{pr_number}/comments" \
     -H "Authorization: Bearer {BB_TOKEN}" \
@@ -63,23 +92,47 @@ for payload in {review_output}/.prr-bb-*.json; do
 done
 ```
 
+---
+
 ### 2. Verify
 
-Confirm the post was successful by checking for a `200` or `201` response.
+Confirm the post was successful.
 
-**GitHub:** `gh pr view {pr_number} --repo {platform_repo} --json reviews --jq '.reviews[-1].state'`
-**GitLab:** `glab mr view {pr_number} --repo {platform_repo} --output json | jq '.user_notes_count'`
-**Azure:** `az repos pr thread list --id {pr_number} --query "length(@)"`
-**Bitbucket:** check response `id` field from the post
+**⚠️ Do NOT pipe CLI output to `node -e` or `python -e` via stdin on Windows** — `/dev/stdin` does not exist. Use `--jq` (gh CLI built-in) or write output to a temp file first.
+
+**GitHub:**
+```bash
+"{gh_path}" pr view {pr_number} --repo {platform_repo} --json reviews --jq '.reviews[-1].state'
+```
+Expected: `"COMMENTED"` or `"APPROVED"` or `"CHANGES_REQUESTED"`.
+
+**GitLab:**
+```bash
+glab mr view {pr_number} --repo {platform_repo} --output json | jq '.user_notes_count'
+```
+
+**Azure:**
+```bash
+az repos pr thread list --id {pr_number} --query "length(@)"
+```
+
+**Bitbucket:** check response `id` field from the POST above.
+
+---
 
 ### 3. Clean Up Temp Files
 
 ```bash
-rm -f {review_output}/.prr-payload*.json \
-       {review_output}/.prr-summary.md \
-       {review_output}/.prr-thread-*.json \
-       {review_output}/.prr-bb-*.json
+rm -f "{temp_dir}/prr-payload.json" \
+       "{temp_dir}/prr-payload-"*.json \
+       "{temp_dir}/prr-summary.md" \
+       "{temp_dir}/prr-thread-"*.json \
+       "{temp_dir}/prr-bb-"*.json \
+       "{temp_dir}/build-payload.mjs" \
+       "{temp_dir}/build-payload.py"
 ```
+
+---
 
 ### 4. Display Completion
 

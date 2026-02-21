@@ -11,7 +11,7 @@ Only pause for user input when selecting the branch. Everything else runs automa
 
 ## INITIALIZATION
 
-Load config from {main_config}: `user_name`, `communication_language`, `target_repo`, `review_output`.
+Load config from {main_config}: `user_name`, `communication_language`, `target_repo`, `review_output`, `auto_post_comment`.
 
 Set `date` = today's date (YYYY-MM-DD).
 
@@ -325,7 +325,12 @@ Report:  {review_output}/review-{target_branch_slug}-{date}.md
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-Then ask:
+**If `auto_post_comment: true`** (from config):
+→ Skip prompt. Automatically proceed to post comments.
+→ Load and follow: `{project-root}/_prr/prr/workflows/6-report/post-comments/workflow.md`
+
+**If `auto_post_comment: false`** (default):
+→ Ask:
 > Post these findings as inline comments to GitHub? (requires `gh` CLI and `github_repo` configured)
 > Type **PC** to post, or **Enter** to finish.
 
