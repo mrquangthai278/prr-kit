@@ -1,0 +1,151 @@
+<workflow>
+  <critical>Workflow engine rules: {project-root}/_prr/core/tasks/workflow.xml</critical>
+  <critical>Communicate all responses in {communication_language}</critical>
+  <critical>Think like a Product Manager and Tech Lead combined — bridge technical findings to business outcomes</critical>
+  <critical>Translate EVERY significant technical issue into its business consequence: who is affected, what is the impact, what is the risk magnitude</critical>
+  <critical>Run AFTER GR/SR/PR/AR so you can reference their findings and elevate them to business language</critical>
+
+  <step n="1" goal="Load PR context, prior findings, and prepare business analysis">
+    <check if="{pr_context} does not exist">
+      <output>❌ No PR selected. Please run [SP] Select PR first.</output>
+      <stop/>
+    </check>
+
+    <action>Read {pr_context} to get: target_branch, base_branch, pr_type, pr_knowledge_base, completed_reviews</action>
+    <action>Load PR-specific knowledge base from {pr_knowledge_base} — extract issue_context (acceptance criteria) if available from MCP tools</action>
+    <action>Load findings already collected from completed reviews (GR, SR, PR, AR) to translate them into business impact</action>
+    <action>Run: git diff {base_branch}...{target_branch} --stat in {target_repo} for file scope</action>
+
+    <output>💼 Starting Business Review
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Focus: User Impact | Business Risk | Feature Completeness
+       Data Safety | Observability | Cross-cutting Concerns
+PR type: {pr_type} | Prior reviews loaded: {completed_reviews}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</output>
+  </step>
+
+  <step n="2" goal="Feature completeness and acceptance criteria">
+    <action>Determine what this PR is supposed to deliver based on: branch name, PR description, commit messages, issue context from MCP (if available)</action>
+    <check-list id="completeness">
+      <item>Does the implementation cover the full scope described in the branch name / PR title?</item>
+      <item>If acceptance criteria available (from Jira/Linear MCP): check each AC item against the diff — implemented or missing?</item>
+      <item>Are error states handled from the user's perspective? (not just technically caught, but communicated clearly)</item>
+      <item>Are loading states present for async operations that users will notice?</item>
+      <item>Are empty states handled? (empty list, no results, zero state)</item>
+      <item>Edge cases that affect real users: very long inputs, special characters, concurrent users, offline state</item>
+      <item>Demo / test data or hardcoded values that should not reach production</item>
+    </check-list>
+    <output-format>
+🔴/🟡/🟢 [COMPLETENESS] — **Description**
+→ User impact: what happens to the user if this is shipped as-is
+→ Suggested fix: what needs to be added/changed
+    </output-format>
+  </step>
+
+  <step n="3" goal="User impact analysis">
+    <action>Trace the user journey through the changed code: what flows are affected, what changes for the user</action>
+    <check-list id="user-impact">
+      <item>UX regressions: does any existing user flow break or degrade?</item>
+      <item>Behavior changes: is existing behavior changed in a way users rely on? (implicit contract broken)</item>
+      <item>New flows: are new features intuitive? Is the UI clear about what actions do?</item>
+      <item>Destructive actions: are irreversible actions (delete, clear, migrate) clearly communicated with confirmation?</item>
+      <item>Feedback loops: do users know when operations succeed or fail? Are there success/error messages?</item>
+      <item>Performance from user perspective: will users notice slowness? (N+1 queries → slow page load, missing debounce → laggy search)</item>
+      <item>Accessibility: keyboard navigation, screen reader labels (aria), color contrast, focus management</item>
+      <item>Mobile/responsive: does UI work on small screens if app is used on mobile?</item>
+    </check-list>
+  </step>
+
+  <step n="4" goal="Business risk assessment — translate technical findings">
+    <action>For each 🔴 finding from prior reviews (SR, GR, PR, AR), assess the business consequence</action>
+    <check-list id="business-risk">
+      <item>Security vulnerabilities → business risk:
+        - XSS: can lead to account takeover, data theft, GDPR breach, reputational damage
+        - Hardcoded credentials: instant unauthorized access if code is public
+        - Broken auth: unauthorized access to protected resources
+        - Token forgeable: privilege escalation, account impersonation
+      </item>
+      <item>Data loss risk: operations that silently lose user data (fire-and-forget DB writes, missing rollback)</item>
+      <item>Downtime risk: breaking changes that could cause failures in production (migration without fallback, schema change)</item>
+      <item>Compliance risk: GDPR (user data exposure), accessibility laws (WCAG), industry regulations</item>
+      <item>Revenue/retention risk: bugs that directly affect core user workflows → churn</item>
+      <item>Support burden: confusing UX or silent errors → high support ticket volume</item>
+      <item>Scale risk: patterns that work with test data but fail at production scale (N+1 with 10k records)</item>
+    </check-list>
+    <output-format>
+🔴 [BUSINESS RISK: CRITICAL/HIGH] — **Risk title**
+→ Technical root cause: {finding from prior review}
+→ Business consequence: {what actually happens in production to real users}
+→ Affected scope: {who / how many users / which workflows}
+→ Mitigation: {what must change before shipping}
+    </output-format>
+  </step>
+
+  <step n="5" goal="Data and migration impact">
+    <action>Identify any changes that affect existing user data or storage mechanisms</action>
+    <check-list id="data-migration">
+      <item>Storage migration: if switching storage (e.g. localStorage → IndexedDB), what happens to existing user data?</item>
+      <item>Schema changes: are existing records compatible with new schema? Is there a migration script?</item>
+      <item>Data seeding: does seeding run every time? Could it overwrite user-created data?</item>
+      <item>Multi-user isolation: is data properly scoped per user? Can User A access User B's data?</item>
+      <item>Rollback plan: if this deploy fails or has a bug, can we roll back without data loss?</item>
+      <item>Backward compatibility: does old code still work if new schema is deployed (blue/green, canary)?</item>
+    </check-list>
+  </step>
+
+  <step n="6" goal="Observability and measurability">
+    <check-list id="observability">
+      <item>Analytics: are new features tracked so we can measure adoption and success?</item>
+      <item>Error monitoring: are errors surfaced to a monitoring system (not just console.error)?</item>
+      <item>Logging: are key business events logged for audit/debug? (login, data mutation, auth failure)</item>
+      <item>Feature flags: is this behind a flag so it can be disabled without a deploy if issues arise?</item>
+      <item>Success metrics: how will the team know this feature is working as intended post-deploy?</item>
+      <item>Internationalization: are there hardcoded strings that would need translation in a multi-language product?</item>
+    </check-list>
+  </step>
+
+  <step n="7" goal="Cross-cutting and deployment concerns">
+    <check-list id="cross-cutting">
+      <item>Browser compatibility: do new APIs (IndexedDB, btoa, CSS features) work across supported browsers?</item>
+      <item>Breaking API contracts: does this change any interfaces that other teams or services depend on?</item>
+      <item>Environment parity: are there dev-only artifacts that could leak to production? (demo hints, console logs, mock data)</item>
+      <item>Third-party dependencies: are new packages added? License compatible? Bundle size impact on users?</item>
+      <item>Deployment order: does this require coordinated deployment with backend or other services?</item>
+    </check-list>
+  </step>
+
+  <step n="8" goal="Compile business impact and write findings">
+    <action>Assign overall business risk level: CRITICAL | HIGH | MEDIUM | LOW | MINIMAL</action>
+
+    <risk-matrix>
+      CRITICAL = data breach risk, auth bypass, mass data loss, compliance violation
+      HIGH     = significant UX regression, silent data loss for some users, performance cliff at scale
+      MEDIUM   = missing features from AC, confusing UX, no observability, rollback concerns
+      LOW      = minor UX gaps, no analytics, non-critical missing edge cases
+      MINIMAL  = additive feature, no regressions, low risk changes
+    </risk-matrix>
+
+    <action>Group findings:
+      - Feature Completeness gaps
+      - User Impact issues
+      - Business Risk items (translated from technical findings)
+      - Data/Migration concerns
+      - Observability gaps
+      - Cross-cutting issues
+    </action>
+
+    <action>Write a "Business Verdict" section:
+      - Overall risk level
+      - Top 3 business concerns
+      - Deployment recommendation: ship now / ship with fixes / do not ship
+      - Post-ship monitoring: what to watch after deploy
+    </action>
+
+    <action>Update {pr_context}: add 'business-review' to completed reviews list</action>
+
+    <output>💼 Business review complete.
+Business risk: {risk_level}
+{critical_count} critical, {high_count} high, {medium_count} medium business concerns.
+Run [RR] Generate Report to compile all findings.</output>
+  </step>
+</workflow>

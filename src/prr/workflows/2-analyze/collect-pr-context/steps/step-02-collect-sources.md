@@ -137,26 +137,167 @@ From changed files (identified in Step 1), extract annotations:
 }
 ```
 
-### 6. Collect from External Sources (Optional)
+### 6. Collect from External Tools (MCP + RAG)
 
-**If configured in config.yaml:**
+**Only run if `external_sources.enabled: true` in config.**
 
-```yaml
-external_context_sources:
-  - type: api
-    url: https://api.company.com/standards
-    auth_env: CONTEXT_API_KEY
+---
+
+#### 6a. Tool Discovery
+
+Inspect what tools you currently have available in this session.
+Categorize discovered tools by capability:
+
+| Category | Examples |
+|---|---|
+| `knowledge_base` | Confluence MCP, Notion MCP, Obsidian MCP |
+| `project_management` | Jira MCP, Linear MCP, GitHub Issues MCP |
+| `design` | Figma MCP, Zeplin MCP |
+| `code_intelligence` | Sourcegraph MCP, GitHub MCP |
+| `rag` | AWS Bedrock, GitHub Graph RAG, custom vector DBs |
+
+Announce discovery:
+```
+🔌 External tools discovered: {list or "none"}
 ```
 
-**Make API calls:**
-```javascript
-// GET {url}/standards?files=src/stores/todoStore.js
-// Expected response:
-{
-  "rules": {
-    "state-management": "All state must be in Pinia stores..."
-  }
-}
+If no tools found → skip to Section 7.
+
+Compare discovered tools against `external_sources.mcp.intents` in config.
+Only use tools whose category matches a declared intent.
+
+---
+
+#### 6b. Knowledge Base Tools (Confluence, Notion, etc.)
+
+**If a knowledge base MCP is available AND `knowledge_base` in configured intents:**
+
+Query for content relevant to the PR's domains (identified in Step 1).
+Use the tool's own search — do NOT hardcode page IDs.
+
+Suggested queries by domain:
+- `authentication` / `security` → "authentication standards", "security guidelines", "JWT policy"
+- `ui-components` → "component standards", "design system rules", "frontend conventions"
+- `state-management` → "state management patterns", "store conventions"
+- `api` → "API design guidelines", "REST conventions", "endpoint standards"
+- `database` → "database patterns", "query optimization", "migration guidelines"
+
+Extract: coding standards, ADRs, security policies, team conventions not in local docs.
+
+```
+✓ Knowledge base: {n} relevant pages found → {page titles}
+```
+
+---
+
+#### 6c. Project Management Tools (Jira, Linear, GitHub Issues)
+
+**If a PM MCP is available AND `project_management` in configured intents:**
+
+**Step 1 — Extract issue key from branch name:**
+```
+Branch: feature/ENG-123-user-authentication
+Pattern (from config hints.branch_issue_pattern): ([A-Z]+-\d+)
+→ Issue key: ENG-123
+```
+
+If no pattern configured, try common formats: `[A-Z]+-\d+`, `#\d+`.
+
+**Step 2 — Fetch issue context:**
+Use the MCP tool to retrieve:
+- Issue title + description → understand WHAT was supposed to be built
+- Acceptance criteria → use as review checklist (compare against implementation)
+- Issue type (story, bug, task) → informs review focus
+- Linked design/spec documents
+
+**This is high-value context**: reviewers can verify if implementation matches requirements.
+
+```
+✓ Issue: {issue_key} — {title}
+  Acceptance criteria: {n} items extracted
+```
+
+If no issue key found in branch name → skip silently.
+
+---
+
+#### 6d. Design Tools (Figma, Zeplin)
+
+**If a design MCP is available AND `design` in configured intents:**
+**Only run if PR changes UI files** (`.vue`, `.tsx`, `.jsx`, `.css`, `.scss`).
+
+Use the tool to:
+- Search for designs matching changed component names
+- Get design tokens, spacing, color specs
+- Get design annotations or open comments
+
+Helps architecture/general review catch design-vs-implementation drift.
+
+```
+✓ Design context: {component names matched}
+```
+
+---
+
+#### 6e. RAG Systems (AWS Bedrock, GitHub Graph RAG, custom)
+
+**If a RAG tool is available AND `rag.enabled: true` in config:**
+
+Query with PR context:
+- "Similar {domain} implementations in this codebase"
+- "Previous review decisions for {category} code"
+- "Established patterns for {file_category} in this project"
+
+Extract:
+- Approved patterns to compare against PR code
+- Past review decisions → avoid repeating same findings on well-known patterns
+- Architecture examples the team has already accepted
+
+```
+✓ RAG: {n} relevant patterns retrieved
+```
+
+---
+
+#### 6f. Plain URL Sources
+
+**If `url` type sources configured under `external_sources.sources`:**
+
+```yaml
+external_sources:
+  sources:
+    - type: url
+      name: Shared ESLint config
+      url: https://raw.githubusercontent.com/org/standards/main/eslint.md
+```
+
+Use WebFetch to retrieve content. Extract relevant rules/guidelines.
+
+---
+
+#### 6g. Graceful Degradation
+
+For EVERY external tool (6b–6f):
+- Tool not available in session → skip silently
+- Tool call fails or times out → skip silently, do not retry
+- Tool returns empty results → skip silently
+- Tool returns irrelevant content → discard, do not force-include
+
+**The review workflow must never fail because an external tool is unavailable.**
+Internal context (Steps 1–5) is always sufficient on its own.
+
+---
+
+#### 6h. Report Collection Summary
+
+```
+✓ External tools:
+   🔌 MCP tools used: {list or "none available"}
+   📄 Knowledge base pages: {n}
+   🎫 Issue context: {key — title} or "not found"
+   🎨 Design context: {matched} or "n/a"
+   🧠 RAG patterns: {n}
+   🌐 URL sources: {n}
 ```
 
 ### 7. Build Collected Data Structure
@@ -221,9 +362,23 @@ collected_data:
       type: "@security"
       content: "Validate all inputs before storage"
 
-  external_context:
-    company_standards:
-      state_mutations: "All state mutations must be logged for audit"
+  # External tools context (populated if tools were available)
+  external_tools:
+    mcp_used: []                  # list of MCP tool names actually used
+    knowledge_base:
+      pages_found: 0
+      content: []                 # extracted relevant content
+    issue_context:
+      key: null                   # e.g. ENG-123
+      title: null
+      acceptance_criteria: []
+    design_context:
+      matched_components: []
+      specs: []
+    rag_patterns:
+      count: 0
+      patterns: []
+    url_sources: []               # content from plain URL fetches
 ```
 
 ### 8. Report Collection Summary
@@ -236,7 +391,8 @@ collected_data:
    📚 CONTRIBUTING.md: {x} sections
    🏗️  ARCHITECTURE.md: {y} sections
    💬 Inline annotations: {z}
-   🌐 External sources: {w}
+   🔌 MCP tools: {list or "none"}
+   🧠 RAG patterns: {w}
 ```
 
 ### 9. Load Next Step

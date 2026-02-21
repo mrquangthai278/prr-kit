@@ -186,6 +186,14 @@ Extract from changed lines:
 - Company standards APIs
 - Confluence/Wiki pages
 
+**6. External tools (if `external_sources.enabled: true` and tools available in session):**
+- **MCP knowledge bases** (Confluence, Notion, Obsidian) → team standards and ADRs not in local docs
+- **MCP project management** (Jira, Linear, GitHub Issues) → linked issue, acceptance criteria from branch name
+- **MCP design tools** (Figma, Zeplin) → design specs for UI-touching PRs only
+- **RAG systems** (AWS Bedrock, GitHub Graph RAG, custom) → similar codebase patterns, past decisions
+- **URL sources** → plain remote docs fetched via WebFetch
+- Always graceful: skip silently if tool not available, never fail the workflow
+
 ### 2.5c. Build PR-specific knowledge base
 Create structured context file: `{review_output}/pr-{pr_number}-context.yaml`
 
@@ -244,6 +252,14 @@ Load and follow: `{project-root}/_prr/prr/workflows/3-review/architecture-review
 
 Collect findings as `{architecture_findings}`.
 Print section header: `## 🏗️ Architecture Review`
+
+### 3e. Business Review
+Load and follow: `{project-root}/_prr/prr/workflows/3-review/business-review/instructions.xml`
+
+Collect findings as `{business_findings}`.
+Print section header: `## 💼 Business Review`
+
+**Note:** Business Review runs last so it can reference and translate findings from GR/SR/PR/AR into business language and user impact.
 
 ---
 

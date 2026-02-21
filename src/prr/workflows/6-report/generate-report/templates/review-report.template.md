@@ -20,7 +20,10 @@ stepsCompleted: []
 
 {{executive_summary}}
 
-**Verdict:** {{verdict}}
+**Technical Verdict:** {{technical_verdict}}
+**Business Risk:** {{business_risk_level}} — {{business_risk_summary}}
+
+**Overall Verdict:** {{verdict}}
 
 | Category | 🔴 Blockers | 🟡 Warnings | 🟢 Suggestions |
 |----------|------------|------------|----------------|
@@ -28,7 +31,50 @@ stepsCompleted: []
 | ⚡ Performance | {{perf_blockers}} | {{perf_warnings}} | {{perf_suggestions}} |
 | 🏗️ Architecture | {{arch_blockers}} | {{arch_warnings}} | {{arch_suggestions}} |
 | 👁️ General | {{general_blockers}} | {{general_warnings}} | {{general_suggestions}} |
+| 💼 Business | {{business_blockers}} | {{business_warnings}} | {{business_suggestions}} |
 | **Total** | **{{total_blockers}}** | **{{total_warnings}}** | **{{total_suggestions}}** |
+
+---
+
+## 💼 Business Impact
+
+> *This section translates technical findings into real-world consequences for users and the business.*
+
+### Overall Business Risk: {{business_risk_level}}
+
+{{business_risk_overview}}
+
+### Feature Completeness
+
+{{feature_completeness_section}}
+
+### User Impact
+
+{{user_impact_section}}
+
+### Business Risk Breakdown
+
+{{business_risk_breakdown}}
+
+### Data & Migration Risk
+
+{{data_migration_section}}
+
+### Observability & Measurability
+
+{{observability_section}}
+
+### Cross-cutting Concerns
+
+{{cross_cutting_section}}
+
+### Deployment Recommendation
+
+{{deployment_recommendation}}
+
+### Post-Ship Monitoring
+
+{{post_ship_monitoring}}
 
 ---
 

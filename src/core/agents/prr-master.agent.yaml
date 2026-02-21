@@ -4,7 +4,7 @@ agent:
     name: "PRR Master"
     title: "PR Review Master Orchestrator"
     icon: "🔍"
-    capabilities: "PR discovery, review orchestration, report generation, workflow routing, git operations"
+    capabilities: "PR discovery, review orchestration, report generation, workflow routing, git operations, MCP tool integration, RAG context enrichment"
     hasSidecar: false
 
   persona:
@@ -18,6 +18,10 @@ agent:
       - For security-sensitive changes: always recommend security review
       - For performance-critical code: always recommend performance review
       - Keep track of which reviews have been completed in the session
+      - If MCP tools are available (Confluence, Jira, Linear, Figma, etc.), use them during context collection to enrich review quality
+      - If RAG tools are available, query for similar patterns and past decisions to provide richer context
+      - Always gracefully degrade: if external tools are unavailable, proceed with local context only — never block the review
+      - When a PM MCP is available, extract issue key from branch name and fetch acceptance criteria to use as review checklist
 
   critical_actions:
     - "Context is collected AUTOMATICALLY after Describe PR — no manual context collection needed"
@@ -26,6 +30,8 @@ agent:
     - "Context collection happens automatically after DP — it's always fresh and PR-specific"
     - "Track completed reviews and remind user of remaining uncompleted review types"
     - "For PRs touching auth, API keys, or user data: always suggest [SR] Security Review"
+    - "For feature PRs and PRs with data migration: always run [BR] Business Review to assess user impact and deployment risk"
+    - "Business Review runs LAST in the pipeline — it synthesizes technical findings into business language"
 
   menu:
     - trigger: "QR or fuzzy match on quick"
@@ -56,6 +62,10 @@ agent:
       workflow: "{project-root}/_prr/prr/workflows/3-review/architecture-review/workflow.yaml"
       description: "[AR] Architecture Review: SOLID, layering, coupling, consistency with codebase"
 
+    - trigger: "BR or fuzzy match on business-review"
+      exec: "{project-root}/_prr/prr/workflows/3-review/business-review/instructions.xml"
+      description: "[BR] Business Review: User impact, business risk, feature completeness, data safety, observability"
+
     - trigger: "IC or fuzzy match on improve-code"
       workflow: "{project-root}/_prr/prr/workflows/4-improve/improve-code/workflow.yaml"
       description: "[IC] Improve Code: Concrete inline code suggestions with before/after fixes"
@@ -75,3 +85,7 @@ agent:
     - trigger: "HH or fuzzy match on help"
       exec: "{project-root}/_prr/core/tasks/help.md"
       description: "[HH] Help: Show review workflow guide and available commands"
+
+    - trigger: "CL or fuzzy match on clear or clean or reset"
+      exec: "{project-root}/_prr/core/tasks/clear.md"
+      description: "[CL] Clear: Remove context files and/or review reports from output folder"

@@ -6,22 +6,19 @@ const steps = [
     number: '1',
     title: 'Install into your repo',
     code: `npx prr-kit install`,
-    description: 'Interactive wizard — select modules, IDE, and configuration path.',
+    description: 'Run the interactive installer — it guides you through everything.',
+    copyable: true,
   },
   {
     number: '2',
-    title: 'Configure the kit',
-    code: `# Edit _prr/prr/config.yaml
-user_name: YourName
-platform: auto          # auto-detects GitHub/GitLab/etc.
-platform_repo: "owner/repo"`,
-    description: 'Set your name, platform, and repository slug.',
-  },
-  {
-    number: '3',
-    title: 'Start reviewing',
-    code: `/prr-master`,
-    description: 'Open your IDE and run the master agent slash command.',
+    title: 'Answer a few quick questions',
+    code: `◆ What should reviewers call you? › Alex
+◆ Language for reviewer agents? › English
+◆ GitHub repo for posting comments?
+  › owner/repo  (optional — blank = local mode)
+◆ Which IDEs to configure? › Claude Code`,
+    description: 'Config is written automatically — no file editing needed.',
+    copyable: false,
   },
 ]
 ---
@@ -35,7 +32,7 @@ platform_repo: "owner/repo"`,
         Up in 3 steps
       </h2>
       <p class="text-white/50 text-lg max-w-xl mx-auto">
-        Install the kit, configure it once, and start getting structured AI reviews on every PR.
+        Install the kit, answer a few prompts, and start getting structured AI reviews on every PR.
       </p>
     </div>
 
@@ -52,17 +49,56 @@ platform_repo: "owner/repo"`,
 
           <!-- Code block -->
           <div class="bg-white/5 border border-white/10 rounded-xl overflow-hidden mb-3">
-            <div class="flex items-center gap-1.5 px-4 py-2.5 border-b border-white/10">
-              <div class="w-2.5 h-2.5 rounded-full bg-white/15"></div>
-              <div class="w-2.5 h-2.5 rounded-full bg-white/15"></div>
-              <div class="w-2.5 h-2.5 rounded-full bg-white/15"></div>
+            <div class="flex items-center justify-between px-4 py-2.5 border-b border-white/10">
+              <div class="flex items-center gap-1.5">
+                <div class="w-2.5 h-2.5 rounded-full bg-white/15"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-white/15"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-white/15"></div>
+              </div>
+              <button
+                onclick={step.copyable ? `navigator.clipboard.writeText(${JSON.stringify(step.code)})` : undefined}
+                class={`text-xs text-white/30 hover:text-white transition-colors cursor-pointer${step.copyable ? '' : ' invisible'}`}
+              >
+                Copy
+              </button>
             </div>
-            <pre class="min-h-[125px] p-4 text-xs font-mono text-white/70 overflow-x-auto leading-relaxed"><code>{step.code}</code></pre>
+            <pre class="min-h-[170px] p-4 text-xs font-mono text-white/70 overflow-hidden leading-relaxed"><code>{step.code}</code></pre>
           </div>
 
           <p class="text-xs text-white/40 leading-relaxed">{step.description}</p>
         </div>
       ))}
+
+      <!-- Step 3: dynamically updated based on selected IDE -->
+      <div class="relative">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-8 h-8 bg-white text-black rounded-full flex items-center justify-center text-sm font-black flex-shrink-0">3</div>
+          <h3 class="font-bold text-white text-sm">Start reviewing</h3>
+        </div>
+
+        <div class="bg-white/5 border border-white/10 rounded-xl overflow-hidden mb-3">
+          <div class="flex items-center justify-between px-4 py-2.5 border-b border-white/10">
+            <!-- IDE badge -->
+            <div id="step3-ide-badge" class="flex items-center gap-1.5">
+              <div class="w-2.5 h-2.5 rounded-full bg-white/15"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-white/15"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-white/15"></div>
+            </div>
+            <button id="step3-copy" class="text-xs text-white/30 hover:text-white transition-colors cursor-pointer">Copy</button>
+          </div>
+          <pre class="min-h-[170px] p-4 text-xs font-mono overflow-x-auto leading-relaxed"><code id="step3-code" class="text-white/70">/prr-quick</code></pre>
+        </div>
+
+        <p class="text-xs text-white/40 leading-relaxed" id="step3-desc">One command runs the full pipeline — select PR, review, report.</p>
+
+        <!-- IDE-specific note -->
+        <div id="step3-note" style="display:none" class="mt-2.5 flex items-start gap-2 p-3 bg-white/3 border border-white/10 rounded-lg">
+          <svg class="w-3 h-3 text-white/30 flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p class="text-xs text-white/40 leading-relaxed" id="step3-note-text"></p>
+        </div>
+      </div>
     </div>
 
     <!-- Alternative: silent install -->
@@ -83,3 +119,172 @@ platform_repo: "owner/repo"`,
     </div>
   </div>
 </section>
+
+<script>
+  const ideConfig: Record<string, { code: string; copyable: boolean; desc: string; note: string | null }> = {
+    // No IDE selected yet
+    '': {
+      code: '# Select your IDE above',
+      copyable: false,
+      desc: 'Choose your IDE from the selector in the header to see the exact command.',
+      note: null,
+    },
+
+    // Slash command IDEs
+    'claude-code':    { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline — select PR, review, report.', note: null },
+    'cursor':         { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline — select PR, review, report.', note: null },
+    'auggie':         { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline — select PR, review, report.', note: null },
+    'crush':          { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline — select PR, review, report.', note: null },
+    'iflow':          { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline — select PR, review, report.', note: null },
+    'roo':            { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline — select PR, review, report.', note: null },
+    'qwen':           { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline — select PR, review, report.', note: null },
+    'codex':          { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline — select PR, review, report.', note: null },
+    'gemini':         { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline — select PR, review, report.', note: null },
+
+    // Workflow panel IDEs
+    'windsurf': {
+      code: '# Workflows panel → prr-quick',
+      copyable: false,
+      desc: 'Open the Workflows panel in Windsurf and select prr-quick.',
+      note: 'Windsurf uses the Workflows panel instead of slash commands. Workflows are installed to .windsurf/workflows/.',
+    },
+    'cline': {
+      code: '# Workflows panel → prr-quick',
+      copyable: false,
+      desc: 'Open the workflow runner in Cline and select prr-quick.',
+      note: 'Cline triggers workflows from .clinerules/workflows/ — not slash commands.',
+    },
+    'rovo-dev': {
+      code: '# Workflows panel → prr-quick',
+      copyable: false,
+      desc: 'Open the Workflows panel in Rovo Dev and select prr-quick.',
+      note: 'Rovo Dev uses workflow files in .rovodev/workflows/ instead of slash commands.',
+    },
+    'trae': {
+      code: '# Workflows panel → prr-quick',
+      copyable: false,
+      desc: 'Open the workflow runner in Trae and select prr-quick.',
+      note: 'Trae uses workflow files in .trae/rules/ instead of slash commands.',
+    },
+    'antigravity': {
+      code: '# Workflows panel → prr-quick',
+      copyable: false,
+      desc: 'Open the workflow runner in Antigravity and select prr-quick.',
+      note: 'Antigravity uses workflow files in .agent/workflows/ instead of slash commands.',
+    },
+    'opencode': {
+      code: '# Commands panel → prr-quick',
+      copyable: false,
+      desc: 'Open the Commands panel in OpenCode and select prr-quick.',
+      note: 'OpenCode uses command files in .opencode/command/ instead of slash commands.',
+    },
+
+    // GitHub Copilot
+    'github-copilot': {
+      code: '#prr-quick',
+      copyable: true,
+      desc: 'Type in Copilot Chat, or pick "PRR Quick" from the Agents dropdown.\nGitHub Copilot uses #prompt files (.github/prompts/) and the Agents dropdown (.github/agents/) — not slash commands.',
+      note: null,
+    },
+
+    // KiloCoder
+    'kilo': {
+      code: '# Mode switcher → prr-core-prr-quick',
+      copyable: false,
+      desc: 'Select the prr-core-prr-quick mode from KiloCoder\'s mode switcher.',
+      note: 'KiloCoder registers agents as custom modes in .kilocodemodes — switch to the mode instead of using a slash command.',
+    },
+
+    // Kiro
+    'kiro': {
+      code: '@_prr/core/agents/prr-master.md',
+      copyable: true,
+      desc: 'Reference the master agent in Kiro chat to open the full review menu.',
+      note: 'Kiro uses @-mentioned steering files from .kiro/steering/ instead of slash commands.',
+    },
+  };
+
+  const IDE_LOGOS: Record<string, { src: string; invert?: boolean; name: string }> = {
+    'claude-code':    { src: '/logos/claude.svg',              name: 'Claude Code' },
+    'cursor':         { src: '/logos/cursor.webp',         invert: true, name: 'Cursor' },
+    'windsurf':       { src: '/logos/windsurf.webp',           name: 'Windsurf' },
+    'github-copilot': { src: '/logos/github-copilot.webp', invert: true, name: 'GitHub Copilot' },
+    'antigravity':    { src: '/logos/antigravity.webp',        name: 'Antigravity' },
+  };
+
+  const IDE_DISPLAY_NAMES: Record<string, string> = {
+    'claude-code': 'Claude Code', 'cursor': 'Cursor', 'windsurf': 'Windsurf',
+    'antigravity': 'Antigravity', 'auggie': 'Auggie', 'cline': 'Cline',
+    'codex': 'Codex', 'crush': 'Crush', 'gemini': 'Gemini CLI',
+    'github-copilot': 'GitHub Copilot', 'iflow': 'iFlow', 'kilo': 'KiloCoder',
+    'kiro': 'Kiro', 'opencode': 'OpenCode', 'qwen': 'QwenCoder',
+    'roo': 'Roo Cline', 'rovo-dev': 'Rovo Dev', 'trae': 'Trae',
+  };
+
+  function applyIde(ide: string) {
+    const cfg = ideConfig[ide] ?? ideConfig['claude-code'];
+
+    const codeEl = document.getElementById('step3-code')!;
+    const descEl = document.getElementById('step3-desc')!;
+    const copyBtn = document.getElementById('step3-copy') as HTMLButtonElement;
+    const noteEl = document.getElementById('step3-note') as HTMLElement;
+    const noteText = document.getElementById('step3-note-text')!;
+    const badgeEl = document.getElementById('step3-ide-badge')!;
+
+    // Update code — highlight slash command vs comment style
+    const isSlashCmd = cfg.code.startsWith('/') || cfg.code.startsWith('#prr') || cfg.code.startsWith('@');
+    const isComment = cfg.code.startsWith('# ');
+    if (isComment) {
+      codeEl.innerHTML = `<span style="color:rgba(255,255,255,0.25)">${cfg.code}</span>`;
+    } else {
+      codeEl.textContent = cfg.code;
+      codeEl.style.color = 'rgba(255,255,255,0.85)';
+    }
+
+    descEl.innerHTML = cfg.desc.replace(/\n/g, '<br>');
+
+    // Update IDE badge
+    const logoInfo = IDE_LOGOS[ide];
+    const ideName = IDE_DISPLAY_NAMES[ide] || '';
+    if (ide && ideName) {
+      if (logoInfo) {
+        badgeEl.innerHTML = `
+          <img src="${logoInfo.src}" width="14" height="14"
+            style="object-fit:contain;flex-shrink:0;${logoInfo.invert ? 'filter:invert(1)' : ''}"
+            alt="${logoInfo.name}" />
+          <span style="font-size:0.6875rem;color:rgba(255,255,255,0.35);font-family:inherit">${logoInfo.name}</span>
+        `;
+      } else {
+        badgeEl.innerHTML = `<span style="font-size:0.6875rem;color:rgba(255,255,255,0.35);font-family:inherit">${ideName}</span>`;
+      }
+    } else {
+      badgeEl.innerHTML = `
+        <div class="w-2.5 h-2.5 rounded-full bg-white/15"></div>
+        <div class="w-2.5 h-2.5 rounded-full bg-white/15"></div>
+        <div class="w-2.5 h-2.5 rounded-full bg-white/15"></div>
+      `;
+    }
+
+    if (cfg.copyable) {
+      copyBtn.style.display = '';
+      copyBtn.onclick = () => navigator.clipboard.writeText(cfg.code);
+    } else {
+      copyBtn.style.display = 'none';
+    }
+
+    if (cfg.note) {
+      noteEl.style.display = 'flex';
+      noteText.textContent = cfg.note;
+    } else {
+      noteEl.style.display = 'none';
+    }
+  }
+
+  // Initialize from localStorage (empty string = no IDE selected)
+  applyIde(localStorage.getItem('prr-ide') || '');
+
+  // Listen for IDE changes from Navbar
+  window.addEventListener('prr-ide-changed', (e: Event) => {
+    applyIde((e as CustomEvent<string>).detail);
+  });
+</script>

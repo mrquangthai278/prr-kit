@@ -17,7 +17,7 @@ npx prr-kit install
 # Or use the alias
 npx pr-review install
 
-# Silent install with defaults (edit config.yaml afterward)
+# Silent install with all defaults
 npx prr-kit install --directory /path/to/repo --modules prr --tools claude-code --yes
 ```
 
@@ -33,21 +33,27 @@ The framework installs into your project as a `_prr/` folder. Agents and workflo
 
 ## Configuration
 
-After install, edit `_prr/prr/config.yaml` in your project:
+The installer handles configuration interactively — no manual file editing required. During `npx prr-kit install`, you'll be prompted for your name, language, output folder, target repo, and platform.
+
+All values are written automatically to `_prr/prr/config.yaml`:
 
 ```yaml
 user_name: YourName
 communication_language: English
-target_repo: .                        # path to the git repo to review (. = current dir)
-platform: auto                        # auto-detect from git remote, or: github / gitlab / azure / bitbucket
-platform_repo: "owner/repo"          # required for PR listing and posting inline comments
-output_folder: _prr-output
+target_repo: .
+platform: auto                        # auto-detect from git remote
+platform_repo: "owner/repo"           # optional — needed for PR listing and inline comments
 review_output: /abs/path/_prr-output/reviews
+
+context_collection:
+  enabled: true
+  mode: pr-specific                   # always fresh, never cached
+
+external_sources:
+  enabled: false                      # set true to activate MCP + RAG enrichment
 ```
 
-> `platform` defaults to `aut—o`  detects GitHub/GitLab/Azure/Bitbucket from the git remote URL.
-> `platform_repo` is required for PR listing (`gh pr list`, `glab mr list`, etc.) and posting inline comments.
-> Leave `platform_repo` empty to use local branch selection only.
+> See **[docs/configuration.md](docs/configuration.md)** for the full schema reference — including MCP tool intents, RAG systems, inline annotations, and URL sources.
 
 ## Platform Support
 
@@ -73,7 +79,7 @@ review_output: /abs/path/_prr-output/reviews
 /prr-quick    or    /prr-master → QR
 ```
 
-Runs automatically: **select PR → describe → collect context → all 4 reviews → generate report**
+Runs automatically: **select PR → describe → collect context → 5 reviews → generate report**
 Only pauses once to ask which PR/branch to review.
 
 ### Manual mode — step by step
@@ -86,11 +92,13 @@ Only pauses once to ask which PR/branch to review.
 | `SR` | Security Review | OWASP Top 10, secrets, auth, rate limits, injection |
 | `PR` | Performance Review | N+1 queries, memory leaks, async patterns, caching |
 | `AR` | Architecture Review | SOLID, layers, coupling, consistency with codebase |
+| `BR` | Business Review | User impact, business risk, feature completeness, data safety, observability |
 | `IC` | Improve Code | Concrete BEFORE/AFTER code suggestions |
 | `AK` | Ask Code | Q&A about specific changes in this PR |
 | `RR` | Generate Report | Compile all findings → Markdown report in `_prr-output/reviews/` |
 | `PC` | Post Comments | Post inline code comments to GitHub PR via `gh` Reviews API |
-| `PM` | Party Mode 🎉 | All 4 reviewers in one collaborative session |
+| `PM` | Party Mode 🎉 | All reviewers in one collaborative session |
+| `CL` | Clear | Remove context files and/or review reports from output folder |
 | `HH` | Help | Show this guide |
 
 ### Selecting a PR (SP step)
@@ -120,7 +128,19 @@ Enter PR number → base and head resolved automatically.
 | PRR Master | `/prr-master` | Orchestrator — routes all workflows, full menu |
 | PRR Quick | `/prr-quick` | One-command full pipeline (select → review → report) |
 
-Specialist reviewer agents (Alex, Sam, Petra, Arch) are orchestrated internally by the master agent and party-mode workflow. Use `[PM] Party Mode` from the master menu to run all 4 reviewers in a collaborative session.
+Specialist reviewer agents are orchestrated internally by the master agent and party-mode workflow. Use `[PM] Party Mode` from the master menu to run all reviewers in a collaborative session.
+
+## Reviewers at a Glance
+
+| Reviewer | Focus | Key questions |
+|---|---|---|
+| 👁️ General (GR) | Code quality | Is the logic correct? Naming clear? DRY? Tests present? |
+| 🔒 Security (SR) | OWASP Top 10 | XSS? Injection? Secrets exposed? Auth correct? |
+| ⚡ Performance (PR) | Efficiency | N+1 queries? Memory leaks? Missing await? |
+| 🏗️ Architecture (AR) | Structure | Layer violations? Coupling? Consistent with codebase? |
+| 💼 Business (BR) | Real-world impact | User impact? Business risk? Feature completeness? Data safe? Observability? |
+
+**Business Review (BR)** runs last and translates technical findings into business language — user impact, GDPR risk, migration safety, deployment recommendations, and post-ship monitoring checklist.
 
 ## Severity Levels
 
@@ -130,6 +150,18 @@ All findings use a standard format:
 - 🟡 **[WARNING]** — Should fix (with explanation)
 - 🟢 **[SUGGESTION]** — Nice-to-have improvement
 - 📌 **[QUESTION]** — Needs clarification from author
+
+## Context Collection
+
+After [DP] Describe PR, context is collected **automatically** — no manual step needed:
+
+1. Analyzes changed files to detect domains (`authentication`, `state-management`, etc.)
+2. Reads relevant config files (`.eslintrc`, `.prettierrc`, `tsconfig.json`) and standards docs (`CONTRIBUTING.md`, `ARCHITECTURE.md`)
+3. Extracts inline `@context:` / `@security:` / `@pattern:` annotations from the diff
+4. Optionally queries **MCP tools** (Confluence, Jira, Figma) and **RAG systems** if configured
+5. Writes `pr-{branch}-context.yaml` — loaded by all reviewers
+
+> See [docs/configuration.md](docs/configuration.md) for MCP intents, RAG setup, and URL sources.
 
 ## Inline Code Comments
 
@@ -144,11 +176,7 @@ When `[PC] Post Comments` is run with `platform_repo` configured, it posts findi
 
 ## Supported IDEs
 
-**Preferred:**
-- **Claude Code**, **Cursor**, **Windsurf**
-
-**Also supported:**
-- Antigravity, Auggie, Cline, Codex, Crush, Gemini CLI, GitHub Copilot, iFlow, Kilo, Kiro, OpenCode, QwenCoder, Roo Cline, Rovo Dev, Trae
+Antigravity, Auggie, Claude Code, Cline, Codex, Crush, Cursor, Gemini CLI, GitHub Copilot, iFlow, Kilo, Kiro, OpenCode, QwenCoder, Roo Cline, Rovo Dev, Trae, Windsurf
 
 ## Requirements
 
@@ -170,23 +198,42 @@ npm test
 ## Project Structure
 
 ```
-main-project/
+prr-kit/
 ├── src/
-│   ├── core/          # Master agent, tasks, party-mode workflow
+│   ├── core/
+│   │   ├── agents/
+│   │   │   └── prr-master.agent.yaml   # Master orchestrator + menu
+│   │   └── tasks/
+│   │       ├── help.md                 # [HH] Help
+│   │       ├── clear.md                # [CL] Clear output files
+│   │       └── workflow.xml            # Workflow engine rules
 │   └── prr/
-│       ├── agents/    # 4 specialist reviewer agents
+│       ├── agents/                     # Specialist reviewer agents (GR SR PR AR)
+│       ├── config-template.yaml        # Full config template with all options
 │       └── workflows/
-│           ├── 1-discover/  # [SP] Select PR
-│           ├── 2-analyze/   # [DP] Describe PR + collect-pr-context (auto)
-│           ├── 3-review/    # [GR] [SR] [PR] [AR] Reviews
-│           ├── 4-improve/   # [IC] Improve Code
-│           ├── 5-ask/       # [AK] Ask Code
-│           ├── 6-report/    # [RR] Generate Report, [PC] Post Comments
-│           └── quick/       # [QR] Full pipeline in one command
+│           ├── 1-discover/             # [SP] Select PR
+│           ├── 2-analyze/
+│           │   ├── describe-pr/        # [DP] Describe PR
+│           │   └── collect-pr-context/ # Auto: build PR-specific knowledge base
+│           ├── 3-review/
+│           │   ├── general-review/     # [GR] Logic, naming, DRY
+│           │   ├── security-review/    # [SR] OWASP, secrets, auth
+│           │   ├── performance-review/ # [PR] N+1, async, memory
+│           │   ├── architecture-review/# [AR] SOLID, layers, coupling
+│           │   └── business-review/    # [BR] User impact, risk, completeness
+│           ├── 4-improve/              # [IC] Improve Code
+│           ├── 5-ask/                  # [AK] Ask Code
+│           ├── 6-report/               # [RR] Report + [PC] Post Comments
+│           └── quick/                  # [QR] Full pipeline in one command
 ├── tools/
-│   └── cli/           # CLI installer + IDE handlers
-├── test/              # Schema + component tests
-└── docs/              # Documentation
+│   └── cli/                            # CLI installer + IDE handlers
+├── test/                               # Schema + component tests
+└── docs/
+    ├── configuration.md                # Full config reference (MCP, RAG, context)
+    ├── index.md                        # Overview
+    └── assets/
+        ├── banner.svg
+        └── how-it-works.svg
 ```
 
 ---

@@ -19,17 +19,38 @@ Within each severity level, group by review category:
 - ⚡ Performance
 - 🏗️ Architecture
 - 👁️ General Quality
+- 💼 Business Impact
 - 💡 Improvements
 
 ### 3. Create Executive Summary
 
-Write 3-5 bullet points summarizing the overall review:
-- Overall quality assessment (1 sentence)
-- Highest priority issues to address
-- Positive findings (good practices found)
-- Recommendation: approved / needs changes / request changes
+Write a two-part summary:
 
-### 4. Identify Files with Multiple Issues
+**Technical part:**
+- Overall code quality assessment (1 sentence)
+- Highest priority technical issues
+- Positive findings (good practices found)
+
+**Business part (if business-review was completed):**
+- Overall business risk level: CRITICAL / HIGH / MEDIUM / LOW / MINIMAL
+- Top business concern (1 sentence): what is the biggest real-world risk?
+- Deployment recommendation from business perspective
+
+**Combined verdict:**
+- ✅ APPROVE — no blockers, low business risk, safe to ship
+- ⚠️ APPROVE WITH NOTES — warnings only, medium business risk, monitor post-ship
+- 🚫 REQUEST CHANGES — blockers present OR high/critical business risk
+
+### 4. Compile Business Risk Summary
+
+If business-review findings exist:
+- Extract overall business risk level
+- List top 3 business concerns with their severity
+- List any data/migration risks
+- Note observability gaps
+- Note deployment concerns
+
+### 5. Identify Files with Multiple Issues
 
 List files that have 3+ findings — these may need more significant rework.
 

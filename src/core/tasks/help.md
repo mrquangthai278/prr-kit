@@ -33,3 +33,7 @@ Use `/prr-help` anytime for guidance on what to do.
 - 🟡 **[WARNING]** — Should fix, with explanation
 - 🟢 **[SUGGESTION]** — Nice-to-have improvement
 - 📌 **[QUESTION]** — Needs clarification from author
+
+### Utilities
+
+- **[CL] Clear** — Remove context files and/or review reports from output folder. Useful when starting fresh or cleaning up after a session. Choose: All / Context only / Reports only.

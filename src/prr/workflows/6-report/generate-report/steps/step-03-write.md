@@ -15,10 +15,12 @@ Using `{templateFile}`, write the complete review report to `{outputFile}`.
 
 The report includes:
 - PR metadata and review summary
-- Executive summary with overall verdict
+- Executive summary with technical verdict + business risk level
+- Business Impact section (if business-review was completed)
 - All findings organized by severity and category
 - Files with multiple issues highlighted
 - Recommended actions (must-fix vs nice-to-have)
+- Post-ship monitoring checklist (if business-review completed)
 
 ### 2. Display Completion
 

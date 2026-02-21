@@ -154,15 +154,38 @@ inline_context:
       priority: critical
 
 external_context:
-  company_standards:
-    source: Company Standards API
-    collected_at: {timestamp}
-    rules:
-      - id: CS-001
-        name: State Mutation Logging
-        content: All state mutations must be logged for audit purposes
-        severity: warning
-        applies_to: [stores]
+  # Populated only when external_sources.enabled: true and tools were available
+  mcp_tools_used: []              # e.g. ["confluence", "jira"]
+
+  knowledge_base:                 # From Confluence / Notion / etc.
+    - source: Confluence
+      page: "Engineering Standards"
+      content: |
+        All state mutations must be logged for audit purposes.
+        JWT tokens must be validated server-side.
+
+  issue_context:                  # From Jira / Linear / GitHub Issues
+    key: ENG-123
+    title: "Add user authentication"
+    type: story
+    acceptance_criteria:
+      - "User can log in with email and password"
+      - "Session expires after 24 hours"
+      - "Failed login shows error message without leaking details"
+
+  design_context:                 # From Figma / Zeplin (UI changes only)
+    matched_components: []
+    specs: []
+
+  rag_patterns:                   # From AWS Bedrock / GitHub Graph RAG / etc.
+    - pattern: "Auth store pattern"
+      source: "Previous PR #88"
+      content: "Use httpOnly cookies for token storage, not localStorage"
+
+  url_sources:                    # From plain URL fetches
+    - name: "Shared ESLint config"
+      url: "https://raw.githubusercontent.com/org/standards/main/eslint.md"
+      content: "..."
 
 review_priorities:
   # Guide reviewers on what to focus on
@@ -206,7 +229,9 @@ context_sources:
   config_files: [.eslintrc.js, .prettierrc]
   standards_docs: [CONTRIBUTING.md, ARCHITECTURE.md]
   inline_annotations: yes
-  external_sources: [Company Standards API]
+  mcp_tools: []                   # list of MCP tools actually used
+  rag_systems: []                 # list of RAG systems queried
+  url_sources: []                 # list of plain URLs fetched
 ```
 
 ### 3. Determine Output Filename
@@ -238,7 +263,9 @@ Example: `_prr-output/pr-123-context.yaml`
    • ESLint rules: {n}
    • Guidelines: {m}
    • Inline annotations: {k}
-   • External rules: {x}
+   • MCP tools used: {mcp_list or "none"}
+   • RAG patterns: {rag_count}
+   • Issue context: {issue_key or "none"}
 
 🎯 Domains: {domains}
 📚 Sources: {source_count} ({list})

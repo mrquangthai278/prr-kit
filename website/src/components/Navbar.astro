@@ -1,9 +1,44 @@
 ---
-import { Button } from 'webcoreui/astro'
+import { Select } from 'webcoreui/astro'
+
+const img = (src: string, invert = false) =>
+  `<img src="${src}" width="16" height="16" style="object-fit:contain;flex-shrink:0${invert ? ';filter:invert(1)' : ''}" />`
+
+const ideGroups = [
+  {
+    title: 'Recommended',
+    items: [
+      { name: 'Claude Code',    value: 'claude-code',    icon: img('/logos/claude.svg') },
+      { name: 'Cursor',         value: 'cursor',         icon: img('/logos/cursor.webp', true) },
+      { name: 'Windsurf',       value: 'windsurf',       icon: img('/logos/windsurf.webp') },
+      { name: 'GitHub Copilot', value: 'github-copilot', icon: img('/logos/github-copilot.webp', true) },
+      { name: 'Antigravity',    value: 'antigravity',    icon: img('/logos/antigravity.webp') },
+    ],
+  },
+  {
+    title: 'Others',
+    items: [
+      { name: 'Auggie',    value: 'auggie' },
+      { name: 'Cline',     value: 'cline' },
+      { name: 'Codex',     value: 'codex' },
+      { name: 'Crush',     value: 'crush' },
+      { name: 'Gemini CLI',value: 'gemini' },
+      { name: 'iFlow',     value: 'iflow' },
+      { name: 'KiloCoder', value: 'kilo' },
+      { name: 'Kiro',      value: 'kiro' },
+      { name: 'OpenCode',  value: 'opencode' },
+      { name: 'QwenCoder', value: 'qwen' },
+      { name: 'Roo Cline', value: 'roo' },
+      { name: 'Rovo Dev',  value: 'rovo-dev' },
+      { name: 'Trae',      value: 'trae' },
+    ],
+  },
+]
 ---
 
 <nav class="fixed top-0 left-0 right-0 z-50 border-b border-white/10 backdrop-blur-md bg-black/80">
   <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+
     <!-- Logo -->
     <a href="/" class="flex items-center gap-2.5 group">
       <div class="w-8 h-8 bg-white rounded-md flex items-center justify-center flex-shrink-0">
@@ -17,28 +52,134 @@ import { Button } from 'webcoreui/astro'
 
     <!-- Nav links -->
     <div class="hidden md:flex items-center gap-8">
-      <a href="#features" class="text-sm text-white/60 hover:text-white transition-colors">Features</a>
       <a href="#how-it-works" class="text-sm text-white/60 hover:text-white transition-colors">How it works</a>
-      <a href="#platforms" class="text-sm text-white/60 hover:text-white transition-colors">Platforms</a>
-      <a href="#quick-start" class="text-sm text-white/60 hover:text-white transition-colors">Quick Start</a>
+      <a href="#platforms"    class="text-sm text-white/60 hover:text-white transition-colors">Platforms</a>
+      <a href="#quick-start"  class="text-sm text-white/60 hover:text-white transition-colors">Quick Start</a>
     </div>
 
-    <!-- CTA -->
-    <div class="flex items-center gap-3">
-      <a
-        href="https://github.com/mrquangthai278/prr-kit"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="flex items-center gap-2 text-sm text-white/60 hover:text-white transition-colors"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
-        </svg>
-        GitHub
-      </a>
-      <Button href="#quick-start" theme="outline">
-        Get Started
-      </Button>
+    <!-- IDE Selector -->
+    <div class="flex items-center gap-2.5">
+      <span class="text-xs text-white/35 font-medium tracking-widest uppercase select-none">Your IDE</span>
+      <div class="prr-ide-select">
+        <Select
+          name="ide"
+          placeholder="Select IDE..."
+          itemGroups={ideGroups}
+          showSearchBar={true}
+          searchBarPlaceholder="Search..."
+          maxHeight="320px"
+        />
+      </div>
     </div>
+
   </div>
 </nav>
+
+<style>
+  .prr-ide-select :global(label) {
+    margin: 0;
+    gap: 0;
+  }
+  .prr-ide-select :global(input) {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0.5rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.8125rem;
+    height: 2rem;
+    width: 13rem;
+    padding: 0 1.75rem 0 0.625rem;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    padding-left: 2rem !important;
+  }
+  .prr-ide-select :global(input::placeholder) {
+    color: rgba(255, 255, 255, 0.3);
+  }
+  .prr-ide-select :global(input:hover) {
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+  .prr-ide-select :global(input:focus) {
+    border-color: rgba(255, 255, 255, 0.35);
+    outline: none;
+    box-shadow: none;
+  }
+  /* Chevron */
+  .prr-ide-select :global(label > svg) {
+    color: rgba(255, 255, 255, 0.3);
+    right: 0.4rem;
+  }
+</style>
+
+<script>
+  interface IdeLogoInfo { src: string; invert?: boolean }
+
+  const IDE_LOGOS: Record<string, IdeLogoInfo> = {
+    'claude-code':    { src: '/logos/claude.svg' },
+    'cursor':         { src: '/logos/cursor.webp',         invert: true },
+    'windsurf':       { src: '/logos/windsurf.webp' },
+    'github-copilot': { src: '/logos/github-copilot.webp', invert: true },
+    'antigravity':    { src: '/logos/antigravity.webp' },
+  }
+
+  const IDE_NAMES: Record<string, string> = {
+    'claude-code': 'Claude Code', 'cursor': 'Cursor', 'windsurf': 'Windsurf',
+    'antigravity': 'Antigravity', 'auggie': 'Auggie', 'cline': 'Cline',
+    'codex': 'Codex', 'crush': 'Crush', 'gemini': 'Gemini CLI',
+    'github-copilot': 'GitHub Copilot', 'iflow': 'iFlow', 'kilo': 'KiloCoder',
+    'kiro': 'Kiro', 'opencode': 'OpenCode', 'qwen': 'QwenCoder',
+    'roo': 'Roo Cline', 'rovo-dev': 'Rovo Dev', 'trae': 'Trae',
+  }
+
+  function updateLogoOverlay(value: string) {
+    const input = document.querySelector('[data-id="w-select-ide"]') as HTMLInputElement | null
+    const ide = IDE_LOGOS[value]
+
+    // Remove existing logo overlay if present
+    const existing = document.getElementById('ide-selected-logo')
+    if (existing) existing.remove()
+
+    if (ide && input) {
+      const label = input.closest('label') as HTMLElement | null
+      if (!label) return
+      label.style.position = 'relative'
+      const img = document.createElement('img')
+      img.id = 'ide-selected-logo'
+      img.src = ide.src
+      img.width = 16
+      img.height = 16
+      img.style.cssText = `
+        position:absolute;left:0.625rem;top:50%;transform:translateY(-50%);
+        object-fit:contain;pointer-events:none;z-index:10;flex-shrink:0;
+        ${ide.invert ? 'filter:invert(1)' : ''}
+      `
+      label.appendChild(img)
+      input.style.paddingLeft = '2rem'
+    } else if (input) {
+      input.style.paddingLeft = ''
+    }
+  }
+
+  function init() {
+    const stored = localStorage.getItem('prr-ide') || ''
+
+    if (stored) {
+      const input = document.querySelector('[data-id="w-select-ide"]') as HTMLInputElement | null
+      if (input && IDE_NAMES[stored]) input.value = IDE_NAMES[stored]
+      updateLogoOverlay(stored)
+    }
+
+    window.dispatchEvent(new CustomEvent('prr-ide-changed', { detail: stored }))
+  }
+
+  document.addEventListener('selectOnChange', (e: Event) => {
+    const detail = (e as CustomEvent).detail
+    if (detail?.select !== 'ide') return
+    localStorage.setItem('prr-ide', detail.value)
+    updateLogoOverlay(detail.value)
+    window.dispatchEvent(new CustomEvent('prr-ide-changed', { detail: detail.value }))
+  })
+
+  document.addEventListener('astro:after-swap', init)
+  init()
+</script>

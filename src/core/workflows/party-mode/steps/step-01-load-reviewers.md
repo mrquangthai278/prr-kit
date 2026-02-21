@@ -28,7 +28,7 @@ Files changed: {file_count} | Lines: +{additions} -{deletions}
 
 ### 2. Load Reviewer Personas
 
-Internally adopt all 4 reviewer personas simultaneously:
+Internally adopt all reviewer personas simultaneously:
 
 **👁️ Alex (General Reviewer)**
 - Focus: code logic, naming, readability, DRY, best practices

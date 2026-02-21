@@ -1,9 +1,12 @@
 ---
 import { Button, Badge } from 'webcoreui/astro'
 
-const preferredIDEs = ['Claude Code', 'Cursor', 'Windsurf']
-const otherIDEs = [
-  'GitHub Copilot', 'Antigravity', 'Cline', 'Gemini CLI', 'Roo Cline', 'Trae', 'Kiro', '+8 more'
+const heroIDEs = [
+  { name: 'Claude Code',    logo: '/logos/claude.svg' },
+  { name: 'Cursor',         logo: '/logos/cursor.webp',         invert: true },
+  { name: 'Windsurf',       logo: '/logos/windsurf.webp' },
+  { name: 'GitHub Copilot', logo: '/logos/github-copilot.webp', invert: true },
+  { name: 'Antigravity',    logo: '/logos/antigravity.webp' },
 ]
 ---
 
@@ -86,11 +89,21 @@ const otherIDEs = [
     <div class="flex flex-col items-center gap-3 mb-20">
       <p class="text-xs text-white/25 uppercase tracking-widest font-medium">Works with</p>
       <div class="flex flex-wrap items-center justify-center gap-2">
-        {[...preferredIDEs, ...otherIDEs].map((ide) => (
-          <span class="px-3 py-1.5 bg-white/8 border border-white/20 rounded-full text-xs font-medium text-white/60">
-            {ide}
+        {heroIDEs.map((ide) => (
+          <span class="flex items-center gap-1.5 px-3 py-1.5 bg-white/8 border border-white/20 rounded-full text-xs font-medium text-white/60">
+            <img
+              src={ide.logo}
+              alt={ide.name}
+              width="13"
+              height="13"
+              class={`object-contain flex-shrink-0${ide.invert ? ' invert' : ''}`}
+            />
+            {ide.name}
           </span>
         ))}
+        <span class="px-3 py-1.5 bg-white/5 border border-white/10 rounded-full text-xs font-medium text-white/30">
+          +13 more
+        </span>
       </div>
     </div>
   </div>

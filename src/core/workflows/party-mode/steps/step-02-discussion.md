@@ -66,7 +66,7 @@ Format each finding as:
 
 ### 2. Round 2 — Cross-Review Discussion
 
-After all 4 reviewers have spoken, check for:
+After all reviewers have spoken, check for:
 
 **Conflicts**: If two reviewers disagree (e.g., Alex says "extract this function" but Arch says "this is fine as-is"), facilitate a brief debate:
 ```

@@ -19,6 +19,7 @@ For each completed review in `review.completed` list, read the corresponding out
 - `security-review` → `{review_output}/security-review-*.md` (latest)
 - `performance-review` → `{review_output}/performance-review-*.md` (latest)
 - `architecture-review` → `{review_output}/architecture-review-*.md` (latest)
+- `business-review` → `{review_output}/business-review-*.md` (latest)
 - `improve-code` → `{review_output}/improve-code-*.md` (latest)
 
 ### 3. Parse All Findings

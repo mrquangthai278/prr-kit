@@ -1,0 +1,98 @@
+# prr-kit Configuration Template
+# Copy this file to your project: _prr/prr/config.yaml
+
+# ─── Identity ──────────────────────────────────────────────────────────────
+user_name: YourName
+communication_language: English      # Language for all review output
+
+# ─── Project ───────────────────────────────────────────────────────────────
+project_name: my-project
+target_repo: .                       # Path to git repo (. = current directory)
+
+# ─── Platform ──────────────────────────────────────────────────────────────
+platform: github                     # github | gitlab | azure | bitbucket
+platform_repo: "org/repo-name"       # Used for gh pr list, gh pr view, etc.
+
+# ─── Output ────────────────────────────────────────────────────────────────
+review_output: ./_prr-output/reviews # Where review reports are written
+
+# ─── Context Collection ────────────────────────────────────────────────────
+context_collection:
+  enabled: true
+  mode: pr-specific                  # Always fresh, never cached
+
+  # Local primary sources (read if file exists)
+  primary_sources:
+    - CLAUDE.md
+    - AGENTS.md
+    - .github/CLAUDE_CODE_RULES.md
+    - .clauderules
+
+  # Config files (matched to file types changed in PR)
+  config_files:
+    - .eslintrc*
+    - .prettierrc*
+    - tsconfig.json
+    - vite.config.*
+    - webpack.config.*
+    - pyproject.toml
+    - .flake8
+
+  # Standards docs (read relevant sections based on PR domains)
+  standards_docs:
+    - CONTRIBUTING.md
+    - ARCHITECTURE.md
+    - docs/**/*.md
+
+  # Inline code annotations extracted from changed files
+  inline_annotations:
+    enabled: true
+    patterns:
+      - "@context:"
+      - "@security:"
+      - "@pattern:"
+      - "@rule:"
+
+# ─── External Sources ──────────────────────────────────────────────────────
+# Enable to allow prr-kit to use MCP tools and RAG systems available in
+# your Claude Code session. No schema required per-tool — Claude auto-discovers
+# what tools are available and maps them to the intents declared below.
+external_sources:
+  enabled: false                     # Set to true to activate
+
+  mcp:
+    enabled: true
+    # Declare what kinds of context you want from MCP tools.
+    # Claude will discover available tools and use them accordingly.
+    # Remove intents you don't need.
+    intents:
+      - knowledge_base               # Confluence, Notion → team standards, ADRs
+      - project_management           # Jira, Linear → linked issue + acceptance criteria
+      - design                       # Figma, Zeplin → design specs (UI PRs only)
+      # - code_intelligence          # Sourcegraph → similar patterns (uncomment if needed)
+
+    # Optional hints to improve tool queries
+    hints:
+      branch_issue_pattern: "([A-Z]+-\\d+)"  # Regex to extract issue key from branch name
+                                              # e.g. feature/ENG-123-auth → ENG-123
+      # confluence_space: ENG                # Narrow Confluence search to a space
+      # jira_project: PROJ                   # Narrow Jira search to a project
+
+  rag:
+    enabled: false                   # Set to true if you have RAG tools configured
+    # Intents tell Claude what to query for in the RAG system
+    intents:
+      - similar_patterns             # Find similar code in the codebase
+      - past_decisions               # Previous review decisions for similar code
+      # - architecture_examples      # Embedded architecture docs (uncomment if needed)
+
+  # Plain URL sources — fetched via WebFetch regardless of MCP availability
+  sources: []
+  # Example:
+  # sources:
+  #   - type: url
+  #     name: Shared ESLint config
+  #     url: https://raw.githubusercontent.com/org/standards/main/eslint.md
+  #   - type: url
+  #     name: Security guidelines
+  #     url: https://wiki.company.com/public/security-standards

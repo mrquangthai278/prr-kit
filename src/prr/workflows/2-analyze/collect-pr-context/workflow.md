@@ -59,11 +59,23 @@ Extract from changed files:
 - Confluence/Wiki pages
 - Remote documentation
 
+### 6. MCP Tools (if available in session)
+- **Knowledge base MCPs** (Confluence, Notion, Obsidian) → team standards, ADRs not in local docs
+- **Project management MCPs** (Jira, Linear, GitHub Issues) → linked issue, acceptance criteria
+- **Design MCPs** (Figma, Zeplin) → design specs for UI changes
+- **Code intelligence MCPs** (Sourcegraph, GitHub) → similar patterns in codebase
+
+### 7. RAG Systems (if configured)
+- AWS Bedrock knowledge base
+- GitHub Graph RAG
+- Custom vector databases
+- Query for: similar patterns, past decisions, architecture examples
+
 ## WORKFLOW ARCHITECTURE
 
 3-step process:
 1. Analyze files changed in PR
-2. Collect context from relevant sources
+2. Collect context from all sources (local + external tools + RAG)
 3. Build PR-specific knowledge base
 
 ## INITIALIZATION
