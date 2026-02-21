@@ -238,6 +238,15 @@ prr-kit/
 
 ---
 
+## Support the Project
+
+PR Review Kit is free for everyone — and always will be. If you'd like to support development:
+
+- ⭐ **Star on GitHub** — Click the star icon near the top right of this page
+- ☕ **[Buy Me a Coffee](https://buymeacoffee.com/mrquangthay)** — Fuel the development
+
+---
+
 ## Contributing
 
 Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on adding workflows, reviewer agents, IDE integrations, and more.
