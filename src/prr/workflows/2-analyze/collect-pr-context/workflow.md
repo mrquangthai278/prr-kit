@@ -54,18 +54,33 @@ Extract from changed files:
 - `@pattern:` - Required patterns
 - `@rule:` - Specific rules
 
-### 5. External Sources (optional)
+### 5. Stack-Specific Rules (automatic)
+Loaded from `_prr/prr/data/stacks/{stack}.md` based on detected technology:
+- **Frontend**: vue3, react, angular, svelte, nextjs, nuxtjs
+- **Styling**: typescript, tailwindcss, css
+- **Backend — Node.js**: nestjs, expressjs
+- **Backend — Python**: fastapi, django, flask, python
+- **Backend — Java/Go/PHP/Ruby**: spring-boot, go, laravel, rails
+- **Database / ORM**: sql, prisma, typeorm, mongodb
+- **Testing**: jest-vitest
+- **Infrastructure**: docker
+- **API Layer**: graphql
+- **Mobile**: react-native
+
+Each stack file contains Security / Performance / Architecture / Code Quality / Common Bugs rules organized by severity (CRITICAL / HIGH / MEDIUM / LOW). Rules are injected into the knowledge base and applied by all reviewers (GR, SR, PR, AR, BR).
+
+### 6. External Sources (optional)
 - Company standards APIs
 - Confluence/Wiki pages
 - Remote documentation
 
-### 6. MCP Tools (if available in session)
+### 7. MCP Tools (if available in session)
 - **Knowledge base MCPs** (Confluence, Notion, Obsidian) → team standards, ADRs not in local docs
 - **Project management MCPs** (Jira, Linear, GitHub Issues) → linked issue, acceptance criteria
 - **Design MCPs** (Figma, Zeplin) → design specs for UI changes
 - **Code intelligence MCPs** (Sourcegraph, GitHub) → similar patterns in codebase
 
-### 7. RAG Systems (if configured)
+### 8. RAG Systems (if configured)
 - AWS Bedrock knowledge base
 - GitHub Graph RAG
 - Custom vector databases
@@ -74,9 +89,9 @@ Extract from changed files:
 ## WORKFLOW ARCHITECTURE
 
 3-step process:
-1. Analyze files changed in PR
-2. Collect context from all sources (local + external tools + RAG)
-3. Build PR-specific knowledge base
+1. **Analyze files** changed in PR — extract metadata, domains, and **detect technology stacks**
+2. **Collect context** from all sources: primary docs, config files, standards docs, inline annotations, **stack-specific rules**, MCP tools, RAG systems
+3. **Build PR-specific knowledge base** — structured YAML with all context, stack rules, and reviewer guidance
 
 ## INITIALIZATION
 

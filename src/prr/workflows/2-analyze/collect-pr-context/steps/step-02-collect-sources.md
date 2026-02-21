@@ -137,6 +137,56 @@ From changed files (identified in Step 1), extract annotations:
 }
 ```
 
+### 5b. Load Stack-Specific Rules
+
+**Run only if `detected_stacks` from Step 1 is non-empty. Skip silently otherwise.**
+
+For each stack key in `detected_stacks`:
+
+1. Check if `_prr/prr/data/stacks/{stack-key}.md` exists in the project's PRR installation.
+2. If the file exists → read its full content and extract all rules, organized by category (Security, Performance, Architecture, Code Quality, Common Bugs).
+3. If the file does not exist → skip silently.
+
+**Build `stack_rules` structure:**
+
+```yaml
+stack_rules:
+  vue3:
+    security:
+      - severity: critical
+        rule: "v-html with user-controlled data → XSS. Use {{ }} or DOMPurify."
+      - severity: high
+        rule: "Dynamic :is binding with user string → arbitrary component injection."
+    performance:
+      - severity: high
+        rule: "watchEffect/watch with async ops without onCleanup → memory leak."
+    architecture:
+      - severity: high
+        rule: "Direct store state mutation outside action → bypasses Pinia devtools."
+    code_quality:
+      - severity: high
+        rule: "defineProps without TypeScript types → silent prop misuse."
+    common_bugs:
+      - severity: high
+        rule: "reactive() destructuring loses reactivity — use toRefs()."
+  typescript:
+    architecture:
+      - severity: high
+        rule: "'any' type defeats TypeScript — use unknown + type narrowing."
+  # ... other detected stacks
+```
+
+This `stack_rules` block is passed directly to Step 3 for inclusion in the knowledge base, where all reviewers (GR, SR, PR, AR, BR) will read and apply the rules.
+
+**Announce:**
+```
+🧩 Stack rules loaded: {stack_list} ({total_rule_count} rules)
+```
+
+If no stack rule files found → skip announcement, continue normally.
+
+---
+
 ### 6. Collect from External Tools (MCP + RAG)
 
 **Only run if `external_sources.enabled: true` in config.**
@@ -391,6 +441,7 @@ collected_data:
    📚 CONTRIBUTING.md: {x} sections
    🏗️  ARCHITECTURE.md: {y} sections
    💬 Inline annotations: {z}
+   🧩 Stack rules: {stack_list} ({rule_count} rules) or "none detected"
    🔌 MCP tools: {list or "none"}
    🧠 RAG patterns: {w}
 ```

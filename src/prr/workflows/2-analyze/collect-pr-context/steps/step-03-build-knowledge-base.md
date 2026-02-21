@@ -153,6 +153,52 @@ inline_context:
       content: "Validate all inputs before storage"
       priority: critical
 
+stack_context:
+  # Populated from data/stacks/{stack}.md files for each detected stack.
+  # All reviewers (GR, SR, PR, AR, BR) MUST read and apply these rules
+  # in addition to project-specific guidelines.
+  detected_stacks: [vue3, typescript]
+
+  rules:
+    vue3:
+      security:
+        - severity: critical
+          rule: "v-html with user-controlled data → XSS. Use {{ }} or DOMPurify."
+        - severity: high
+          rule: "Dynamic :is binding with user string → arbitrary component injection."
+      performance:
+        - severity: high
+          rule: "watchEffect/watch with async ops without onCleanup → memory leak on unmount."
+        - severity: medium
+          rule: "v-for without :key or using index key → broken reconciliation on reorder."
+      architecture:
+        - severity: high
+          rule: "Direct store state mutation outside action → bypasses Pinia devtools."
+        - severity: high
+          rule: "Props mutation instead of emit → violates one-way data flow."
+      code_quality:
+        - severity: high
+          rule: "defineProps without TypeScript types → silent prop misuse."
+        - severity: medium
+          rule: "Options API mixed with Composition API in same component."
+      common_bugs:
+        - severity: high
+          rule: "reactive() destructuring loses reactivity — use toRefs() to preserve it."
+        - severity: medium
+          rule: "watch missing immediate:true when logic should run on initial value."
+    typescript:
+      architecture:
+        - severity: high
+          rule: "'any' type defeats TypeScript purpose — use unknown + type narrowing."
+        - severity: high
+          rule: "strict:false or missing strict in tsconfig → implicit any, loose null checks."
+      code_quality:
+        - severity: high
+          rule: "@ts-ignore without explanation hides real bugs."
+        - severity: medium
+          rule: "Missing return type annotation on exported functions."
+    # ... additional detected stacks follow same pattern
+
 external_context:
   # Populated only when external_sources.enabled: true and tools were available
   mcp_tools_used: []              # e.g. ["confluence", "jira"]
