@@ -25,50 +25,9 @@ Then open your IDE in the installed project and use `/prr-master` to start.
 
 ## How It Works
 
-```
-  Your IDE (Claude Code / Cursor / Windsurf / ...)
-       │
-       │  /prr-master  or  /prr-quick
-       ▼
-  ┌─────────────────────────────────────────────────┐
-  │              PRR Master Agent                   │
-  │   reads _prr/ · routes to workflows             │
-  └────────────┬────────────────────────────────────┘
-               │
-       ┌───────▼────────┐
-       │  select-pr      │  git fetch · list PRs via platform CLI
-       │  (Step-file)    │  user selects PR/MR by number or branch
-       └───────┬────────┘
-               │  diff loaded into AI context
-       ┌───────▼────────┐
-       │  describe-pr   │  classify type · file-by-file walkthrough
-       └───────┬────────┘
-               │  automatic — no user input
-       ┌───────▼────────────────────────────────┐
-       │  collect-pr-context  (NEW)              │
-       │  analyze changed files → collect rules  │
-       │  ESLint · Prettier · CLAUDE.md · docs   │
-       │  inline annotations · external APIs     │
-       │  → pr-{branch}-context.yaml  (fresh)   │
-       └───────┬────────────────────────────────┘
-               │  context loaded by each reviewer
-       ┌───────▼────────────────────────────────┐
-       │  Review agents (parallel or sequential) │
-       │  GR · SR · PR · AR                     │
-       │  each reads instructions.xml            │
-       │  outputs structured findings            │
-       └───────┬────────────────────────────────┘
-               │
-       ┌───────▼────────┐
-       │  generate-report│  compile findings · sort by severity
-       │                 │  write .md to _prr-output/reviews/
-       └───────┬────────┘
-               │
-       ┌───────▼────────┐
-       │  post-comments  │  post inline comments via platform CLI
-       │  (optional)     │  GitHub · GitLab · Azure · Bitbucket
-       └────────────────┘
-```
+<p align="center">
+  <img src="docs/assets/how-it-works.svg" alt="How It Works" width="100%"/>
+</p>
 
 The framework installs into your project as a `_prr/` folder. Agents and workflows are Markdown/YAML files that your AI IDE reads and executes — no server, no background process, no API keys required beyond your IDE's AI.
 
@@ -86,7 +45,7 @@ output_folder: _prr-output
 review_output: /abs/path/_prr-output/reviews
 ```
 
-> `platform` defaults to `auto` — detects GitHub/GitLab/Azure/Bitbucket from the git remote URL.
+> `platform` defaults to `aut—o`  detects GitHub/GitLab/Azure/Bitbucket from the git remote URL.
 > `platform_repo` is required for PR listing (`gh pr list`, `glab mr list`, etc.) and posting inline comments.
 > Leave `platform_repo` empty to use local branch selection only.
 
