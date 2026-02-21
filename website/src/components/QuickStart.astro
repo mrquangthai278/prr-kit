@@ -90,14 +90,6 @@ const steps = [
         </div>
 
         <p class="text-xs text-white/40 leading-relaxed" id="step3-desc">One command runs the full pipeline — select PR, review, report.</p>
-
-        <!-- IDE-specific note -->
-        <div id="step3-note" style="display:none" class="mt-2.5 flex items-start gap-2 p-3 bg-white/3 border border-white/10 rounded-lg">
-          <svg class="w-3 h-3 text-white/30 flex-shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <p class="text-xs text-white/40 leading-relaxed" id="step3-note-text"></p>
-        </div>
       </div>
     </div>
 
@@ -227,8 +219,6 @@ const steps = [
     const codeEl = document.getElementById('step3-code')!;
     const descEl = document.getElementById('step3-desc')!;
     const copyBtn = document.getElementById('step3-copy') as HTMLButtonElement;
-    const noteEl = document.getElementById('step3-note') as HTMLElement;
-    const noteText = document.getElementById('step3-note-text')!;
     const badgeEl = document.getElementById('step3-ide-badge')!;
 
     // Update code — highlight slash command vs comment style
@@ -241,7 +231,8 @@ const steps = [
       codeEl.style.color = 'rgba(255,255,255,0.85)';
     }
 
-    descEl.innerHTML = cfg.desc.replace(/\n/g, '<br>');
+    const fullDesc = cfg.note ? `${cfg.desc}\n${cfg.note}` : cfg.desc;
+    descEl.innerHTML = fullDesc.replace(/\n/g, '<br>');
 
     // Update IDE badge
     const logoInfo = IDE_LOGOS[ide];
@@ -272,12 +263,6 @@ const steps = [
       copyBtn.style.display = 'none';
     }
 
-    if (cfg.note) {
-      noteEl.style.display = 'flex';
-      noteText.textContent = cfg.note;
-    } else {
-      noteEl.style.display = 'none';
-    }
   }
 
   // Initialize from localStorage (empty string = no IDE selected)

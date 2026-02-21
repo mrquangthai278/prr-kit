@@ -1,0 +1,1 @@
+import{o as e}from"./DOMUtils.xVoLgT47.js";const r=()=>{e('[data-id="w-spoiler"]',"click",o=>{const t=o.currentTarget;t.dataset.visible="true",t.removeAttribute("data-tooltip"),t.removeAttribute("role"),t.removeAttribute("tabindex")},!0)};e(document,"astro:after-swap",r);r();

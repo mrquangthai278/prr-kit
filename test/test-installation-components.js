@@ -42,17 +42,21 @@ async function main() {
     'prr/agents/performance-reviewer.agent.yaml',
     'prr/agents/architecture-reviewer.agent.yaml',
     'prr/data/review-types.csv',
-    'prr/workflows/0-setup/collect-project-context/workflow.md',
+    'prr/config-template.yaml',
     'prr/workflows/1-discover/select-pr/workflow.md',
     'prr/workflows/2-analyze/describe-pr/workflow.md',
+    'prr/workflows/2-analyze/collect-pr-context/workflow.md',
     'prr/workflows/3-review/general-review/workflow.yaml',
     'prr/workflows/3-review/security-review/workflow.yaml',
     'prr/workflows/3-review/performance-review/workflow.yaml',
     'prr/workflows/3-review/architecture-review/workflow.yaml',
+    'prr/workflows/3-review/business-review/instructions.xml',
     'prr/workflows/4-improve/improve-code/workflow.yaml',
     'prr/workflows/5-ask/ask-code/workflow.md',
     'prr/workflows/6-report/generate-report/workflow.md',
-    'prr/workflows/6-report/post-github-comments/workflow.md',
+    'prr/workflows/6-report/post-comments/workflow.md',
+    'prr/workflows/quick/workflow.md',
+    'core/tasks/clear.md',
   ];
 
   for (const rel of requiredSrcFiles) {
