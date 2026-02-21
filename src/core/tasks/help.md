@@ -6,15 +6,13 @@ Use `/prr-help` anytime for guidance on what to do.
 
 ### Typical Review Flow
 
-**First time on a new project (run once):**
-0. **[CP] Collect Project Context** — Scan configs, extract coding rules, capture domain knowledge
-
 **Per PR — Quick mode (1 command):**
-- **[QR] Quick Review** — Full pipeline: select branch → describe → all 4 reviews → report → optional GitHub post
+- **[QR] Quick Review** — Full pipeline: select branch → describe → collect context → all 4 reviews → report → optional post
 
 **Per PR — Manual mode (step by step):**
 1. **[SP] Select PR** — Fetch latest, list branches, choose what to review
 2. **[DP] Describe PR** — Auto-generate PR type, summary, file-by-file walkthrough
+   ↳ *Context collected automatically — fresh, PR-specific, no setup needed*
 3. **[GR/SR/PR/AR] Review** — Run one or more specialized reviews
 4. **[IC] Improve Code** — Get concrete code suggestions with inline fixes
 5. **[AK] Ask** — Ask specific questions about the code changes

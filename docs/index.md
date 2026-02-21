@@ -33,16 +33,19 @@ node tools/cli/prr-cli.js install \
 ## Review Workflow
 
 ```
-1. [SP] Select PR     — fetch + list branches + load diff
-2. [DP] Describe PR   — classify PR type + file walkthrough
-3. [GR] General Review
-   [SR] Security Review
-   [PR] Performance Review
-   [AR] Architecture Review
-4. [IC] Improve Code  — concrete BEFORE/AFTER suggestions
-5. [AK] Ask Code      — Q&A about specific changes
+1. [SP] Select PR          — fetch + list branches + load diff
+2. [DP] Describe PR        — classify PR type + file walkthrough
+   ↳ collect-pr-context    — auto: scan changed files → collect ESLint rules,
+                             CLAUDE.md, CONTRIBUTING.md, inline annotations
+                             → pr-{branch}-context.yaml (fresh, PR-specific)
+3. [GR] General Review     — uses PR-specific context
+   [SR] Security Review    — uses PR-specific context
+   [PR] Performance Review — uses PR-specific context
+   [AR] Architecture Review— uses PR-specific context
+4. [IC] Improve Code       — concrete BEFORE/AFTER suggestions
+5. [AK] Ask Code           — Q&A about specific changes
 6. [RR] Generate Report
-   [PC] Post Comments — post to GitHub PR via gh CLI
+   [PC] Post Comments      — post to GitHub PR via gh CLI
 ```
 
 Or run **[PM] Party Mode** to get all 4 reviewers in one session.

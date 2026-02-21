@@ -25,20 +25,27 @@ const steps = [
   },
   {
     step: '04',
-    command: 'GR · SR · PR · AR',
-    title: '4 Specialist Reviews',
-    description: 'Four agents run in parallel or sequence: General, Security, Performance, and Architecture. Each outputs structured findings.',
+    command: 'Auto · Collect Context',
+    title: 'PR-Specific Context',
+    description: 'Automatically collects fresh context for this PR: ESLint rules, CLAUDE.md, CONTRIBUTING.md, inline annotations — only what\'s relevant to changed files.',
     color: 'text-white',
   },
   {
     step: '05',
+    command: 'GR · SR · PR · AR',
+    title: '4 Specialist Reviews',
+    description: 'Four agents run in parallel or sequence: General, Security, Performance, and Architecture. Each uses the fresh PR-specific context.',
+    color: 'text-white',
+  },
+  {
+    step: '06',
     command: 'RR · Generate Report',
     title: 'Generate Report',
     description: 'All findings compiled into a Markdown report, sorted by severity (BLOCKER → WARNING → SUGGESTION → QUESTION).',
     color: 'text-white',
   },
   {
-    step: '06',
+    step: '07',
     command: 'PC · Post Comments',
     title: 'Post Inline Comments',
     description: 'Optionally post findings as inline code comments on the exact file and line — identical to a human reviewer experience.',
@@ -56,7 +63,7 @@ const steps = [
         How it works
       </h2>
       <p class="text-white/50 text-lg max-w-xl mx-auto">
-        A structured six-step pipeline from PR selection to inline comments, fully orchestrated by the master agent.
+        A structured pipeline from PR selection to inline comments — with automatic PR-specific context collection, fully orchestrated by the master agent.
       </p>
     </div>
 

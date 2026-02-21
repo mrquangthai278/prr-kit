@@ -43,7 +43,15 @@ Then open your IDE in the installed project and use `/prr-master` to start.
        ┌───────▼────────┐
        │  describe-pr   │  classify type · file-by-file walkthrough
        └───────┬────────┘
-               │
+               │  automatic — no user input
+       ┌───────▼────────────────────────────────┐
+       │  collect-pr-context  (NEW)              │
+       │  analyze changed files → collect rules  │
+       │  ESLint · Prettier · CLAUDE.md · docs   │
+       │  inline annotations · external APIs     │
+       │  → pr-{branch}-context.yaml  (fresh)   │
+       └───────┬────────────────────────────────┘
+               │  context loaded by each reviewer
        ┌───────▼────────────────────────────────┐
        │  Review agents (parallel or sequential) │
        │  GR · SR · PR · AR                     │
@@ -106,14 +114,13 @@ review_output: /abs/path/_prr-output/reviews
 /prr-quick    or    /prr-master → QR
 ```
 
-Runs automatically: **select PR → describe → all 4 reviews → generate report**
+Runs automatically: **select PR → describe → collect context → all 4 reviews → generate report**
 Only pauses once to ask which PR/branch to review.
 
 ### Manual mode — step by step
 
 | Code | Command | Description |
 |------|---------|-------------|
-| `CP` | Collect Project Context | Scan ESLint/tsconfig/docs, extract coding rules, capture domain knowledge — **run once per project** |
 | `SP` | Select PR | Fetch latest → list open PRs (via `gh`) or branches → select head + base → load diff |
 | `DP` | Describe PR | Classify PR type, generate summary, file-by-file walkthrough |
 | `GR` | General Review | Logic, naming, readability, DRY, best practices |
@@ -210,9 +217,8 @@ main-project/
 │   └── prr/
 │       ├── agents/    # 4 specialist reviewer agents
 │       └── workflows/
-│           ├── 0-setup/     # [CP] Collect Project Context
 │           ├── 1-discover/  # [SP] Select PR
-│           ├── 2-analyze/   # [DP] Describe PR
+│           ├── 2-analyze/   # [DP] Describe PR + collect-pr-context (auto)
 │           ├── 3-review/    # [GR] [SR] [PR] [AR] Reviews
 │           ├── 4-improve/   # [IC] Improve Code
 │           ├── 5-ask/       # [AK] Ask Code
