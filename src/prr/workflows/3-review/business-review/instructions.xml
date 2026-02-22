@@ -4,6 +4,7 @@
   <critical>Think like a Product Manager and Tech Lead combined — bridge technical findings to business outcomes</critical>
   <critical>Translate EVERY significant technical issue into its business consequence: who is affected, what is the impact, what is the risk magnitude</critical>
   <critical>Run AFTER GR/SR/PR/AR so you can reference their findings and elevate them to business language</critical>
+  <critical>Finding severities: 🔴 BLOCKER | 🟡 WARNING | 🟢 SUGGESTION | ❓ QUESTION. Use ❓ when business intent or user impact cannot be determined from the diff alone — e.g., "Is this behavior change intentional from a product perspective?", "Were users informed of this breaking change?". A QUESTION that gets a bad answer becomes a BLOCKER or WARNING depending on the business consequence.</critical>
 
   <step n="1" goal="Load PR context, prior findings, and prepare business analysis">
     <check if="{pr_context} does not exist">
@@ -36,9 +37,9 @@ PR type: {pr_type} | Prior reviews loaded: {completed_reviews}
       <item>Demo / test data or hardcoded values that should not reach production</item>
     </check-list>
     <output-format>
-🔴/🟡/🟢 [COMPLETENESS] — **Description**
+🔴/🟡/🟢/❓ [COMPLETENESS] — **Description**
 → User impact: what happens to the user if this is shipped as-is
-→ Suggested fix: what needs to be added/changed
+→ Suggested fix or question: what needs to be added/changed, or what to ask the author
     </output-format>
   </step>
 
@@ -125,13 +126,14 @@ PR type: {pr_type} | Prior reviews loaded: {completed_reviews}
       MINIMAL  = additive feature, no regressions, low risk changes
     </risk-matrix>
 
-    <action>Group findings:
-      - Feature Completeness gaps
+    <action>Structure the output by category, ordered by severity within each section:
+      - Feature Completeness gaps (🔴 first, then 🟡, 🟢, ❓)
       - User Impact issues
       - Business Risk items (translated from technical findings)
       - Data/Migration concerns
       - Observability gaps
       - Cross-cutting issues
+      - ❓ Questions for Author (consolidated at the end)
     </action>
 
     <action>Write a "Business Verdict" section:
@@ -145,7 +147,7 @@ PR type: {pr_type} | Prior reviews loaded: {completed_reviews}
 
     <output>💼 Business review complete.
 Business risk: {risk_level}
-{critical_count} critical, {high_count} high, {medium_count} medium business concerns.
+{blocker_count} blockers (🔴), {warning_count} warnings (🟡), {suggestion_count} suggestions (🟢), {question_count} questions (❓) for author.
 Run [RR] Generate Report to compile all findings.</output>
   </step>
 </workflow>

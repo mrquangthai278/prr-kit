@@ -7,7 +7,7 @@ nextStep: "./steps/step-01-load-reviewers.md"
 
 # Party Mode Workflow 🎉
 
-**Goal:** Simulate a multi-reviewer code review session where all specialized agents (General, Security, Performance, Architecture) each contribute their perspective on the PR, then debate any conflicting findings.
+**Goal:** Simulate a multi-reviewer code review session where all specialized agents (General, Security, Performance, Architecture, Business) each contribute their perspective on the PR, then debate any conflicting findings.
 
 ## WORKFLOW ARCHITECTURE
 
@@ -21,7 +21,7 @@ Use Party Mode when you want:
 - A comprehensive review from all angles in one session
 - Reviewers to challenge each other's findings
 - A realistic team code review feel
-- Faster than running all 4 reviews separately
+- Faster than running all 5 reviews separately
 
 ## INITIALIZATION
 

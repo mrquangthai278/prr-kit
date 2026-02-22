@@ -29,13 +29,33 @@ git -C {target_repo} fetch origin --prune
 ```
 Show: `✓ Fetched latest from remote`
 
-### 1b. List open PRs (primary) + recent branches (secondary)
+### 1b. List open PRs/MRs (primary) + recent branches (secondary)
 
-**Primary — GitHub PRs** (if `{github_repo}` is configured):
+**Primary — Platform PRs/MRs** (if `{platform_repo}` is configured):
+
+Use the appropriate command based on `{platform}` (or `{detected_platform}`):
+
+**GitHub:**
 ```bash
-gh pr list --repo {github_repo} --state open \
+gh pr list --repo {platform_repo} --state open \
   --json number,title,headRefName,baseRefName,author,createdAt,isDraft --limit 20
 ```
+
+**GitLab:**
+```bash
+glab mr list --repo {platform_repo} --state opened --output json
+```
+
+**Azure DevOps:**
+```bash
+az repos pr list --repository {repo} --project {project} --org {org_url} --status active --output json
+```
+
+**Bitbucket:**
+```bash
+curl https://api.bitbucket.org/2.0/repositories/{platform_repo}/pullrequests?state=OPEN
+```
+
 Display as a table: `#N | title | head → base | author | age`
 
 **Secondary — recent branches** (always):
@@ -45,29 +65,49 @@ git -C {target_repo} branch -r --sort=-committerdate \
   | head -15
 ```
 
-### 1c. Select PR ← **ONLY USER INPUT IN THIS WORKFLOW**
+### 1c. Select PR/MR ← **ONLY USER INPUT IN THIS WORKFLOW**
 
-**If `{github_repo}` is configured** — ask:
-> Select a PR to review:
-> Enter PR number (e.g. `44`) or branch name (e.g. `feature/my-feature`):
+**If `{platform_repo}` is configured** — ask:
+> Select a PR/MR to review:
+> Enter PR/MR number (e.g. `44`) or branch name (e.g. `feature/my-feature`):
 
 Wait for response.
 
-**If PR number entered:**
+**If PR/MR number entered**, fetch metadata using the active platform:
+
+**GitHub:**
 ```bash
-gh pr view {pr_number} --repo {github_repo} \
+gh pr view {pr_number} --repo {platform_repo} \
   --json number,title,headRefName,baseRefName,author,headRefOid
 ```
-Set `target_branch` = `headRefName`, `base_branch` = `baseRefName` ← **exact from GitHub, not assumed**.
+Set `target_branch` = `headRefName`, `base_branch` = `baseRefName` ← **exact from platform, not assumed**.
 Set `pr_head_sha` = `headRefOid`.
 
+**GitLab:**
+```bash
+glab mr view {pr_number} --repo {platform_repo} --output json
+```
+Set `target_branch` = `source_branch`, `base_branch` = `target_branch`.
+Get head SHA: `git -C {target_repo} rev-parse origin/{target_branch}` → `pr_head_sha`.
+
+**Azure DevOps:**
+```bash
+az repos pr show --id {pr_number} --output json
+```
+Set `target_branch` = `sourceRefName` (strip `refs/heads/`), `base_branch` = `targetRefName` (strip `refs/heads/`).
+
+**Bitbucket:**
+```bash
+curl https://api.bitbucket.org/2.0/repositories/{platform_repo}/pullrequests/{pr_number}
+```
+Set `target_branch` = `source.branch.name`, `base_branch` = `destination.branch.name`.
+
 **If branch name entered:**
-Check if a PR exists for it via `gh pr list --head {branch}`.
-If yes: use PR's `baseRefName`. If no: detect `origin/main` or `origin/master`.
+Check if a PR/MR exists for it on the platform. If yes: use its base branch. If no: detect `origin/main` or `origin/master`.
 
 ---
 
-**If `{github_repo}` is NOT configured** — ask two separate questions:
+**If `{platform_repo}` is NOT configured** — ask two separate questions:
 
 First, display EXACTLY:
 ```
@@ -92,11 +132,21 @@ Set `base_branch` = input or detected default.
 Set `diff_range` = `{base_branch}...{target_branch}`.
 
 ### 1d. Load diff
-```bash
-# If PR number available (preferred):
-gh pr diff {pr_number} --repo {github_repo}
 
-# Otherwise:
+Use the first available method based on platform:
+
+**GitHub** (if `active_platform = github` and `pr_number` is set):
+```bash
+gh pr diff {pr_number} --repo {platform_repo}
+```
+
+**GitLab** (if `active_platform = gitlab` and `pr_number` is set):
+```bash
+glab mr diff {pr_number} --repo {platform_repo}
+```
+
+**Azure DevOps / Bitbucket / fallback:**
+```bash
 git -C {target_repo} diff {base_branch}...{target_branch} --stat
 git -C {target_repo} diff {base_branch}...{target_branch}
 ```
@@ -105,9 +155,17 @@ Store diff in memory. Count files changed, lines added/removed.
 ### 1e. Save PR context
 Write `{review_output}/current-pr-context.yaml`:
 ```yaml
-target_branch: "{target_branch}"
-base_branch: "{base_branch}"
-date: "{date}"
+pr:
+  target_branch: "{target_branch}"
+  base_branch: "{base_branch}"
+  pr_number: "{pr_number}"
+  pr_title: "{pr_title}"
+  platform: "{active_platform}"
+  platform_repo: "{platform_repo}"
+  date: "{date}"
+review:
+  completed: []
+  findings: []
 ```
 
 Show summary:
@@ -122,7 +180,7 @@ Show summary:
 *Execute automatically, no user input.*
 
 ### 2a. Classify PR type
-Analyze the diff and classify as one of: `bugfix` | `feature` | `refactor` | `docs` | `test` | `chore` | `hotfix`
+Analyze the diff and classify as one of: `bugfix` | `feature` | `refactor` | `performance` | `security` | `docs` | `test` | `config` | `chore` | `hotfix`
 
 ### 2b. Generate walkthrough
 For each changed file, write a 1-2 sentence summary of what changed and why.
@@ -144,129 +202,72 @@ Print to screen:
 ---
 
 ## PHASE 2.5 — COLLECT PR-SPECIFIC CONTEXT
-*Execute automatically, no user input. This is the key innovation.*
+*Execute automatically, no user input.*
 
-**Goal:** Dynamically collect fresh context relevant only to THIS PR's changed files.
+Execute the collect-pr-context workflow in full:
+`{project-root}/_prr/prr/workflows/2-analyze/collect-pr-context/workflow.md`
 
-### 2.5a. Analyze changed files
-Determine:
-- File types and extensions (`.vue`, `.js`, `.ts`, etc.)
-- File categories (`pinia-store`, `vue-component`, `test`, etc.)
-- Affected domains (`state-management`, `ui-components`, `security`, `api`, etc.)
-- Inline code annotations (`@context:`, `@security:`, `@pattern:`, `@rule:`)
+This workflow analyzes changed files, detects technology stacks, collects relevant context from all sources (primary docs, config files, standards docs, inline annotations, stack-specific rules, external MCP/RAG tools), and builds a structured PR-specific knowledge base at `{review_output}/pr-{pr_number}-context.yaml`.
 
-### 2.5b. Collect relevant context
-From multiple sources based on files changed:
-
-**1. Primary documentation:**
-- `CLAUDE.md` - Extract sections matching domains
-- `AGENTS.md` - Extract agent-specific rules
-- `.github/CLAUDE_CODE_RULES.md`
-
-**2. Config files (based on file types):**
-- `.eslintrc*` - For `.vue`, `.js`, `.ts` files
-- `.prettierrc*` - For code files
-- `tsconfig.json` - For `.ts` files
-- `vite.config.*` / `webpack.config.*` - Build configs
-
-**3. Standards docs (based on domains):**
-- `CONTRIBUTING.md` - Extract relevant sections
-- `ARCHITECTURE.md` - Extract patterns for affected areas
-- `docs/{domain}-guidelines.md` - Domain-specific docs
-
-**4. Inline annotations:**
-Extract from changed lines:
-```javascript
-// @context: This module handles authentication
-// @security: All inputs must be validated
-// @pattern: Use repository pattern
-```
-
-**5. External sources (if configured):**
-- Company standards APIs
-- Confluence/Wiki pages
-
-**6. External tools (if `external_sources.enabled: true` and tools available in session):**
-- **MCP knowledge bases** (Confluence, Notion, Obsidian) → team standards and ADRs not in local docs
-- **MCP project management** (Jira, Linear, GitHub Issues) → linked issue, acceptance criteria from branch name
-- **MCP design tools** (Figma, Zeplin) → design specs for UI-touching PRs only
-- **RAG systems** (AWS Bedrock, GitHub Graph RAG, custom) → similar codebase patterns, past decisions
-- **URL sources** → plain remote docs fetched via WebFetch
-- Always graceful: skip silently if tool not available, never fail the workflow
-
-### 2.5c. Build PR-specific knowledge base
-Create structured context file: `{review_output}/pr-{pr_number}-context.yaml`
-
-Contains:
-- Files analysis (types, domains, categories)
-- Relevant ESLint/Prettier rules ONLY for these file types
-- Guidelines from docs relevant to changed domains
-- Inline annotations from code
-- External rules (if any)
-- Review priorities specific to this PR
-
-Show summary:
-```
-✅ PR-Specific Context Ready
-   📊 ESLint rules: {n} | Guidelines: {m} | Annotations: {k}
-   🎯 Domains: {domains}
-   📚 Sources: {source_count} (CLAUDE.md, .eslintrc.js, ARCHITECTURE.md, ...)
-
-   ✓ Context is fresh and PR-specific
-```
-
-**Why this phase matters:**
-- ✅ Context is always latest (no stale cached rules)
-- ✅ Only relevant rules (not entire project context)
-- ✅ Includes inline code annotations
-- ✅ No manual refresh needed
+On completion, store `pr_knowledge_base` = path to the generated context file.
 
 ---
 
 ## PHASE 3 — REVIEW
 *Execute all review types automatically, one by one.*
 
-For each review, read the corresponding instructions file and apply it to `{pr_diff}`.
-**Important:** Reviews now load `pr-{pr_number}-context.yaml` from Phase 2.5.
+**Before each review, set these variables so the review instructions resolve correctly:**
+- `pr_context` = `{review_output}/current-pr-context.yaml`
+- `target_branch` = `pr_context.pr.target_branch`
+- `base_branch` = `pr_context.pr.base_branch`
+- `pr_number` = `pr_context.pr.pr_number`
+- `pr_knowledge_base` = path stored in `pr_context` (set by Phase 2.5)
+- `target_repo`, `communication_language` = from config
+- `output_file` = per-review path defined below *(ensures findings are saved to disk for [RR] and [PC] later)*
 
 ### 3a. General Review
+Set `output_file` = `{review_output}/general-review-{date}.md`
 Load and follow: `{project-root}/_prr/prr/workflows/3-review/general-review/instructions.xml`
 
 Collect findings as `{general_findings}`.
 Print section header: `## 👁️ General Review`
 
 ### 3b. Security Review
+Set `output_file` = `{review_output}/security-review-{date}.md`
 Load and follow: `{project-root}/_prr/prr/workflows/3-review/security-review/instructions.xml`
 
 Collect findings as `{security_findings}`.
 Print section header: `## 🔒 Security Review`
 
 ### 3c. Performance Review
+Set `output_file` = `{review_output}/performance-review-{date}.md`
 Load and follow: `{project-root}/_prr/prr/workflows/3-review/performance-review/instructions.xml`
 
 Collect findings as `{performance_findings}`.
 Print section header: `## ⚡ Performance Review`
 
 ### 3d. Architecture Review
+Set `output_file` = `{review_output}/architecture-review-{date}.md`
 Load and follow: `{project-root}/_prr/prr/workflows/3-review/architecture-review/instructions.xml`
 
 Collect findings as `{architecture_findings}`.
 Print section header: `## 🏗️ Architecture Review`
 
 ### 3e. Business Review
+Set `output_file` = `{review_output}/business-review-{date}.md`
 Load and follow: `{project-root}/_prr/prr/workflows/3-review/business-review/instructions.xml`
 
 Collect findings as `{business_findings}`.
 Print section header: `## 💼 Business Review`
 
-**Note:** Business Review runs last so it can reference and translate findings from GR/SR/PR/AR into business language and user impact.
+**Note:** Business Review runs last — it references and translates findings from GR/SR/PR/AR into business language and user impact.
 
 ---
 
 ## PHASE 4 — GENERATE REPORT
 *Execute automatically.*
 
-Compile all findings from phases 3a–3d.
+Compile all findings from phases 3a–3e.
 
 Sort by severity: 🔴 Blockers first → 🟡 Warnings → 🟢 Suggestions → 📌 Questions.
 
@@ -287,12 +288,22 @@ Report format:
 **Type:** {pr_type} | **Files:** X | **Lines:** +Y/-Z
 
 ## Executive Summary
-{2-3 sentence overall quality assessment}
+{2-3 sentence overall technical quality assessment}
 
-**Totals:** 🔴 {blocker_count} blockers | 🟡 {warning_count} warnings | 🟢 {suggestion_count} suggestions
+**Verdict:** ✅ APPROVE / ⚠️ APPROVE WITH NOTES / 🚫 REQUEST CHANGES
+**Business Risk:** CRITICAL / HIGH / MEDIUM / LOW / MINIMAL  *(if Business Review ran)*
+
+**Totals:** 🔴 {blocker_count} blockers | 🟡 {warning_count} warnings | 🟢 {suggestion_count} suggestions | ❓ {question_count} questions
+
+## Business Impact 💼
+*(Include this section only if Business Review [3e] was completed)*
+**Risk Level:** {risk_level}
+**Top concerns:** {top_3_business_concerns}
+**Deployment recommendation:** {ship_now | ship_with_fixes | do_not_ship}
+**Post-ship monitoring:** {what_to_watch}
 
 ## Blockers 🔴
-{all blocker findings}
+{all blocker findings — sorted by category: 🔒 Security · ⚡ Performance · 🏗️ Architecture · 👁️ General · 💼 Business}
 
 ## Warnings 🟡
 {all warning findings}
@@ -301,10 +312,10 @@ Report format:
 {all suggestion findings}
 
 ## Questions 📌
-{all questions}
+{all questions for author}
 
 ## Files Reviewed
-{file list}
+{file list with issue counts per file; highlight files with 3+ findings}
 ```
 
 ---
@@ -331,7 +342,8 @@ Report:  {review_output}/review-{target_branch_slug}-{date}.md
 
 **If `auto_post_comment: false`** (default):
 → Ask:
-> Post these findings as inline comments to GitHub? (requires `gh` CLI and `github_repo` configured)
+> Post these findings as inline comments to the PR/MR? (requires platform CLI and `platform_repo` configured)
+> Supports: GitHub (`gh`), GitLab (`glab`), Azure DevOps (`az`), Bitbucket (API)
 > Type **PC** to post, or **Enter** to finish.
 
 If user types `PC`, load and follow: `{project-root}/_prr/prr/workflows/6-report/post-comments/workflow.md`

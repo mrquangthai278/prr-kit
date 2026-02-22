@@ -1,0 +1,238 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro'
+
+const toc = [
+  { label: 'Getting started', anchor: 'getting-started' },
+  { label: 'Review workflow', anchor: 'workflow' },
+  { label: 'Platforms & CLI', anchor: 'platforms' },
+  { label: 'Stack support', anchor: 'stacks' },
+  { label: 'Maintenance', anchor: 'maintenance' },
+]
+---
+
+<DocsLayout title="FAQ" toc={toc} icon={`<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`}>
+
+  <h2 id="getting-started">Getting started</h2>
+
+  <h3 id="faq-1">Q1. What is prr-kit and how is it different from tools like CodeRabbit?</h3>
+  <p>
+    prr-kit is a framework that turns your existing AI IDE (Claude Code, Cursor, Windsurf, etc.)
+    into a structured code reviewer. It installs a set of Markdown/YAML workflow files into your
+    project — your IDE's AI reads and executes them.
+  </p>
+  <p>
+    Unlike SaaS tools like CodeRabbit or Graphite, prr-kit:
+  </p>
+  <ul>
+    <li>Runs entirely inside your IDE — no external server, no background process</li>
+    <li>Requires no API key beyond what your IDE already uses</li>
+    <li>Uses 5 specialized reviewers (General, Security, Performance, Architecture, Business) instead of a single generic pass</li>
+    <li>Can read your project's own rules (<code>CLAUDE.md</code>, <code>CONTRIBUTING.md</code>, <code>.eslintrc</code>) and apply them during review</li>
+    <li>Works offline on local branches — no PR required</li>
+  </ul>
+
+  <h3 id="faq-2">Q2. Does prr-kit need an API key or a separate account?</h3>
+  <p>
+    No. prr-kit uses whatever AI is already running in your IDE session. If your IDE is connected
+    to Claude, GPT-4, Gemini, or any other model — prr-kit uses that. No extra keys, no signup,
+    no monthly fee for the framework itself.
+  </p>
+
+  <h3 id="faq-3">Q3. Which IDEs are supported?</h3>
+  <p>
+    Any AI IDE that can read Markdown and YAML workflow files. Tested with:
+    Antigravity, Auggie, Claude Code, Cline, Codex, Crush, Cursor, Gemini CLI,
+    GitHub Copilot, iFlow, Kilo, Kiro, OpenCode, QwenCoder, Roo Cline, Rovo Dev, Trae, Windsurf.
+  </p>
+
+  <h3 id="faq-4">Q4. How do I install prr-kit?</h3>
+  <p>Run the interactive installer inside your project repo:</p>
+  <pre><code>npx prr-kit install</code></pre>
+  <p>
+    It will prompt you for your name, language, output folder, and Git platform.
+    Everything is written automatically to <code>_prr/prr/config.yaml</code>.
+    Then open your IDE in that project and run <code>/prr-master</code> to start.
+  </p>
+
+  <h3 id="faq-5">Q5. What's the difference between <code>/prr-quick</code> and <code>/prr-master</code>?</h3>
+  <table>
+    <thead>
+      <tr><th></th><th><code>/prr-quick</code></th><th><code>/prr-master</code></th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>What it does</strong></td>
+        <td>Full pipeline in one command: select PR → describe → collect context → 5 reviews → report</td>
+        <td>Full menu of all commands — run any step individually</td>
+      </tr>
+      <tr>
+        <td><strong>Pauses</strong></td>
+        <td>Once — to ask which PR/branch to review</td>
+        <td>At every step — you control the sequence</td>
+      </tr>
+      <tr>
+        <td><strong>Best for</strong></td>
+        <td>Everyday reviews — fastest path from PR to report</td>
+        <td>Focused reviews — run only Security, or only Architecture, etc.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="workflow">Review workflow</h2>
+
+  <h3 id="faq-6">Q6. Can I review a local branch without opening a GitHub/GitLab PR?</h3>
+  <p>
+    Yes. When selecting a PR, you can type any branch name directly instead of choosing from the
+    platform PR list. prr-kit will diff it against the base branch using <code>git diff</code>
+    — no platform PR required.
+  </p>
+  <p>
+    In this mode, review findings are saved to <code>_prr-output/reviews/</code> only.
+    Posting inline comments to the platform is not available without a real PR number.
+  </p>
+
+  <h3 id="faq-7">Q7. What is Party Mode?</h3>
+  <p>
+    Party Mode (<code>[PM]</code>) runs all 5 reviewer agents in a single collaborative session —
+    General, Security, Performance, Architecture, and Business — back to back, sharing context.
+    Each reviewer sees the findings of the previous ones, so they can build on each other
+    instead of repeating the same observations.
+  </p>
+  <p>Use it when you want a deep, comprehensive review in one go.</p>
+
+  <h3 id="faq-8">Q8. What happens if I skip the <code>[DP] Describe PR</code> step?</h3>
+  <p>
+    Context collection runs automatically after <code>[DP]</code>. If you skip it and go straight
+    to a review, the reviewer agents won't have the PR knowledge base — no ESLint rules, no
+    standards docs, no external context. Reviews will still run but will be less accurate.
+  </p>
+  <p>Always run <code>[DP]</code> first, or use <code>/prr-quick</code> which handles this automatically.</p>
+
+  <h3 id="faq-9">Q9. How do I post review findings as inline comments on the PR?</h3>
+  <p>
+    Run <code>[PC] Post Comments</code> from the agent menu after generating a report.
+    You need <code>platform_repo</code> set in your config and the platform CLI installed:
+  </p>
+  <table>
+    <thead>
+      <tr><th>Platform</th><th>Required CLI</th><th>Auth command</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>GitHub</td><td><code>gh</code></td><td><code>gh auth login</code></td></tr>
+      <tr><td>GitLab</td><td><code>glab</code></td><td><code>glab auth login</code></td></tr>
+      <tr><td>Azure DevOps</td><td><code>az</code> + DevOps extension</td><td><code>az login</code></td></tr>
+      <tr><td>Bitbucket</td><td><code>bb</code> or <code>curl</code></td><td>—</td></tr>
+    </tbody>
+  </table>
+
+  <h3 id="faq-10">Q10. Can I run only one reviewer — e.g. only Security Review?</h3>
+  <p>
+    Yes. From <code>/prr-master</code>, select <code>[SR] Security Review</code> directly.
+    You still need to have run <code>[SP]</code> and <code>[DP]</code> first so the agent
+    has the diff and context loaded.
+  </p>
+
+  <h2 id="platforms">Platforms &amp; CLI</h2>
+
+  <h3 id="faq-11">Q11. Why does prr-kit need <code>gh</code> / <code>glab</code> CLI?</h3>
+  <p>
+    The platform CLI is only needed for two things: listing open PRs and posting inline comments.
+    If you don't need either of those, prr-kit works entirely via <code>git diff</code> — no CLI required.
+  </p>
+  <p>
+    Set <code>platform: none</code> in your config to explicitly run in local-only mode.
+  </p>
+
+  <h3 id="faq-12">Q12. Does prr-kit work with private repos?</h3>
+  <p>
+    Yes. prr-kit runs locally in your IDE — it never sends your code to a prr-kit server.
+    It uses your IDE's AI (which you've already authorized) and your platform CLI
+    (which uses your existing auth token). Private repos work exactly the same as public ones.
+  </p>
+
+  <h3 id="faq-13">Q13. I use Azure DevOps. Is anything different?</h3>
+  <p>
+    Set <code>platform: azure</code> and <code>platform_repo: org/project/repo</code>
+    (note the three-part format for Azure, vs two-part for GitHub/GitLab).
+    The <code>az</code> CLI with the Azure DevOps extension is required for PR listing and comment posting.
+  </p>
+  <pre><code>platform: azure
+platform_repo: "my-org/my-project/my-repo"</code></pre>
+
+  <h2 id="stacks">Stack support</h2>
+
+  <h3 id="faq-14">Q14. What languages and frameworks does prr-kit understand?</h3>
+  <p>
+    prr-kit ships with built-in rules for 47 stacks. A few examples:
+  </p>
+  <table>
+    <thead>
+      <tr><th>Category</th><th>Stacks</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Frontend</td><td>Vue 3, React, Angular, Svelte, Next.js, Nuxt.js, Astro, SolidJS, HTMX</td></tr>
+      <tr><td>Styling</td><td>TypeScript, Tailwind CSS, CSS</td></tr>
+      <tr><td>Backend — Node</td><td>NestJS, Express</td></tr>
+      <tr><td>Backend — Python</td><td>FastAPI, Django, Flask</td></tr>
+      <tr><td>Backend — JVM</td><td>Spring Boot, Java, Kotlin</td></tr>
+      <tr><td>Backend — Systems</td><td>C#, C++, Rust, Go</td></tr>
+      <tr><td>Database / ORM</td><td>SQL, Prisma, TypeORM, MongoDB, Redis</td></tr>
+      <tr><td>Infrastructure</td><td>Docker, Kubernetes, Terraform, GitHub Actions</td></tr>
+      <tr><td>Mobile</td><td>React Native, Flutter, Swift</td></tr>
+      <tr><td>Testing</td><td>Jest/Vitest, Playwright</td></tr>
+    </tbody>
+  </table>
+  <p>Each stack file contains rules across Security, Performance, Architecture, Code Quality, and Common Bugs — with severity labels <code>[CRITICAL]</code> / <code>[HIGH]</code> / <code>[MEDIUM]</code> / <code>[LOW]</code>.</p>
+
+  <h3 id="faq-15">Q15. How does prr-kit know which stack my project uses?</h3>
+  <p>
+    Automatically — no configuration needed. During context collection, the agent analyzes the
+    changed files in the PR: file extensions, import statements, and config files (e.g.
+    <code>package.json</code>, <code>pyproject.toml</code>) are used to detect the active stacks.
+    The relevant rule files are then loaded and injected into the review knowledge base.
+  </p>
+
+  <h3 id="faq-16">Q16. My stack isn't in the list. Can I add custom rules?</h3>
+  <p>
+    Yes. Add a <code>@context:</code> or <code>@rule:</code> annotation anywhere in your source code —
+    the agent extracts it during context collection and applies it during review:
+  </p>
+  <pre><code>// @rule: Always use the Result type for error handling in this module
+// @pattern: Use repository pattern for all database access</code></pre>
+  <p>
+    For project-wide rules, add them to <code>CLAUDE.md</code>, <code>AGENTS.md</code>,
+    or <code>CONTRIBUTING.md</code> — the agent reads these automatically.
+  </p>
+
+  <h2 id="maintenance">Maintenance</h2>
+
+  <h3 id="faq-17">Q17. How do I update prr-kit to the latest version?</h3>
+  <p>Run the installer again inside your project — it updates the installed files in <code>_prr/</code>:</p>
+  <pre><code>npx prr-kit@latest install</code></pre>
+  <p>Your <code>config.yaml</code> is preserved — the installer only updates workflow and agent files.</p>
+
+  <h3 id="faq-18">Q18. How do I reset review state and start fresh?</h3>
+  <p>
+    Run <code>[CL] Clear</code> from the agent menu. It removes context files and/or review reports
+    from your <code>review_output</code> folder. You can choose to clear just the context,
+    just the reports, or both.
+  </p>
+  <p>Alternatively, delete the files manually from <code>_prr-output/reviews/</code>.</p>
+
+  <h3 id="faq-19">Q19. Should I commit the <code>_prr/</code> folder to Git?</h3>
+  <p>
+    Yes — commit <code>_prr/</code> so the whole team shares the same workflow files and config.
+    Add <code>_prr-output/</code> to <code>.gitignore</code> to keep generated review reports
+    out of version control.
+  </p>
+  <pre><code># .gitignore
+_prr-output/</code></pre>
+
+  <h3 id="faq-20">Q20. Can multiple developers on the same team use prr-kit with different languages?</h3>
+  <p>
+    Yes. Each developer has their own <code>config.yaml</code> with their own <code>communication_language</code>.
+    Since <code>_prr/prr/config.yaml</code> is committed to Git, you can either: set a team default
+    language in the committed config, or have each developer maintain a local override.
+    Review output files are gitignored, so each developer's reports stay local.
+  </p>
+</DocsLayout>

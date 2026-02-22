@@ -94,7 +94,25 @@ done
 
 ---
 
-### 2. Verify
+### 2. Construct PR/MR URL
+
+Build `{pr_url}` from available variables based on `{active_platform}`:
+
+| Platform | URL pattern |
+|----------|------------|
+| `github` | `https://github.com/{platform_repo}/pull/{pr_number}` |
+| `gitlab` | `https://gitlab.com/{platform_repo}/-/merge_requests/{pr_number}` |
+| `azure` | `https://dev.azure.com/{org}/{project}/_git/{repo}/pullrequest/{pr_number}` |
+| `bitbucket` | `https://bitbucket.org/{platform_repo}/pull-requests/{pr_number}` |
+| `none` | *(not applicable)* |
+
+For Azure, extract `{org}`, `{project}`, `{repo}` from `{platform_repo}` (format: `org/project/repo`).
+
+If `{pr_number}` is empty (branch-only flow), set `{pr_url}` = *(not available)*.
+
+---
+
+### 3. Verify
 
 Confirm the post was successful.
 
@@ -120,7 +138,7 @@ az repos pr thread list --id {pr_number} --query "length(@)"
 
 ---
 
-### 3. Clean Up Temp Files
+### 4. Clean Up Temp Files
 
 ```bash
 rm -f "{temp_dir}/prr-payload.json" \
@@ -134,7 +152,7 @@ rm -f "{temp_dir}/prr-payload.json" \
 
 ---
 
-### 4. Display Completion
+### 5. Display Completion
 
 ```
 ✅ Review Posted!

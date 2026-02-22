@@ -12,7 +12,7 @@ stepsCompleted: []
 # Code Review Report: {{pr_title}}
 
 **PR:** `{{target_branch}}` → `{{base_branch}}`
-{{#if pr_number}}**GitHub PR #{{pr_number}}** | {{/if}}**Date:** {{date}} | **Reviewer:** {{user_name}}
+{{#if pr_number}}**PR/MR #{{pr_number}}** | {{/if}}**Date:** {{date}} | **Reviewer:** {{user_name}}
 
 ---
 

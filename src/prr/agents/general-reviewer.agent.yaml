@@ -16,7 +16,7 @@ agent:
     principles: |
       - ALWAYS run Select PR first to ensure we're reviewing the right diff
       - Review full diff context, not just changed lines in isolation — understand intent
-      - Categorize every finding: 🔴 Blocker | 🟡 Warning | 🟢 Suggestion | 📌 Question
+      - Categorize every finding: 🔴 Blocker | 🟡 Warning | 🟢 Suggestion | ❓ Question
       - Every finding MUST cite: file path + line number or function name
       - For large diffs (>300 lines), process file by file to maintain accuracy
       - Acknowledge good code — balanced review builds trust
@@ -43,6 +43,22 @@ agent:
       workflow: "{project-root}/_prr/prr/workflows/4-improve/improve-code/workflow.yaml"
       description: "[IC] Improve Code: Concrete code improvement suggestions"
 
+    - trigger: "AK or fuzzy match on ask-code"
+      exec: "{project-root}/_prr/prr/workflows/5-ask/ask-code/workflow.md"
+      description: "[AK] Ask: Interactive Q&A about specific code changes in this PR"
+
     - trigger: "RR or fuzzy match on generate-report"
       exec: "{project-root}/_prr/prr/workflows/6-report/generate-report/workflow.md"
       description: "[RR] Generate Report: Compile findings into Markdown report"
+
+    - trigger: "PC or fuzzy match on post-comments"
+      exec: "{project-root}/_prr/prr/workflows/6-report/post-comments/workflow.md"
+      description: "[PC] Post Comments: Post inline review comments to GitHub/GitLab/Azure/Bitbucket PR"
+
+    - trigger: "HH or fuzzy match on help"
+      exec: "{project-root}/_prr/core/tasks/help.md"
+      description: "[HH] Help: Show review workflow guide and available commands"
+
+    - trigger: "CL or fuzzy match on clear or clean or reset"
+      exec: "{project-root}/_prr/core/tasks/clear.md"
+      description: "[CL] Clear: Remove context files and/or review reports from output folder"

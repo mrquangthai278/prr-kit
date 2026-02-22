@@ -1,0 +1,549 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro'
+
+const toc = [
+  { label: '1. config.yaml overview', anchor: 'overview' },
+  { label: '2. Core options', anchor: 'core' },
+  { label: '3. Context collection', anchor: 'context' },
+  { label: '4. External sources', anchor: 'external' },
+  { label: '5. Review output', anchor: 'output' },
+  { label: '6. Examples', anchor: 'examples' },
+  { label: '7. FAQs', anchor: 'faqs' },
+]
+---
+
+<DocsLayout title="Configuration" toc={toc} icon={`<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>`}>
+  <p>
+    All configuration lives in <code>_prr/prr/config.yaml</code>. The installer writes this file
+    automatically during setup. You can edit it at any time.
+  </p>
+
+  <h2 id="overview">1. config.yaml overview</h2>
+  <pre><code>user_name: YourName
+communication_language: English
+project_name: my-project
+target_repo: .
+platform: auto
+platform_repo: "owner/repo"
+review_output: /abs/path/_prr-output/reviews
+auto_post_comment: false
+
+context_collection:
+  enabled: true
+  mode: pr-specific
+
+external_sources:
+  enabled: false</code></pre>
+
+  <h2 id="core">2. Core options</h2>
+  <table>
+    <thead>
+      <tr><th>Option</th><th>Default</th><th>Example</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>user_name</code></td>
+        <td><em>set during install</em></td>
+        <td><code>Alice</code></td>
+        <td>Your name, used in review reports and comments</td>
+      </tr>
+      <tr>
+        <td><code>communication_language</code></td>
+        <td><code>English</code></td>
+        <td><code>Vietnamese</code></td>
+        <td>Language for all reviewer agent responses. Any natural language works: <code>English</code>, <code>Vietnamese</code>, <code>Japanese</code>, <code>French</code>, etc.</td>
+      </tr>
+      <tr>
+        <td><code>project_name</code></td>
+        <td><em>directory name</em></td>
+        <td><code>acme-backend</code></td>
+        <td>Display name used in reports (cosmetic only)</td>
+      </tr>
+      <tr>
+        <td><code>target_repo</code></td>
+        <td><code>.</code></td>
+        <td><code>../my-app</code></td>
+        <td>Path to the repository being reviewed. Use <code>.</code> if config is inside the repo, or a relative/absolute path to review a different repo</td>
+      </tr>
+      <tr>
+        <td><code>platform</code></td>
+        <td><code>auto</code></td>
+        <td><code>github</code></td>
+        <td>
+          Git platform. <code>auto</code> detects from the git remote URL automatically.<br/>
+          Options: <code>auto</code>, <code>github</code>, <code>gitlab</code>, <code>azure</code>, <code>bitbucket</code>, <code>none</code>
+        </td>
+      </tr>
+      <tr>
+        <td><code>platform_repo</code></td>
+        <td><em>optional</em></td>
+        <td><code>acme/backend-api</code></td>
+        <td>Repository slug in <code>owner/repo</code> format. Required for PR listing and inline comment posting. Leave blank for local-only mode (git diff only)</td>
+      </tr>
+      <tr>
+        <td><code>review_output</code></td>
+        <td><em>set during install</em></td>
+        <td><code>./_prr-output/reviews</code></td>
+        <td>Path where Markdown review reports and context files are saved</td>
+      </tr>
+      <tr>
+        <td><code>auto_post_comment</code></td>
+        <td><code>false</code></td>
+        <td><code>true</code></td>
+        <td>Set to <code>true</code> to auto-post findings after every review — skips the PC prompt in quick workflow</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="context">3. Context collection</h2>
+  <p>
+    After describing the PR, the agent automatically collects fresh context relevant to the changed files.
+    This context is loaded by all reviewer agents. Collection happens in three steps:
+  </p>
+  <ol>
+    <li><strong>Analyze changed files</strong> — detect file types, categories (<code>vue-component</code>, <code>pinia-store</code>, etc.) and domains (<code>authentication</code>, <code>state-management</code>, etc.)</li>
+    <li><strong>Collect from matching sources</strong> — only sources relevant to the changed files and domains are read</li>
+    <li><strong>Build knowledge base</strong> — written to <code>pr-&#123;branch&#125;-context.yaml</code>, loaded by all reviewers</li>
+  </ol>
+
+  <pre><code>context_collection:
+  enabled: true
+  mode: pr-specific</code></pre>
+
+  <table>
+    <thead>
+      <tr><th>Option</th><th>Example</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>enabled</code></td>
+        <td><code>true</code></td>
+        <td>Set to <code>false</code> to disable automatic context collection entirely</td>
+      </tr>
+      <tr>
+        <td><code>mode</code></td>
+        <td><code>pr-specific</code></td>
+        <td>Only supported value: <code>pr-specific</code> — always fresh context per PR, never cached</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>3.1 What the agent collects</h3>
+  <p>The following sources are read automatically — no configuration needed. They are listed here so you know what to include in your project:</p>
+  <table>
+    <thead>
+      <tr><th>Source</th><th>What the agent reads</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Primary docs</strong></td>
+        <td><code>CLAUDE.md</code>, <code>AGENTS.md</code>, <code>.github/CLAUDE_CODE_RULES.md</code>, <code>.clauderules</code> — project-wide coding standards and agent instructions</td>
+      </tr>
+      <tr>
+        <td><strong>Config files</strong></td>
+        <td>Matched to changed file types: <code>.eslintrc*</code>, <code>.prettierrc*</code>, <code>tsconfig.json</code>, <code>vite.config.*</code>, <code>webpack.config.*</code>, <code>pyproject.toml</code>, <code>.flake8</code></td>
+      </tr>
+      <tr>
+        <td><strong>Standards docs</strong></td>
+        <td><code>CONTRIBUTING.md</code>, <code>ARCHITECTURE.md</code>, domain-specific docs under <code>docs/</code></td>
+      </tr>
+      <tr>
+        <td><strong>Inline annotations</strong></td>
+        <td><code>@context:</code>, <code>@security:</code>, <code>@pattern:</code>, <code>@rule:</code> comments extracted from changed files</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>3.2 Inline annotation example</h3>
+  <p>Add these tags anywhere in your source code — the agent extracts them automatically during context collection:</p>
+  <pre><code>// @context: This module handles user authentication
+// @security: All inputs must be validated before storage
+// @pattern: Use repository pattern for data access
+// @rule: ESLint vue/multi-word-component-names must be followed</code></pre>
+
+  <h2 id="external">4. External sources</h2>
+  <p>
+    When enabled, the agent queries external tools for additional context — such as related tickets,
+    design specs, or internal documentation. All external sources fail silently if unavailable.
+  </p>
+  <pre><code>external_sources:
+  enabled: false               # set true to activate MCP + RAG enrichment
+
+  mcp:
+    enabled: true
+    intents:
+      - knowledge_base         # Confluence, Notion → team standards, ADRs
+      - project_management     # Jira, Linear → linked issue + acceptance criteria
+      - design                 # Figma, Zeplin → design specs (UI PRs only)
+      # - code_intelligence    # Sourcegraph → similar patterns
+    hints:
+      branch_issue_pattern: "([A-Z]+-\\d+)"
+
+  rag:
+    enabled: false
+    intents:
+      - similar_patterns       # find similar code patterns in codebase
+      - past_decisions         # previous review decisions for similar code
+      # - architecture_examples
+
+  sources: []
+  # sources:
+  #   - type: url
+  #     name: Shared ESLint config
+  #     url: https://raw.githubusercontent.com/org/standards/main/eslint.md</code></pre>
+
+  <table>
+    <thead>
+      <tr><th>Option</th><th>Example</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>enabled</code></td>
+        <td><code>true</code></td>
+        <td>Master toggle. Set to <code>true</code> to activate MCP + RAG enrichment</td>
+      </tr>
+      <tr>
+        <td><code>mcp.enabled</code></td>
+        <td><code>true</code></td>
+        <td>Enable or disable MCP tool usage independently of the master toggle</td>
+      </tr>
+      <tr>
+        <td><code>mcp.intents</code></td>
+        <td><code>[knowledge_base, project_management]</code></td>
+        <td>Declare what kinds of external context you want. The agent discovers available MCP tools in the session and only uses those matching a declared intent. See intent table below</td>
+      </tr>
+      <tr>
+        <td><code>hints</code></td>
+        <td>see below</td>
+        <td>Open-ended key-value map passed as context to the agent when querying MCP tools. Add any hints that help narrow tool queries for your project. <code>branch_issue_pattern</code> is the one hint with built-in handling — all others are read as free-form context</td>
+      </tr>
+      <tr>
+        <td><code>hints.branch_issue_pattern</code></td>
+        <td><code>([A-Z]+-\d+)</code></td>
+        <td>Regex applied to the branch name to extract a PM issue key. e.g. <code>feature/ENG-123-auth</code> → <code>ENG-123</code>, which is then fetched via the PM tool. This is the only hint with explicit built-in handling</td>
+      </tr>
+      <tr>
+        <td><code>rag.enabled</code></td>
+        <td><code>true</code></td>
+        <td>Set to <code>true</code> if you have a RAG tool available in the session. When enabled, the agent queries the RAG system for all declared intents automatically</td>
+      </tr>
+      <tr>
+        <td><code>rag.intents</code></td>
+        <td><code>[similar_patterns, past_decisions]</code></td>
+        <td>
+          Hints telling the agent what to retrieve from the RAG system. Unlike <code>mcp.intents</code> (which filters tool usage), these are guidance — remove intents you don't want the agent to query for.<br/>
+          Values: <code>similar_patterns</code>, <code>past_decisions</code>, <code>architecture_examples</code>
+        </td>
+      </tr>
+      <tr>
+        <td><code>sources[].type</code></td>
+        <td><code>url</code></td>
+        <td>Only supported value: <code>url</code> — fetched directly via WebFetch, no MCP tool required. Always active when <code>enabled: true</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>4.1 MCP intents</h3>
+  <p>The agent auto-discovers whatever tools are available in the session and only uses those whose category matches a declared intent.</p>
+  <table>
+    <thead>
+      <tr><th>Intent</th><th>Tool examples</th><th>What it provides</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>knowledge_base</code></td>
+        <td>Confluence MCP, Notion MCP</td>
+        <td>Team standards, ADRs, policies not in local docs</td>
+      </tr>
+      <tr>
+        <td><code>project_management</code></td>
+        <td>Jira MCP, Linear MCP, GitHub Issues MCP</td>
+        <td>Linked issue + acceptance criteria (extracted from branch name via <code>branch_issue_pattern</code>)</td>
+      </tr>
+      <tr>
+        <td><code>design</code></td>
+        <td>Figma MCP, Zeplin MCP</td>
+        <td>Design specs for UI-touching PRs</td>
+      </tr>
+      <tr>
+        <td><code>code_intelligence</code></td>
+        <td>Sourcegraph MCP</td>
+        <td>Similar code patterns in the codebase</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>4.2 hints — open-ended context for MCP tools</h3>
+  <p>
+    <code>hints</code> is an open-ended key-value map. The agent reads the entire map as context
+    when querying MCP tools, so you can add any key-value pairs that help narrow tool queries for your project.
+    Only <code>branch_issue_pattern</code> has explicit built-in handling — all other hints are
+    free-form context the agent uses at its discretion.
+  </p>
+  <pre><code>hints:
+  branch_issue_pattern: "([A-Z]+-\\d+)"  # built-in: extract issue key from branch name
+  confluence_space: ENG                   # free-form: agent uses this to narrow Confluence searches
+  jira_project: PROJ                      # free-form: agent uses this to narrow Jira searches
+  figma_team: acme-design                 # free-form: agent uses this to scope Figma queries
+  # any other key-value pair your tools need</code></pre>
+
+  <h3>4.3 Branch issue key extraction</h3>
+  <p>When <code>project_management</code> is in your intents and <code>hints.branch_issue_pattern</code> is set, the agent extracts the issue key from the branch name and fetches the full ticket:</p>
+  <pre><code>branch:   feature/ENG-123-add-auth
+pattern:  ([A-Z]+-\d+)
+→ fetches: ENG-123
+→ extracts: title, description, acceptance criteria
+→ used as review checklist</code></pre>
+
+  <h3>4.4 RAG intents</h3>
+  <p>
+    If a RAG tool (AWS Bedrock knowledge base, GitHub Graph RAG, custom vector DB) is available and <code>rag.enabled: true</code>,
+    the agent queries it using the declared intents as guidance. Unlike MCP intents, RAG intents are hints —
+    the agent queries for all of them automatically when RAG is enabled.
+  </p>
+  <table>
+    <thead>
+      <tr><th>Intent</th><th>What it queries</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>similar_patterns</code></td>
+        <td>Similar implementations of the same domain in the codebase</td>
+      </tr>
+      <tr>
+        <td><code>past_decisions</code></td>
+        <td>Previous review decisions for similar code — avoids repeating findings</td>
+      </tr>
+      <tr>
+        <td><code>architecture_examples</code></td>
+        <td>Architecture docs embedded in the vector store</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>4.5 URL sources</h3>
+  <pre><code>sources:
+  - type: url
+    name: Shared ESLint standards
+    url: https://raw.githubusercontent.com/acme/standards/main/eslint.md
+  - type: url
+    name: Security guidelines
+    url: https://wiki.company.com/public/security-standards</code></pre>
+
+  <div class="docs-callout">
+    <strong>Graceful degradation:</strong> All external sources fail silently — if a tool is unavailable or returns empty results, the review continues with local context only. The workflow never fails because of an external source.
+  </div>
+
+  <h2 id="output">5. Review output</h2>
+  <p>
+    All output is written to the path specified in <code>review_output</code>.
+  </p>
+  <table>
+    <thead>
+      <tr><th>File</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>current-pr-context.yaml</code></td>
+        <td>Active session state — which PR is selected, reviews completed</td>
+      </tr>
+      <tr>
+        <td><code>pr-&#123;branch&#125;-context.yaml</code></td>
+        <td>Per-PR knowledge base built during context collection</td>
+      </tr>
+      <tr>
+        <td><code>review-&#123;branch&#125;-&#123;date&#125;.md</code></td>
+        <td>Final review report with all findings sorted by severity</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="docs-callout">
+    <strong>Tip:</strong> Add <code>_prr-output/</code> to your <code>.gitignore</code> to keep
+    generated review reports out of version control. Use <code>[CL] Clear</code> from the agent menu
+    to remove context files when starting fresh.
+  </div>
+
+  <h2 id="examples">6. Examples</h2>
+
+  <h3>6.1 Minimal config (local-only)</h3>
+  <pre><code>user_name: Alice
+communication_language: English
+target_repo: .
+review_output: ./_prr-output/reviews
+
+context_collection:
+  enabled: true
+  mode: pr-specific
+
+external_sources:
+  enabled: false</code></pre>
+
+  <h3>6.2 Full config (with MCP + GitHub)</h3>
+  <pre><code>user_name: Alice
+communication_language: English
+project_name: acme-backend
+target_repo: .
+platform: github
+platform_repo: "acme/backend-api"
+review_output: /home/alice/projects/acme/_prr-output/reviews
+
+context_collection:
+  enabled: true
+  mode: pr-specific
+
+external_sources:
+  enabled: true
+  mcp:
+    enabled: true
+    intents: [knowledge_base, project_management, design]
+    hints:
+      branch_issue_pattern: "([A-Z]+-\\d+)"
+  rag:
+    enabled: false
+    intents: [similar_patterns, past_decisions]
+  sources:
+    - type: url
+      name: Shared ESLint standards
+      url: https://raw.githubusercontent.com/acme/standards/main/eslint.md</code></pre>
+
+  <h2 id="faqs">7. FAQs</h2>
+
+  <h3 id="faq-1">Q1. How do I get review output in my language instead of English?</h3>
+  <p>Set <code>communication_language</code> to any natural language:</p>
+  <pre><code>communication_language: Vietnamese   # or Japanese, French, Korean, etc.</code></pre>
+
+  <h3 id="faq-2">Q2. I want the agent to fetch the Jira ticket before reviewing. What do I need?</h3>
+  <p>Three things:</p>
+  <ol>
+    <li>Install a Jira MCP server in your IDE</li>
+    <li>Add <code>project_management</code> to <code>mcp.intents</code></li>
+    <li>Set <code>branch_issue_pattern</code> if your branch names include the ticket key</li>
+  </ol>
+  <pre><code>external_sources:
+  enabled: true
+  mcp:
+    enabled: true
+    intents:
+      - project_management
+    hints:
+      branch_issue_pattern: "([A-Z]+-\\d+)"  # e.g. feature/ENG-123-auth → ENG-123</code></pre>
+
+  <h3 id="faq-3">Q3. My team uses Linear (or GitHub Issues), not Jira. Does it still work?</h3>
+  <p>
+    Yes. prr-kit does not hardcode any specific tool. As long as a tool matching the <code>project_management</code>
+    category is available in your session (Linear MCP, GitHub Issues MCP, etc.), the agent will use it.
+    No extra config needed.
+  </p>
+
+  <h3 id="faq-4">Q4. I want the agent to read Figma design specs when reviewing UI PRs. How?</h3>
+  <p>Install a Figma MCP server in your IDE, then add <code>design</code> to <code>mcp.intents</code>:</p>
+  <pre><code>external_sources:
+  enabled: true
+  mcp:
+    enabled: true
+    intents:
+      - design</code></pre>
+  <p>The agent will automatically search Figma only when the PR touches UI files (<code>.vue</code>, <code>.tsx</code>, <code>.css</code>, etc.) — it skips design lookup for backend-only PRs.</p>
+
+  <h3 id="faq-5">Q5. What exactly does <code>branch_issue_pattern</code> do?</h3>
+  <p>
+    It's a regex applied to your branch name to extract a ticket key, which is then fetched from
+    your PM tool (Jira, Linear, etc.) to get the ticket title, description, and acceptance criteria.
+    The agent uses the acceptance criteria as a review checklist — verifying that the implementation
+    matches what was actually requested.
+  </p>
+  <pre><code># Branch: feature/ENG-123-add-auth
+# Pattern: ([A-Z]+-\d+)
+# → fetches ticket ENG-123 → uses acceptance criteria as review checklist</code></pre>
+  <p>
+    If your branch names don't follow a pattern with a ticket key (e.g. <code>feature/add-auth</code>),
+    you can omit this field — the agent will skip ticket lookup silently.
+  </p>
+
+  <h3 id="faq-6">Q6. What's the difference between <code>mcp.intents</code> and <code>rag.intents</code>?</h3>
+  <table>
+    <thead>
+      <tr><th></th><th><code>mcp.intents</code></th><th><code>rag.intents</code></th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Role</strong></td>
+        <td>Hard filter — agent only uses MCP tools whose category matches a declared intent</td>
+        <td>Guidance — agent queries the RAG system for all declared intents when <code>rag.enabled: true</code></td>
+      </tr>
+      <tr>
+        <td><strong>Remove an intent</strong></td>
+        <td>That tool category will not be called at all</td>
+        <td>Agent will not query for that type of information</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 id="faq-7">Q7. What is RAG and when do I need it?</h3>
+  <p>
+    RAG (Retrieval-Augmented Generation) lets the agent search a vector database — pre-loaded with
+    your codebase, past review decisions, and architecture docs — before reviewing. This gives it
+    memory of past decisions so it doesn't repeat findings the team has already accepted, and it
+    can compare new code against established patterns in your codebase.
+  </p>
+  <p>
+    You need it if: your team is large, your codebase has years of history, or you want the agent
+    to be aware of past architectural decisions. If you haven't set up a vector database (AWS Bedrock,
+    GitHub Graph RAG, Pinecone, etc.), keep <code>rag.enabled: false</code>.
+  </p>
+
+  <h3 id="faq-8">Q8. I've set up an AWS Bedrock Knowledge Base. How do I connect it?</h3>
+  <ol>
+    <li>Install the AWS Bedrock MCP server in your IDE and configure your AWS credentials</li>
+    <li>Enable RAG in prr-kit config:</li>
+  </ol>
+  <pre><code>external_sources:
+  enabled: true
+  rag:
+    enabled: true
+    intents:
+      - similar_patterns
+      - past_decisions
+      - architecture_examples</code></pre>
+  <p>The agent auto-discovers the Bedrock MCP tool in the session and queries your Knowledge Base before each review.</p>
+
+  <h3 id="faq-9">Q9. Can I add my own custom hints beyond <code>branch_issue_pattern</code>?</h3>
+  <p>
+    Yes. <code>hints</code> is an open-ended map — add any key-value pairs and the agent will
+    read them as context when querying MCP tools:
+  </p>
+  <pre><code>hints:
+  branch_issue_pattern: "([A-Z]+-\\d+)"
+  confluence_space: ENG        # agent uses this to narrow Confluence searches
+  jira_project: PROJ           # agent uses this to narrow Jira searches
+  figma_team: acme-design      # agent uses this to scope Figma queries</code></pre>
+  <p>
+    Only <code>branch_issue_pattern</code> has explicit built-in handling. All other hints are
+    free-form context the agent uses at its discretion when querying tools.
+  </p>
+
+  <h3 id="faq-10">Q10. What if no MCP tools are available in my session?</h3>
+  <p>
+    Nothing breaks. All external sources fail silently — the review continues with local context
+    only (diff, config files, standards docs, inline annotations). The workflow never fails
+    because of a missing tool.
+  </p>
+
+  <h3 id="faq-11">Q11. I want to review a repo in a different folder than my config. How?</h3>
+  <p>Set <code>target_repo</code> to a relative or absolute path pointing to the other repo:</p>
+  <pre><code># config lives in: /home/alice/tools/_prr/prr/config.yaml
+# repo to review:  /home/alice/projects/my-app
+
+target_repo: /home/alice/projects/my-app
+# or relative:
+target_repo: ../../projects/my-app</code></pre>
+
+  <h3 id="faq-12">Q12. Should I enable <code>auto_post_comment</code>?</h3>
+  <p>
+    Only if you trust the output enough to post without reviewing it first.
+    With <code>auto_post_comment: false</code> (default), you see the findings first and decide
+    whether to post. With <code>true</code>, findings are posted to the PR automatically after
+    every review — no confirmation prompt.
+  </p>
+  <p>Recommendation: start with <code>false</code>, switch to <code>true</code> once you're comfortable with the quality of reviews.</p>
+</DocsLayout>

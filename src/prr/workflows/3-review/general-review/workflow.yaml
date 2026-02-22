@@ -14,5 +14,4 @@ instructions: "{installed_path}/instructions.xml"
 validation: "{installed_path}/checklist.md"
 
 pr_context: "{review_output}/current-pr-context.yaml"
-project_context: "{review_output}/project-context.yaml"
 output_file: "{review_output}/general-review-{date}.md"

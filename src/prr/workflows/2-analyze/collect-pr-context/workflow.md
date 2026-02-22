@@ -55,19 +55,36 @@ Extract from changed files:
 - `@rule:` - Specific rules
 
 ### 5. Stack-Specific Rules (automatic)
-Loaded from `_prr/prr/data/stacks/{stack}.md` based on detected technology:
-- **Frontend**: vue3, react, angular, svelte, nextjs, nuxtjs
-- **Styling**: typescript, tailwindcss, css
-- **Backend — Node.js**: nestjs, expressjs
-- **Backend — Python**: fastapi, django, flask, python
-- **Backend — Java/Go/PHP/Ruby**: spring-boot, go, laravel, rails
-- **Database / ORM**: sql, prisma, typeorm, mongodb
-- **Testing**: jest-vitest
-- **Infrastructure**: docker
-- **API Layer**: graphql
-- **Mobile**: react-native
+Loaded from `_prr/prr/data/stacks/{stack}.md` based on detected technology. Detection is automatic from file extensions, imports, and config files — see `step-01-analyze-files.md` for full detection logic.
+
+**Frontend Frameworks:** vue3, react, angular, svelte, nextjs, nuxtjs, astro, solidjs, htmx, qwik
+**Styling:** typescript, tailwindcss, css, sass, styled-components
+**State Management:** redux, mobx, zustand
+**Backend — Node.js:** nestjs, expressjs, fastify, hono
+**Backend — Python:** fastapi, django, flask, python
+**Backend — Java:** spring-boot, java
+**Backend — JVM:** kotlin, scala
+**Backend — .NET:** csharp
+**Backend — Systems:** cpp, rust, zig
+**Backend — Functional:** elixir, phoenix, haskell
+**Backend — Scripting:** go, gin, fiber, actix, axum, lua, bash, php, laravel, rails
+**Database / ORM:** sql, postgresql, mysql, sqlite, mongodb, redis, dynamodb, prisma, typeorm, sequelize, drizzle
+**BaaS / Cloud:** firebase, supabase, aws-cdk
+**Testing — Unit/Integration:** jest-vitest, pytest, junit, playwright, cypress
+**Infrastructure:** docker, kubernetes, helm, terraform, github-actions, ansible, nginx
+**API Layer:** graphql, grpc, trpc, apollo, socket-io
+**Mobile:** react-native, flutter, expo, android, swift
+**Desktop:** electron, tauri
+**Runtime:** deno, bun, node
+**Game Dev:** unity, unreal, godot, phaser, bevy, babylonjs, opengl, vulkan, libgdx, love2d, monogame, pygame
+**AI/ML:** langchain, openai-api, pytorch, scikit-learn
+**Web Components:** lit, htmx
+**Blockchain:** solidity
+**Systems/WASM:** wasm
 
 Each stack file contains Security / Performance / Architecture / Code Quality / Common Bugs rules organized by severity (CRITICAL / HIGH / MEDIUM / LOW). Rules are injected into the knowledge base and applied by all reviewers (GR, SR, PR, AR, BR).
+
+If a stack has no matching data file, skip it silently and proceed with general rules only.
 
 ### 6. External Sources (optional)
 - Company standards APIs

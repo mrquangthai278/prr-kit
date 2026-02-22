@@ -6,7 +6,7 @@ const steps = [
     number: '1',
     title: 'Install into your repo',
     code: `npx prr-kit install`,
-    description: 'Run the interactive installer — it guides you through everything.',
+    description: 'Run the interactive installer. It guides you through everything.',
     copyable: true,
   },
   {
@@ -15,9 +15,9 @@ const steps = [
     code: `◆ What should reviewers call you? › Alex
 ◆ Language for reviewer agents? › English
 ◆ GitHub repo for posting comments?
-  › owner/repo  (optional — blank = local mode)
+  › owner/repo  (optional, blank = local mode)
 ◆ Which IDEs to configure? › Claude Code`,
-    description: 'Config is written automatically — no file editing needed.',
+    description: 'Config is written automatically. No file editing needed.',
     copyable: false,
   },
 ]
@@ -32,7 +32,7 @@ const steps = [
         Up in 3 steps
       </h2>
       <p class="text-white/50 text-lg max-w-xl mx-auto">
-        Install the kit, answer a few prompts, and start getting structured AI reviews on every PR.
+        Install, answer a few prompts, start reviewing.
       </p>
     </div>
 
@@ -89,7 +89,7 @@ const steps = [
           <pre class="min-h-[170px] p-4 text-xs font-mono overflow-x-auto leading-relaxed"><code id="step3-code" class="text-white/70">/prr-quick</code></pre>
         </div>
 
-        <p class="text-xs text-white/40 leading-relaxed" id="step3-desc">One command runs the full pipeline — select PR, review, report.</p>
+        <p class="text-xs text-white/40 leading-relaxed" id="step3-desc">One command runs the full pipeline: select PR, review, report.</p>
       </div>
     </div>
 
@@ -123,15 +123,15 @@ const steps = [
     },
 
     // Slash command IDEs
-    'claude-code':    { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline — select PR, review, report.', note: null },
-    'cursor':         { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline — select PR, review, report.', note: null },
-    'auggie':         { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline — select PR, review, report.', note: null },
-    'crush':          { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline — select PR, review, report.', note: null },
-    'iflow':          { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline — select PR, review, report.', note: null },
-    'roo':            { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline — select PR, review, report.', note: null },
-    'qwen':           { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline — select PR, review, report.', note: null },
-    'codex':          { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline — select PR, review, report.', note: null },
-    'gemini':         { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline — select PR, review, report.', note: null },
+    'claude-code':    { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline: select PR, review, report.', note: null },
+    'cursor':         { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline: select PR, review, report.', note: null },
+    'auggie':         { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline: select PR, review, report.', note: null },
+    'crush':          { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline: select PR, review, report.', note: null },
+    'iflow':          { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline: select PR, review, report.', note: null },
+    'roo':            { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline: select PR, review, report.', note: null },
+    'qwen':           { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline: select PR, review, report.', note: null },
+    'codex':          { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline: select PR, review, report.', note: null },
+    'gemini':         { code: '/prr-quick', copyable: true,  desc: 'One command runs the full pipeline: select PR, review, report.', note: null },
 
     // Workflow panel IDEs
     'windsurf': {
@@ -144,7 +144,7 @@ const steps = [
       code: '# Workflows panel → prr-quick',
       copyable: false,
       desc: 'Open the workflow runner in Cline and select prr-quick.',
-      note: 'Cline triggers workflows from .clinerules/workflows/ — not slash commands.',
+      note: 'Cline triggers workflows from .clinerules/workflows/, not slash commands.',
     },
     'rovo-dev': {
       code: '# Workflows panel → prr-quick',
@@ -175,7 +175,7 @@ const steps = [
     'github-copilot': {
       code: '#prr-quick',
       copyable: true,
-      desc: 'Type in Copilot Chat, or pick "PRR Quick" from the Agents dropdown.\nGitHub Copilot uses #prompt files (.github/prompts/) and the Agents dropdown (.github/agents/) — not slash commands.',
+      desc: 'Type in Copilot Chat, or pick "PRR Quick" from the Agents dropdown.\nGitHub Copilot uses #prompt files (.github/prompts/) and the Agents dropdown (.github/agents/), not slash commands.',
       note: null,
     },
 
@@ -184,7 +184,7 @@ const steps = [
       code: '# Mode switcher → prr-core-prr-quick',
       copyable: false,
       desc: 'Select the prr-core-prr-quick mode from KiloCoder\'s mode switcher.',
-      note: 'KiloCoder registers agents as custom modes in .kilocodemodes — switch to the mode instead of using a slash command.',
+      note: 'KiloCoder registers agents as custom modes in .kilocodemodes, switch to the mode instead of using a slash command.',
     },
 
     // Kiro
@@ -266,7 +266,7 @@ const steps = [
   }
 
   // Initialize from localStorage (empty string = no IDE selected)
-  applyIde(localStorage.getItem('prr-ide') || '');
+  applyIde(localStorage.getItem('prr-ide') || 'claude-code');
 
   // Listen for IDE changes from Navbar
   window.addEventListener('prr-ide-changed', (e: Event) => {

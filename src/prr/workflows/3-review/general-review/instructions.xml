@@ -3,6 +3,7 @@
   <critical>Communicate all responses in {communication_language}</critical>
   <critical>Load PR context from {pr_context} before starting review</critical>
   <critical>Every finding MUST include: file path + line/function reference + severity + suggested fix</critical>
+  <critical>Finding severities: 🔴 BLOCKER (must fix before merge) | 🟡 WARNING (should fix) | 🟢 SUGGESTION (nice to have) | ❓ QUESTION (uncertain — ask author before judging). Use ❓ when: (a) you cannot determine intent from the diff alone, (b) behavior depends on runtime context you can't see, (c) a side effect MAY exist but you need confirmation. A QUESTION that gets a bad answer becomes a BLOCKER or WARNING.</critical>
 
   <step n="1" goal="Load PR context, knowledge base, and diff">
     <check if="{pr_context} does not exist">
@@ -38,8 +39,8 @@ Strategy: {diff_strategy}
     </check-list>
     <output-format>
 For each finding:
-🔴/🟡/🟢 [SEVERITY] `file.js:lineN` — **Description**
-→ Suggested fix: `code example`
+🔴/🟡/🟢/❓ [SEVERITY] `path/to/file:lineN` — **Description**
+→ Suggested fix or question: `code example or specific question to ask author`
     </output-format>
   </step>
 
@@ -63,12 +64,36 @@ For each finding:
     </check-list>
   </step>
 
-  <step n="5" goal="Compile and write findings">
-    <action>Group all findings by severity: 🔴 Blockers first, then 🟡 Warnings, then 🟢 Suggestions</action>
+  <step n="5" goal="Review side effects and cross-file technical impact">
+    <note>Reference the Impact Map from the describe-pr walkthrough if available. If not, perform the scan inline. This step applies to all stacks — frontend, backend, mobile, gaming, etc.</note>
+    <check-list id="side-effects">
+      <item>Observer / reactive subscriptions: are all dependencies or triggers for observers, watchers, and subscriptions declared correctly? Missing deps cause stale state; unnecessary triggers cause redundant work. Use ❓ if intent is unclear.</item>
+      <item>Resource cleanup: are resources acquired in lifecycle hooks (subscriptions, timers, handles, connections, threads, listeners) properly released on teardown/destruction? Missing cleanup causes leaks.</item>
+      <item>Derived / computed values: do any derived values or selectors have hidden side effects (mutations, I/O, network calls)? Derived values must be pure.</item>
+      <item>Shared / global state mutations: does this change mutate state visible outside the current module (singletons, global variables, shared memory, context, state managers)? Cross-reference Impact Map for who observes it.</item>
+      <item>Event / signal dispatch: new events, signals, notifications, or messages emitted — are all consumers/listeners accounted for? Is the payload shape backward compatible?</item>
+      <item>Public interface changes on shared modules: flag any breaking change (signature, return type, exported contract) here as ❓ QUESTION or 🔴 BLOCKER. Full blast radius analysis is covered in Architecture Review — cross-reference if AR has already run.</item>
+      <item>Unintended cascading reactions: does a state or data change trigger downstream observers, callbacks, or re-computations in unrelated parts of the system? Check for missing guards, debounce, or memoization.</item>
+      <item>Cross-boundary contract changes: changed API response, schema, binary format, serialization format, or protocol — are all consumers (other services, clients, upstream/downstream systems) updated in this PR or is a migration plan documented?</item>
+    </check-list>
+    <output-format>
+For side effect findings, include the AFFECTED LOCATION (the file outside the diff that is impacted):
+❓ QUESTION `src/core/SessionManager.cpp:42` — `activeUser` data structure changed. Are all observers updated?
+   Potentially affected: ProfileRenderer.cpp (callback on activeUser), PermissionGuard.ts (derived from activeUser)
+   → Ask author: "Were ProfileRenderer and PermissionGuard tested with the new data shape?"
+
+🔴 BLOCKER `src/common/InputHandler.h:15` — Required parameter `deviceId` added without default. Breaking change.
+   Affected consumers: ~12 files (see Impact Map)
+   → Add default value or make optional; audit all call sites.
+    </output-format>
+  </step>
+
+  <step n="6" goal="Compile and write findings">
+    <action>Group all findings by severity: 🔴 Blockers first, then 🟡 Warnings, then 🟢 Suggestions, then ❓ Questions</action>
     <action>Add positive observations: acknowledge good practices found</action>
     <action>Write findings to {output_file} using the standard review report format</action>
     <action>Update {pr_context}: add 'general-review' to completed reviews list</action>
-    <output>✅ General review complete. {blocker_count} blockers, {warning_count} warnings, {suggestion_count} suggestions.
+    <output>✅ General review complete. {blocker_count} blockers, {warning_count} warnings, {suggestion_count} suggestions, {question_count} questions for author.
 Run [RR] Generate Report to compile all findings, or continue with another review type.</output>
   </step>
 </workflow>

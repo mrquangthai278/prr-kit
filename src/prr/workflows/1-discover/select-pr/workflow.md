@@ -29,7 +29,7 @@ This uses **step-file architecture** with sequential orchestration:
 
 Load config from `{main_config}` and resolve:
 - `project_name`, `target_repo`, `user_name`, `communication_language`
-- `review_output`, `github_repo`, `date` (system-generated)
+- `review_output`, `platform_repo`, `date` (system-generated)
 
 ## EXECUTION
 

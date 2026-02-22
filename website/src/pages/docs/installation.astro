@@ -1,0 +1,114 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro'
+
+const toc = [
+  { label: 'Requirements', anchor: 'requirements' },
+  { label: 'Interactive install', anchor: 'interactive' },
+  { label: 'Silent install', anchor: 'silent' },
+  { label: 'What gets installed', anchor: 'what-installed' },
+  { label: 'Next steps', anchor: 'next' },
+]
+---
+
+<DocsLayout title="Installation" toc={toc} icon={`<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>`}>
+  <p>
+    PR Review Kit installs into your existing project repository. The installer is a one-command
+    interactive setup that handles everything automatically.
+  </p>
+
+  <h2 id="requirements">Requirements</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Requirement</th>
+        <th>Version</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Node.js</td>
+        <td>20 or later</td>
+        <td>Required to run the installer</td>
+      </tr>
+      <tr>
+        <td>Git</td>
+        <td>Any recent version</td>
+        <td>Required for diff generation</td>
+      </tr>
+      <tr>
+        <td>AI IDE</td>
+        <td>Any supported IDE</td>
+        <td>See <a href="/docs/ide-support">IDE Support</a></td>
+      </tr>
+      <tr>
+        <td>Platform CLI</td>
+        <td>Optional</td>
+        <td>Only needed for PR listing and posting comments</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    Platform CLIs are optional. Without them, reviews still run using <code>git diff</code> locally —
+    findings are saved to <code>_prr-output/reviews/</code> instead of being posted to your platform.
+  </p>
+
+  <h2 id="interactive">Interactive install</h2>
+  <p>Run this from your terminal inside the repository you want to add reviews to:</p>
+  <pre><code>npx prr-kit install</code></pre>
+  <p>The installer will ask:</p>
+  <ul>
+    <li><strong>Your name</strong> — used in review reports</li>
+    <li><strong>Language</strong> — language for reviewer agent responses (e.g. English, Vietnamese)</li>
+    <li><strong>Platform repo</strong> — e.g. <code>owner/repo</code>. Leave blank for local mode.</li>
+    <li><strong>IDEs to configure</strong> — select one or more from the list</li>
+  </ul>
+  <p>All values are written automatically to <code>_prr/prr/config.yaml</code>. No file editing needed.</p>
+
+  <h2 id="silent">Silent install</h2>
+  <p>Pass <code>--yes</code> to skip all prompts and accept defaults:</p>
+  <pre><code>npx prr-kit install --directory /path/to/repo --modules prr --tools claude-code --yes</code></pre>
+  <p>Available flags:</p>
+  <table>
+    <thead>
+      <tr><th>Flag</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>--directory</code></td><td>Target repository path (default: current directory)</td></tr>
+      <tr><td><code>--modules</code></td><td>Modules to install (e.g. <code>prr</code>)</td></tr>
+      <tr><td><code>--tools</code></td><td>IDEs to configure (e.g. <code>claude-code,cursor</code>)</td></tr>
+      <tr><td><code>--yes</code></td><td>Accept all defaults, skip prompts</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="what-installed">What gets installed</h2>
+  <p>The installer creates a <code>_prr/</code> folder at the root of your repository:</p>
+  <pre><code>_prr/
+├── core/
+│   ├── agents/
+│   │   └── prr-master.agent.yaml   # Master orchestrator
+│   └── tasks/
+│       └── workflow.xml            # Workflow engine rules
+└── prr/
+    ├── agents/                     # Specialist reviewer agents
+    ├── config.yaml                 # Your configuration
+    └── workflows/
+        ├── 1-discover/             # Select PR
+        ├── 2-analyze/              # Describe + collect context
+        ├── 3-review/               # All reviewer agents
+        ├── 4-improve/              # Code improvement suggestions
+        ├── 5-ask/                  # Q&amp;A about the PR
+        └── 6-report/               # Report generation + post comments</code></pre>
+  <p>
+    IDE-specific files (agent definitions, workflow files) are also written to the appropriate locations
+    for each IDE you selected.
+  </p>
+
+  <h2 id="next">Next steps</h2>
+  <ul>
+    <li><a href="/docs/configuration">Configure your setup</a> — edit config.yaml options</li>
+    <li><a href="/docs/ide-support">Start the agent</a> — how to invoke the master agent in your IDE</li>
+    <li><a href="/docs/pipeline">Run your first review</a> — the full pipeline walkthrough</li>
+  </ul>
+</DocsLayout>

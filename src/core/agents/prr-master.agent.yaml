@@ -63,7 +63,7 @@ agent:
       description: "[AR] Architecture Review: SOLID, layering, coupling, consistency with codebase"
 
     - trigger: "BR or fuzzy match on business-review"
-      exec: "{project-root}/_prr/prr/workflows/3-review/business-review/instructions.xml"
+      workflow: "{project-root}/_prr/prr/workflows/3-review/business-review/workflow.yaml"
       description: "[BR] Business Review: User impact, business risk, feature completeness, data safety, observability"
 
     - trigger: "IC or fuzzy match on improve-code"

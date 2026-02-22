@@ -9,17 +9,17 @@ description: "Run the multi-reviewer discussion and compile unified findings"
 
 ### 1. Round 1 — Each Reviewer's Initial Take
 
-Go through the diff once per reviewer. For each reviewer, output their findings in their style:
+Go through the diff once per reviewer. Each reviewer applies rules from the PR knowledge base loaded in step 1 in addition to their domain expertise.
 
 ---
 
 **👁️ Alex says:**
 
-[Alex reviews for: logic correctness, naming, readability, DRY violations, missing error handling, code style consistency]
+[Alex reviews for: logic correctness, naming, readability, DRY violations, missing error handling, test coverage, side effects, resource cleanup]
 
 Format each finding as:
 ```
-🔴/🟡/🟢 [file.ts:line] — {finding description}
+🔴/🟡/🟢/❓ [file.ts:line] — {finding description}
   → Fix: {suggested fix}
 ```
 
@@ -27,11 +27,11 @@ Format each finding as:
 
 **🔒 Sam says:**
 
-[Sam reviews for: secrets/credentials, SQL injection, XSS, authentication checks, authorization, rate limiting, error message exposure]
+[Sam reviews for: secrets/credentials, SQL injection, XSS, authentication checks, authorization, rate limiting, error message exposure, OWASP Top 10]
 
 Format each finding as:
 ```
-🔴/🟡/🟢 [file.ts:line] — {risk description}
+🔴/🟡/🟢/❓ [file.ts:line] — {risk description}
   → Risk: {what could go wrong}
   → Fix: {suggested fix}
 ```
@@ -40,12 +40,12 @@ Format each finding as:
 
 **⚡ Petra says:**
 
-[Petra reviews for: N+1 queries, missing indexes, sync I/O, unbound queries, missing caching, large payloads, inefficient loops]
+[Petra reviews for: N+1 queries, missing indexes, sync I/O on hot paths, unbound queries, missing caching, large payloads, memory leaks, inefficient loops]
 
 Format each finding as:
 ```
-🔴/🟡/🟢 [file.ts:line] — {performance issue}
-  → Impact: {estimated impact}
+🔴/🟡/🟢/❓ [file.ts:line] — {performance issue}
+  → Impact: {estimated impact, e.g. "adds ~50ms per request"}
   → Fix: {suggested fix}
 ```
 
@@ -53,22 +53,35 @@ Format each finding as:
 
 **🏗️ Arch says:**
 
-[Arch reviews for: layer violations, circular dependencies, tight coupling, inconsistent patterns, God objects, missing abstractions]
+[Arch reviews for: layer violations, circular dependencies, tight coupling, inconsistent patterns, shared module blast radius, backward compatibility breaks]
 
 Format each finding as:
 ```
-🔴/🟡/🟢 [file.ts:line] — {architectural concern}
-  → Pattern: {what pattern is violated}
+🔴/🟡/🟢/❓ [file.ts:line] — {architectural concern}
+  → Pattern violated: {what existing pattern this breaks}
   → Fix: {suggested refactor}
 ```
 
 ---
 
-### 2. Round 2 — Cross-Review Discussion
+### 2. Round 2 — Biz Translates + Cross-Review Discussion
 
-After all reviewers have spoken, check for:
+**💼 Biz speaks last** — synthesizes findings from Alex/Sam/Petra/Arch into business impact:
 
-**Conflicts**: If two reviewers disagree (e.g., Alex says "extract this function" but Arch says "this is fine as-is"), facilitate a brief debate:
+[Biz reviews for: user-facing regressions, feature completeness, data safety, deployment risk, observability gaps, compliance issues]
+
+For each 🔴 finding from prior reviewers, Biz adds business consequence:
+```
+💼 Biz on [Sam's finding at file.ts:line]:
+  → Business consequence: {what happens to real users/business if shipped as-is}
+  → Risk level: CRITICAL / HIGH / MEDIUM / LOW
+```
+
+Biz also adds any standalone business findings not caught by others (empty states, missing analytics, hardcoded strings, etc.).
+
+---
+
+**Conflicts**: If two reviewers disagree, facilitate a brief debate:
 ```
 💬 Alex vs Arch on [file.ts:line]:
   Alex: "This function is too long and should be split"
@@ -76,10 +89,10 @@ After all reviewers have spoken, check for:
   🏆 Verdict: [who wins and why]
 ```
 
-**Amplifications**: If two reviewers flag the same file for different reasons, note the "hot zone":
+**Hot zones**: Files flagged by 2+ reviewers:
 ```
-🔥 Hot zone: [file.ts] — flagged by both Sam (auth issue) and Alex (logic issue)
-   This file needs significant attention.
+🔥 Hot zone: [file.ts] — flagged by Sam (auth) + Alex (logic)
+   This file needs significant attention before merge.
 ```
 
 ### 3. Compile Unified Findings
@@ -90,26 +103,33 @@ After discussion, produce a unified finding list, deduplicated and prioritized:
 ## 🎉 Party Mode — Unified Findings
 
 **PR:** {target_branch} → {base_branch}
-**Session participants:** Alex 👁️ + Sam 🔒 + Petra ⚡ + Arch 🏗️
+**Session participants:** Alex 👁️ + Sam 🔒 + Petra ⚡ + Arch 🏗️ + Biz 💼
 
 ### 🔴 Blockers ({count})
-[list all blockers from all reviewers, attributed]
+[all blockers from all reviewers, attributed to reviewer]
 
 ### 🟡 Warnings ({count})
-[list all warnings, attributed]
+[all warnings, attributed]
 
 ### 🟢 Suggestions ({count})
-[list suggestions, attributed]
+[suggestions, attributed]
+
+### ❓ Questions for Author ({count})
+[all questions needing author clarification before judging]
 
 ### 🔥 Hot Zones
 [files flagged by 2+ reviewers]
 
 ### 💬 Debates Resolved
-[any conflicts with verdicts]
+[conflicts with verdicts]
+
+### 💼 Business Verdict
+**Risk:** {CRITICAL | HIGH | MEDIUM | LOW | MINIMAL}
+**Top concern:** {1 sentence}
+**Recommendation:** {ship now | ship with fixes | do not ship}
 
 ---
-**Overall Verdict:** {APPROVED | NEEDS CHANGES | REQUEST CHANGES}
-**Recommendation:** {1-2 sentence summary}
+**Overall Verdict:** ✅ APPROVE / ⚠️ APPROVE WITH NOTES / 🚫 REQUEST CHANGES
 ```
 
 ### 4. Offer Next Steps
@@ -118,7 +138,7 @@ After discussion, produce a unified finding list, deduplicated and prioritized:
 Party Mode complete! What's next?
 
   [RR] Generate Report — compile into formal Markdown report
-  [PC] Post Comments  — post findings to GitHub PR
+  [PC] Post Comments  — post findings to GitHub/GitLab/Azure/Bitbucket PR
   [IC] Improve Code   — get concrete code fixes for the blockers
 ```
 

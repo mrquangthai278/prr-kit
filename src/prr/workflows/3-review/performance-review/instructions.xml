@@ -3,6 +3,7 @@
   <critical>Communicate all responses in {communication_language}</critical>
   <critical>Focus on IMPACTFUL performance issues — skip micro-optimizations that add complexity without measurable benefit</critical>
   <critical>Quantify impact when possible: "this adds ~Xms per request" or "X MB memory per session"</critical>
+  <critical>Finding severities: 🔴 BLOCKER | 🟡 WARNING | 🟢 SUGGESTION | ❓ QUESTION. Use ❓ when impact depends on context you cannot determine from the diff — e.g., "Is this function called in a hot path?", "What is the expected data volume here?". A QUESTION that gets a bad answer becomes a BLOCKER or WARNING.</critical>
 
   <step n="1" goal="Load PR context, knowledge base, and diff">
     <check if="{pr_context} does not exist">
@@ -61,11 +62,14 @@ Context: Loaded performance best practices from docs
   </step>
 
   <step n="6" goal="Compile and write findings">
-    <action>For each finding: estimate impact (high/medium/low) with brief rationale</action>
-    <action>Distinguish: impactful issues vs micro-optimizations (flag only impactful)</action>
+    <action>Distinguish: impactful issues vs micro-optimizations — only include impactful ones</action>
+    <action>For each finding: assign severity based on impact scope — 🔴 if causes measurable regression or data integrity risk, 🟡 if significant but not blocking, 🟢 if low-impact optimization, ❓ if impact cannot be determined without author context</action>
+    <action>Include a one-line impact rationale per finding (e.g., "adds ~Xms per request", "O(n²) on unbounded input", "leaks ~X MB per session")</action>
+    <action>Group findings by severity: 🔴 Blockers → 🟡 Warnings → 🟢 Suggestions → ❓ Questions for Author</action>
     <action>Write findings to {output_file}</action>
     <action>Update {pr_context}: add 'performance-review' to completed list</action>
     <output>⚡ Performance review complete.
+{blocker_count} blockers (🔴), {warning_count} warnings (🟡), {suggestion_count} suggestions (🟢), {question_count} questions (❓) for author.
 Run [RR] Generate Report to compile all findings.</output>
   </step>
 </workflow>

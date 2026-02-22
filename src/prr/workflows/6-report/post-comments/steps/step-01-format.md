@@ -41,7 +41,7 @@ Store the working path as `{gh_path}` (e.g. `"/c/Program Files/GitHub CLI/gh"`).
 
 **GitHub / GitLab / Bitbucket:**
 ```bash
-git -C {target_repo} rev-parse origin/{selected_branch}
+git -C {target_repo} rev-parse origin/{target_branch}
 ```
 Or use `{pr_head_sha}` if already stored from select-pr step.
 
@@ -60,8 +60,8 @@ Sort by modification time, take the most recent.
 ### 4. Parse All Findings
 
 Scan the report and extract every finding:
-- `severity`: 🔴 Blocker / 🟡 Warning / 🟢 Suggestion / 📌 Question
-- `category`: security / performance / architecture / general
+- `severity`: 🔴 Blocker / 🟡 Warning / 🟢 Suggestion / ❓ Question (also accept 📌 as alias for Question)
+- `category`: security / performance / architecture / general / business
 - `file_path`: relative path (e.g. `src/auth/login.js`) — null if not specified
 - `line_number`: integer — null if not specified
 - `description`: the issue text
@@ -95,14 +95,14 @@ Limit inline comments to 30 max: include all 🔴 Blockers first, then 🟡 Warn
 {suggested_fix}
 ```
 
-Category emojis: 🔒 security · ⚡ performance · 🏗️ architecture · 👁️ general
+Category emojis: 🔒 security · ⚡ performance · 🏗️ architecture · 👁️ general · 💼 business
 
 ### 6. Build Summary Body
 
 ```markdown
 ## 🔍 AI Code Review
 
-**PR:** `{selected_branch}` → `{base_branch}` | **Date:** {date} | **Reviewer:** {user_name}
+**PR:** `{target_branch}` → `{base_branch}` | **Date:** {date} | **Reviewer:** {user_name}
 
 **Verdict:** {verdict}
 
@@ -112,11 +112,14 @@ Category emojis: 🔒 security · ⚡ performance · 🏗️ architecture · �
 | ⚡ Performance | {n} | {n} | {n} |
 | 🏗️ Architecture | {n} | {n} | {n} |
 | 👁️ General | {n} | {n} | {n} |
+| 💼 Business | {n} | {n} | {n} |
 
 ### Executive Summary
 {bullets}
 
 {fallback_findings_section}
+
+❓ {question_count} questions for author
 
 ---
 *{inline_count} inline comments on code lines*

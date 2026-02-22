@@ -18,7 +18,8 @@ validation-target: "Security review output file"
 - [ ] Every finding states: WHERE (file + line number)
 - [ ] Every finding states: IMPACT (what could an attacker do)
 - [ ] Every finding states: HOW TO FIX
-- [ ] Severity: Critical/High/Medium/Low/Info (not just emojis)
+- [ ] Severity assigned: 🔴/🟡/🟢/❓ (Critical/High → 🔴, Medium → 🟡, Low/Info → 🟢)
+- [ ] ❓ QUESTION findings include: specific concern + exact question to ask author (e.g., "Was this auth check intentionally removed?")
 
 ## Output
 - [ ] Findings written to `{review_output}/security-review-{date}.md`

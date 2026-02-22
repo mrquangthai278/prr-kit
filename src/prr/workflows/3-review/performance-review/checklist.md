@@ -13,9 +13,11 @@ validation-target: "Performance review output file"
 
 ## Finding Quality
 - [ ] Every finding has: file path + line/function reference
+- [ ] Every finding has: severity level (🔴/🟡/🟢/❓)
 - [ ] Every finding has: estimated impact (high/medium/low) with brief rationale
 - [ ] Micro-optimizations are NOT flagged (only impactful issues)
-- [ ] Each finding includes suggested fix
+- [ ] Each finding includes suggested fix or question
+- [ ] ❓ QUESTION findings include: specific concern + context needed to assess severity (e.g., "Is this in a hot path?", "What is the expected data volume?")
 
 ## Output
 - [ ] Findings written to `{review_output}/performance-review-{date}.md`

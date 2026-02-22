@@ -40,7 +40,7 @@ Load config from `{main_config}`.
 Load PR context from `{review_output}/current-pr-context.yaml`.
 Use `{active_platform}` (or detect from `{platform}` config).
 
-Set `{temp_dir}` = `{project-root}/{output_folder}/temp`.
+Set `{temp_dir}` = `{review_output}/temp`.
 Create it if it doesn't exist:
 ```bash
 mkdir -p "{temp_dir}"

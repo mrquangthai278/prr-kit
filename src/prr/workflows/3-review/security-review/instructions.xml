@@ -3,6 +3,7 @@
   <critical>Communicate all responses in {communication_language}</critical>
   <critical>For EVERY security finding: state WHAT, WHERE (file+line), HOW it could be exploited, and HOW to fix it</critical>
   <critical>Think like an attacker — what could an adversary do with this vulnerability?</critical>
+  <critical>Finding severities: 🔴 BLOCKER | 🟡 WARNING | 🟢 SUGGESTION | ❓ QUESTION. Use ❓ when you cannot determine from the diff whether a behavior is intentional or a vulnerability — e.g., "Is this endpoint intentionally public?", "Was this auth check deliberately removed?". A QUESTION that gets a bad answer becomes a BLOCKER.</critical>
 
   <step n="1" goal="Load PR context, knowledge base, and prepare security analysis">
     <check if="{pr_context} does not exist">
@@ -63,12 +64,12 @@ Context: Loaded security guidelines from CLAUDE.md/CONTRIBUTING.md
   </step>
 
   <step n="6" goal="Compile and write security findings">
-    <action>Group findings by severity: Critical → High → Medium → Low → Info</action>
+    <action>Group findings by severity: 🔴 Critical/High → 🟡 Medium → 🟢 Low/Info → ❓ Questions for Author</action>
     <action>For each finding include: WHAT, WHERE (file+line), IMPACT (how exploitable), HOW TO FIX</action>
     <action>Write to {output_file}</action>
     <action>Update {pr_context}: add 'security-review' to completed list</action>
     <output>🔒 Security review complete.
-{critical_count} critical, {high_count} high, {medium_count} medium findings.
+{blocker_count} blockers (🔴), {warning_count} warnings (🟡), {suggestion_count} suggestions (🟢), {question_count} questions (❓) for author.
 Run [RR] Generate Report to compile all findings.</output>
   </step>
 </workflow>

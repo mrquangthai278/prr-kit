@@ -42,6 +42,7 @@ Recommended reviews for this PR:
   [SR] Security Review — if auth/API/user data touched
   [PR] Performance Review — if DB/async/frontend affected
   [AR] Architecture Review — if new patterns/structure added
+  [BR] Business Review — for feature PRs, data migrations, or any high-risk change
 ```
 
 ### 2. Write PR Context File

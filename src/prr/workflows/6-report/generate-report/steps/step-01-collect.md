@@ -25,11 +25,17 @@ For each completed review in `review.completed` list, read the corresponding out
 ### 3. Parse All Findings
 
 From each file, extract all findings with their:
-- Severity (🔴 Blocker / 🟡 Warning / 🟢 Suggestion / Critical/High/Medium/Low)
-- Category (general/security/performance/architecture/improvement)
+- Severity (🔴 Blocker / 🟡 Warning / 🟢 Suggestion / ❓ Question / Critical/High/Medium/Low)
+- Category (general/security/performance/architecture/business/improvement)
 - File + line reference
 - Description
 - Suggested fix
+
+**Severity mapping:**
+- `🔴` or `Critical`/`High` → Blocker
+- `🟡` or `Medium` → Warning
+- `🟢` or `Low` → Suggestion
+- `❓` → Question (collect separately — do not count as blocker/warning/suggestion)
 
 ### 4. Count Statistics
 

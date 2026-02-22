@@ -30,7 +30,11 @@ agent:
   menu:
     - trigger: "SP or fuzzy match on select-pr"
       exec: "{project-root}/_prr/prr/workflows/1-discover/select-pr/workflow.md"
-      description: "[SP] Select PR to review"
+      description: "[SP] Select PR: Fetch latest and select PR to review"
+
+    - trigger: "DP or fuzzy match on describe-pr"
+      exec: "{project-root}/_prr/prr/workflows/2-analyze/describe-pr/workflow.md"
+      description: "[DP] Describe PR: Understand PR scope before reviewing"
 
     - trigger: "PR or fuzzy match on performance-review"
       workflow: "{project-root}/_prr/prr/workflows/3-review/performance-review/workflow.yaml"
@@ -38,8 +42,24 @@ agent:
 
     - trigger: "IC or fuzzy match on improve-code"
       workflow: "{project-root}/_prr/prr/workflows/4-improve/improve-code/workflow.yaml"
-      description: "[IC] Improve Code: Performance-focused code improvements"
+      description: "[IC] Improve Code: Concrete inline code improvements with before/after suggestions"
+
+    - trigger: "AK or fuzzy match on ask-code"
+      exec: "{project-root}/_prr/prr/workflows/5-ask/ask-code/workflow.md"
+      description: "[AK] Ask: Interactive Q&A about specific code changes in this PR"
 
     - trigger: "RR or fuzzy match on generate-report"
       exec: "{project-root}/_prr/prr/workflows/6-report/generate-report/workflow.md"
-      description: "[RR] Generate Report"
+      description: "[RR] Generate Report: Compile performance findings into report"
+
+    - trigger: "PC or fuzzy match on post-comments"
+      exec: "{project-root}/_prr/prr/workflows/6-report/post-comments/workflow.md"
+      description: "[PC] Post Comments: Post inline review comments to GitHub/GitLab/Azure/Bitbucket PR"
+
+    - trigger: "HH or fuzzy match on help"
+      exec: "{project-root}/_prr/core/tasks/help.md"
+      description: "[HH] Help: Show review workflow guide and available commands"
+
+    - trigger: "CL or fuzzy match on clear or clean or reset"
+      exec: "{project-root}/_prr/core/tasks/clear.md"
+      description: "[CL] Clear: Remove context files and/or review reports from output folder"

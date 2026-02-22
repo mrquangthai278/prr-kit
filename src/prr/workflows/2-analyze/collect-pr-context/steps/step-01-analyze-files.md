@@ -317,7 +317,7 @@ If no stack is confidently detected → `detected_stacks: []` — steps downstre
 }
 ```
 
-### 8. Report Analysis
+### 9. Report Analysis
 
 ```
 ✓ File analysis complete:
@@ -329,6 +329,6 @@ If no stack is confidently detected → `detected_stacks: []` — steps downstre
    💬 Annotations found: {count}
 ```
 
-### 9. Load Next Step
+### 10. Load Next Step
 
 Add `step-01-analyze-files` to `stepsCompleted`. Load: `{nextStepFile}`

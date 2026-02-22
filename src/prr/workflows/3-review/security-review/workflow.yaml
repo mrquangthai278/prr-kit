@@ -15,5 +15,4 @@ validation: "{installed_path}/checklist.md"
 owasp_data: "{installed_path}/data/owasp-checklist.csv"
 
 pr_context: "{review_output}/current-pr-context.yaml"
-project_context: "{review_output}/project-context.yaml"
 output_file: "{review_output}/security-review-{date}.md"

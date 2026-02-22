@@ -1,5 +1,5 @@
-name: performance-review
-description: "Performance-focused code review: N+1 queries, memory leaks, async patterns, bundle size, caching"
+name: business-review
+description: "Business impact review: user impact, business risk, feature completeness, data safety, observability"
 author: "PR Review Kit"
 
 config_source: "{project-root}/_prr/prr/config.yaml"
@@ -9,9 +9,9 @@ target_repo: "{config_source}:target_repo"
 review_output: "{config_source}:review_output"
 date: system-generated
 
-installed_path: "{project-root}/_prr/prr/workflows/3-review/performance-review"
+installed_path: "{project-root}/_prr/prr/workflows/3-review/business-review"
 instructions: "{installed_path}/instructions.xml"
 validation: "{installed_path}/checklist.md"
 
 pr_context: "{review_output}/current-pr-context.yaml"
-output_file: "{review_output}/performance-review-{date}.md"
+output_file: "{review_output}/business-review-{date}.md"

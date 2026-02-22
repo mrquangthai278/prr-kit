@@ -1,0 +1,113 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro'
+
+const toc = [
+  { label: 'How agents work per IDE', anchor: 'how' },
+  { label: 'Slash command IDEs', anchor: 'slash' },
+  { label: 'Workflow panel IDEs', anchor: 'workflow-panel' },
+  { label: 'Special cases', anchor: 'special' },
+  { label: 'All supported IDEs', anchor: 'all' },
+]
+---
+
+<DocsLayout title="IDE Support" toc={toc} icon={`<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>`}>
+  <p>
+    PR Review Kit works with 18 AI IDEs. The installer configures the correct files for each IDE
+    automatically. How you start the agent depends on your IDE type.
+  </p>
+
+  <h2 id="how">How agents work per IDE</h2>
+  <p>
+    Different IDEs have different ways to invoke AI agents. The installer handles this for you, but
+    it helps to understand the three main patterns:
+  </p>
+  <ul>
+    <li><strong>Slash commands</strong> — type <code>/prr-master</code> in the chat input</li>
+    <li><strong>Workflow panel</strong> — open the Workflows panel and select <code>prr-master</code></li>
+    <li><strong>Custom modes or references</strong> — IDE-specific approach (see below)</li>
+  </ul>
+
+  <h2 id="slash">Slash command IDEs</h2>
+  <p>Type <code>/prr-master</code> in the AI chat to open the full review menu, or <code>/prr-quick</code> to run the full pipeline automatically.</p>
+  <table>
+    <thead>
+      <tr><th>IDE</th><th>Command</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Claude Code</td><td><code>/prr-master</code></td></tr>
+      <tr><td>Cursor</td><td><code>/prr-master</code></td></tr>
+      <tr><td>Auggie</td><td><code>/prr-master</code></td></tr>
+      <tr><td>Crush</td><td><code>/prr-master</code></td></tr>
+      <tr><td>Gemini CLI</td><td><code>/prr-master</code></td></tr>
+      <tr><td>iFlow</td><td><code>/prr-master</code></td></tr>
+      <tr><td>QwenCoder</td><td><code>/prr-master</code></td></tr>
+      <tr><td>Roo Cline</td><td><code>/prr-master</code></td></tr>
+      <tr><td>Codex</td><td><code>/prr-master</code></td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="workflow-panel">Workflow panel IDEs</h2>
+  <p>Open the Workflows panel in your IDE and select <code>prr-master</code> from the list.</p>
+  <table>
+    <thead>
+      <tr><th>IDE</th><th>Where to find it</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Windsurf</td><td>Workflows panel → prr-master</td></tr>
+      <tr><td>Cline</td><td>Workflow runner → prr-master</td></tr>
+      <tr><td>Rovo Dev</td><td>Workflows panel → prr-master</td></tr>
+      <tr><td>Trae</td><td>Workflow runner → prr-master</td></tr>
+      <tr><td>Antigravity</td><td>Workflow runner → prr-master</td></tr>
+      <tr><td>OpenCode</td><td>Commands panel → prr-master</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="special">Special cases</h2>
+
+  <h3>GitHub Copilot</h3>
+  <p>
+    Type <code>#prr-master</code> in the Copilot Chat, or pick <strong>PRR Master</strong> from the
+    Agents dropdown. GitHub Copilot uses prompt files (<code>.github/prompts/</code>) and the Agents
+    dropdown (<code>.github/agents/</code>), not slash commands.
+  </p>
+
+  <h3>KiloCoder</h3>
+  <p>
+    Switch to the <code>prr-core-prr-master</code> mode from KiloCoder's mode switcher. KiloCoder
+    registers agents as custom modes in <code>.kilocodemodes</code>.
+  </p>
+
+  <h3>Kiro</h3>
+  <p>
+    Reference the master agent in Kiro chat: <code>@_prr/core/agents/prr-master.md</code>. Kiro uses
+    steering files from <code>.kiro/steering/</code>.
+  </p>
+
+  <h2 id="all">All supported IDEs</h2>
+  <p>The full list of supported AI IDEs:</p>
+  <ul>
+    <li>Antigravity</li>
+    <li>Auggie</li>
+    <li>Claude Code</li>
+    <li>Cline</li>
+    <li>Codex</li>
+    <li>Crush</li>
+    <li>Cursor</li>
+    <li>Gemini CLI</li>
+    <li>GitHub Copilot</li>
+    <li>iFlow</li>
+    <li>KiloCoder</li>
+    <li>Kiro</li>
+    <li>OpenCode</li>
+    <li>QwenCoder</li>
+    <li>Roo Cline</li>
+    <li>Rovo Dev</li>
+    <li>Trae</li>
+    <li>Windsurf</li>
+  </ul>
+  <p>
+    New IDEs are added regularly. If your IDE is not listed, check the
+    <a href="https://github.com/mrquangthai278/prr-kit" target="_blank" rel="noopener noreferrer">GitHub repository</a>
+    for the latest support status.
+  </p>
+</DocsLayout>

@@ -22,7 +22,8 @@ Analyze the diff to determine the PRIMARY type (pick the best match):
 | `feature` | New files, new functions, new UI components |
 | `refactor` | Same behavior, restructured code, renamed variables |
 | `performance` | Caching, query optimization, async improvements |
-| `security` | Auth changes, input validation, dependency updates |
+| `security` | Auth changes, input validation, dependency security updates |
+| `hotfix` | Urgent production fix, usually a targeted single change |
 | `test` | Only test file changes |
 | `docs` | Only documentation/comment changes |
 | `config` | Config files, env, CI/CD changes |
@@ -38,12 +39,17 @@ Based on PR type and what was changed:
 ### 3. Generate Review Recommendations
 
 Based on classification, recommend specific reviews:
-- bugfix → GR (general) + SR (if security-related)
-- feature → GR + AR (architecture) + PR (if DB/async)
-- security → SR (mandatory) + GR
-- performance → PR + GR
+- bugfix → GR + SR (if security-related) + BR (if user-facing)
+- feature → GR + AR + PR (if DB/async) + BR (user impact + feature completeness)
+- security → SR (mandatory) + GR + BR (business/compliance risk)
+- performance → PR + GR + BR (if user-facing slowness)
 - refactor → AR + GR
-- All high-risk PRs → SR mandatory
+- hotfix → GR + SR + BR (high deployment risk — assess before shipping)
+- test → GR (light)
+- docs → (skip or GR light)
+- config → GR
+- chore → GR (light)
+- All high-risk PRs → SR mandatory + BR mandatory
 
 ### 4. Load Next Step
 

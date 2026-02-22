@@ -10,12 +10,12 @@ project_name: my-project
 target_repo: .                       # Path to git repo (. = current directory)
 
 # ─── Platform ──────────────────────────────────────────────────────────────
-platform: github                     # github | gitlab | azure | bitbucket
+platform: github                     # auto | github | gitlab | azure | bitbucket | none
 platform_repo: "org/repo-name"       # Used for gh pr list, gh pr view, etc.
 
 # ─── Output ────────────────────────────────────────────────────────────────
 review_output: ./_prr-output/reviews # Where review reports are written
-auto_post_comment: false             # Set to true to auto-post findings to GitHub/GitLab after every review
+auto_post_comment: false             # Set to true to auto-post findings to GitHub/GitLab/Azure/Bitbucket after every review
                                      # (skips the "PC" prompt in quick workflow)
 
 # ─── Context Collection ────────────────────────────────────────────────────
@@ -65,7 +65,7 @@ external_sources:
   mcp:
     enabled: true
     # Declare what kinds of context you want from MCP tools.
-    # Claude will discover available tools and use them accordingly.
+    # The agent will discover available tools and use them accordingly.
     # Remove intents you don't need.
     intents:
       - knowledge_base               # Confluence, Notion → team standards, ADRs
@@ -73,16 +73,13 @@ external_sources:
       - design                       # Figma, Zeplin → design specs (UI PRs only)
       # - code_intelligence          # Sourcegraph → similar patterns (uncomment if needed)
 
-    # Optional hints to improve tool queries
     hints:
       branch_issue_pattern: "([A-Z]+-\\d+)"  # Regex to extract issue key from branch name
                                               # e.g. feature/ENG-123-auth → ENG-123
-      # confluence_space: ENG                # Narrow Confluence search to a space
-      # jira_project: PROJ                   # Narrow Jira search to a project
 
   rag:
     enabled: false                   # Set to true if you have RAG tools configured
-    # Intents tell Claude what to query for in the RAG system
+    # Intents tell the agent what to query for in the RAG system
     intents:
       - similar_patterns             # Find similar code in the codebase
       - past_decisions               # Previous review decisions for similar code

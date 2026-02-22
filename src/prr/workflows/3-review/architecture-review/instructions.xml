@@ -3,6 +3,7 @@
   <critical>Communicate all responses in {communication_language}</critical>
   <critical>Consistency with EXISTING codebase patterns is paramount — avoid over-engineering or introducing new patterns without strong justification</critical>
   <critical>Always consider: would a new team member understand where this code belongs and why?</critical>
+  <critical>Finding severities: 🔴 BLOCKER | 🟡 WARNING | 🟢 SUGGESTION | ❓ QUESTION. Use ❓ when you cannot determine intent or impact from the diff alone and need author confirmation before judging. A QUESTION that gets a bad answer becomes a BLOCKER or WARNING.</critical>
 
   <step n="1" goal="Load PR context, knowledge base, and understand the codebase structure">
     <check if="{pr_context} does not exist">
@@ -50,7 +51,29 @@ Context: Loaded architectural patterns & ADRs from ARCHITECTURE.md
     </check-list>
   </step>
 
-  <step n="5" goal="SOLID principles (only flag real violations, not theoretical ones)">
+  <step n="5" goal="Shared module blast radius and backward compatibility">
+    <note>A change to any shared/common/generic module is high-risk because it affects all consumers — not just the code in this PR. This step must always run when any such file is changed.</note>
+    <check-list id="blast-radius">
+      <item>Identify: is the changed file a shared/common/generic resource? (utility modules, shared libraries, base classes, common interfaces/headers, core services, shared data models, global state)</item>
+      <item>Consumer count: search for all files importing or using this module and list them. Any breaking change is a 🔴 BLOCKER regardless of consumer count — high consumer count amplifies urgency but is not the deciding factor.</item>
+      <item>Backward compatibility: is the public interface (function signatures, return shapes, exported types, event/message payloads, binary interfaces) backward compatible? If breaking: are ALL affected consumers updated in this same PR, or is there an explicit migration/deprecation plan?</item>
+      <item>New required parameters without defaults are breaking changes — even if the author only updated their own call sites.</item>
+      <item>Behavior change: does a behavioral change to a shared module produce unintended effects in contexts the author did not test (e.g., different runtime configurations, platforms, permission levels, or edge-case inputs)?</item>
+      <item>Versioning / deprecation: if the change is intentionally breaking, is there a deprecation path? Is the old interface preserved with a deprecation notice?</item>
+    </check-list>
+    <output-format>
+🔴 BLOCKER `src/common/HttpClient.ts` — `sendRequest()` param `timeout` removed. Breaking change.
+   Consumer blast radius: ~23 files import this module (see Impact Map).
+   Not all consumers updated in this PR: OrderService.ts, NotificationService.ts still pass `timeout`.
+   → Either restore `timeout` as optional/deprecated, or update all consumers in this PR.
+
+❓ QUESTION `src/auth/AuthService.ts` — Return shape changed (added `permissions`, removed `roles`).
+   Consumers outside diff: RouteGuard.ts, AdminMiddleware.ts, PermissionHelper.ts
+   → Ask author: "Were all consumers of AuthService tested with the new return shape? Was `roles` removal intentional?"
+    </output-format>
+  </step>
+
+  <step n="6" goal="SOLID principles (only flag real violations, not theoretical ones)">
     <check-list id="solid">
       <item>SRP: class/module doing more than one thing AND causing maintenance problems?</item>
       <item>OCP: existing code modified instead of extended (when extension was clearly better)?</item>
@@ -61,12 +84,13 @@ Context: Loaded architectural patterns & ADRs from ARCHITECTURE.md
     <note>Only flag SOLID violations when they cause REAL maintainability or extensibility problems — not theoretical purity</note>
   </step>
 
-  <step n="6" goal="Compile and write findings">
-    <action>Group findings: Layer Violations | Coupling Issues | Consistency Problems | SOLID Violations</action>
+  <step n="7" goal="Compile and write findings">
+    <action>Group findings: Layer Violations | Coupling Issues | Consistency Problems | SOLID Violations | ❓ Questions for Author</action>
     <action>For each finding: reference the EXISTING pattern that should be followed instead</action>
     <action>Write findings to {output_file}</action>
     <action>Update {pr_context}: add 'architecture-review' to completed list</action>
     <output>🏗️ Architecture review complete.
+{blocker_count} blockers (🔴), {warning_count} warnings (🟡), {suggestion_count} suggestions (🟢), {question_count} questions (❓) for author.
 Run [RR] Generate Report to compile all findings.</output>
   </step>
 </workflow>

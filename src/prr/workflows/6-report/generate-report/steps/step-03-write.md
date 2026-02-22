@@ -1,7 +1,7 @@
 ---
 name: "step-03-write"
 description: "Write the final review report to file"
-outputFile: "{review_output}/review-report-{pr_branch}-{date}.md"
+outputFile: "{review_output}/review-{target_branch_slug}-{date}.md"
 templateFile: "../templates/review-report.template.md"
 ---
 
@@ -27,7 +27,7 @@ The report includes:
 ```
 ✅ Review Report Generated!
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📄 File: {outputFile}
+📄 File: {review_output}/review-{target_branch_slug}-{date}.md
 
 Summary:
   🔴 Blockers: {blocker_count}
@@ -39,7 +39,7 @@ Verdict: {verdict}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Next steps:
-  [PC] Post Comments — post these findings to GitHub PR
+  [PC] Post Comments — post these findings to GitHub / GitLab / Azure / Bitbucket PR/MR
   or share the report file directly with the PR author
 ```
 

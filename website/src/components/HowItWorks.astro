@@ -11,44 +11,44 @@ const steps = [
   },
   {
     step: '02',
-    command: 'SP · Select PR',
+    command: 'Select PR',
     title: 'Select Your PR',
-    description: 'List open PRs via platform CLI (gh, glab, az, bb) or select branches manually. The diff loads directly into AI context.',
+    description: 'List open PRs from your Git platform or select branches manually. The diff loads directly into AI context.',
     color: 'text-white',
   },
   {
     step: '03',
-    command: 'DP · Describe PR',
+    command: 'Describe changes',
     title: 'PR Description',
     description: 'Classify PR type, generate a concise summary, and produce a file-by-file walkthrough of all changes.',
     color: 'text-white',
   },
   {
     step: '04',
-    command: 'Auto · Collect Context',
+    command: 'Automatic',
     title: 'PR-Specific Context',
-    description: 'Automatically collects fresh context for this PR: ESLint rules, CLAUDE.md, CONTRIBUTING.md, inline annotations — only what\'s relevant to changed files.',
+    description: 'Automatically collects fresh context for this PR: ESLint rules, CLAUDE.md, CONTRIBUTING.md, inline annotations, only what\'s relevant to changed files.',
     color: 'text-white',
   },
   {
     step: '05',
-    command: 'GR · SR · PR · AR',
+    command: 'Deep code review',
     title: 'Specialist Reviews',
-    description: 'A team of reviewer agents runs in parallel or sequence — each focused on a different dimension of code quality, using the fresh PR-specific context.',
+    description: 'A team of reviewer agents runs in parallel or sequence, each focused on a different dimension of code quality, using the fresh PR-specific context.',
     color: 'text-white',
   },
   {
     step: '06',
-    command: 'RR · Generate Report',
+    command: 'Generate report',
     title: 'Generate Report',
-    description: 'All findings compiled into a Markdown report, sorted by severity (BLOCKER → WARNING → SUGGESTION → QUESTION).',
+    description: 'All findings compiled into a Markdown report, sorted by severity from blockers to suggestions.',
     color: 'text-white',
   },
   {
     step: '07',
-    command: 'PC · Post Comments',
+    command: 'Post inline comments',
     title: 'Post Inline Comments',
-    description: 'Optionally post findings as inline code comments on the exact file and line — identical to a human reviewer experience.',
+    description: 'Optionally post findings as inline code comments on the exact file and line, identical to a human reviewer experience.',
     color: 'text-white',
   },
 ]
@@ -63,7 +63,7 @@ const steps = [
         How it works
       </h2>
       <p class="text-white/50 text-lg max-w-xl mx-auto">
-        A structured pipeline from PR selection to inline comments — with automatic PR-specific context collection, fully orchestrated by the master agent.
+        From PR selection to inline comments, fully orchestrated.
       </p>
     </div>
 
@@ -109,7 +109,7 @@ const steps = [
       </div>
       <div class="flex-1 text-center md:text-left">
         <div class="font-bold text-white text-sm mb-1">Full control with the master agent</div>
-        <p class="!my-0 text-xs text-white/40">Use <code id="prr-master-inline" class="font-mono bg-white/10 px-1.5 py-0.5 rounded">/prr-master</code> to access the full workflow menu — run each step manually, mix and match reviewers, or explore any part of the pipeline independently.</p>
+        <p class="!my-0 text-xs text-white/40">Use <code id="prr-master-inline" class="font-mono bg-white/10 px-1.5 py-0.5 rounded">/prr-master</code> to access the full workflow menu. Run each step manually, mix and match reviewers, or explore any part of the pipeline independently.</p>
       </div>
       <div id="prr-master-badge" class="font-mono text-xs bg-white/10 border border-white/10 px-4 py-2 rounded-lg text-white/60 flex-shrink-0">
         /prr-master

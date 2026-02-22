@@ -10,7 +10,7 @@ nextStepFile: "./step-03-write.md"
 
 ### 1. Sort by Severity
 
-Order: 🔴 Blockers/Critical → 🟡 Warnings/High → 🟡 Medium → 🟢 Suggestions/Low → 📌 Questions
+Order: 🔴 Blockers (Critical/High) → 🟡 Warnings (Medium) → 🟢 Suggestions (Low) → ❓ Questions
 
 ### 2. Group by Category
 
@@ -54,6 +54,6 @@ If business-review findings exist:
 
 List files that have 3+ findings — these may need more significant rework.
 
-### 5. Load Next Step
+### 6. Load Next Step
 
 Add `step-02-organize` to `stepsCompleted`. Load: `{nextStepFile}`
