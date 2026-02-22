@@ -1,6 +1,6 @@
 {
   "name": "prr-kit",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "AI-driven Pull Request Review Kit — structured agent workflows for thorough, consistent code review",
   "main": "tools/cli/prr-cli.js",
   "bin": {
@@ -40,7 +40,7 @@
     "type": "git",
     "url": "git+https://github.com/mrquangthai278/prr-kit.git"
   },
-  "homepage": "https://github.com/mrquangthai278/prr-kit#readme",
+  "homepage": "https://prrkit.sitenow.cloud/",
   "bugs": {
     "url": "https://github.com/mrquangthai278/prr-kit/issues"
   },
