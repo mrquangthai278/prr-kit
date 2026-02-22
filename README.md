@@ -4,6 +4,11 @@
   <img src="docs/assets/banner.svg" alt="PR Review Kit" width="100%"/>
 </p>
 
+[![Version](https://img.shields.io/npm/v/prr-kit?color=blue&label=version)](https://www.npmjs.com/package/prr-kit)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen)](https://nodejs.org)
+[![npm downloads](https://img.shields.io/npm/dm/prr-kit?color=orange&label=downloads)](https://www.npmjs.com/package/prr-kit)
+
 > AI-driven Pull Request code review — structured, multi-perspective, actionable.
 
 Module system, agent YAML, step-file workflows, CLI installer with full IDE integration.
@@ -53,7 +58,7 @@ external_sources:
   enabled: false                      # set true to activate MCP + RAG enrichment
 ```
 
-> See **[docs/configuration.md](docs/configuration.md)** for the full schema reference — including MCP tool intents, RAG systems, inline annotations, and URL sources.
+> See **[CONFIGURATION.md](CONFIGURATION.md)** for the full schema reference — including MCP tool intents, RAG systems, inline annotations, and URL sources.
 
 ## Platform Support
 
@@ -161,7 +166,7 @@ After [DP] Describe PR, context is collected **automatically** — no manual ste
 4. Optionally queries **MCP tools** (Confluence, Jira, Figma) and **RAG systems** if configured
 5. Writes `pr-{branch}-context.yaml` — loaded by all reviewers
 
-> See [docs/configuration.md](docs/configuration.md) for MCP intents, RAG setup, and URL sources.
+> See [CONFIGURATION.md](CONFIGURATION.md) for MCP intents, RAG setup, and URL sources.
 
 ## Inline Code Comments
 
@@ -228,9 +233,8 @@ prr-kit/
 ├── tools/
 │   └── cli/                            # CLI installer + IDE handlers
 ├── test/                               # Schema + component tests
+├── CONFIGURATION.md                    # Full config reference (MCP, RAG, context)
 └── docs/
-    ├── configuration.md                # Full config reference (MCP, RAG, context)
-    ├── index.md                        # Overview
     └── assets/
         ├── banner.svg
         └── how-it-works.svg

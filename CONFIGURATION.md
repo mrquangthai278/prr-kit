@@ -18,14 +18,15 @@ project_name: my-project             # Display name (cosmetic only)
 target_repo: .                       # Path to git repo (. = current directory)
 
 # ─── Platform ──────────────────────────────────────────────────────────────
-platform: auto                       # auto | github | gitlab | azure | bitbucket
+platform: github                     # github | gitlab | azure | bitbucket
 platform_repo: "owner/repo"          # e.g. "acme/backend-api"
                                      # Required for: PR listing, inline comment posting
                                      # Leave blank for local-only mode (git diff only)
 
 # ─── Output ────────────────────────────────────────────────────────────────
-output_folder: _prr-output           # Relative output folder name
-review_output: /abs/path/_prr-output/reviews  # Absolute path where reports are written
+review_output: ./_prr-output/reviews # Where review reports are written
+auto_post_comment: false             # Set to true to auto-post findings after every review
+                                     # (skips the "PC" prompt in quick workflow)
 
 # ─── Context Collection ────────────────────────────────────────────────────
 context_collection:
@@ -127,15 +128,15 @@ external_sources:
 
 | Field | Default | Description |
 |---|---|---|
-| `platform` | `auto` | Platform to use for PR listing and inline comments. `auto` detects from git remote URL |
+| `platform` | `github` | Platform to use for PR listing and inline comments. Options: `github`, `gitlab`, `azure`, `bitbucket` |
 | `platform_repo` | — | `owner/repo` slug. Required for `gh pr list`, `gh pr view`, posting inline comments. Leave blank for local-only (git diff) mode |
 
 ### Output
 
 | Field | Default | Description |
 |---|---|---|
-| `output_folder` | `_prr-output` | Relative folder name created in the project root |
-| `review_output` | `{output_folder}/reviews` | Absolute path where all review reports and context files are written |
+| `review_output` | `./_prr-output/reviews` | Path where all review reports and context files are written |
+| `auto_post_comment` | `false` | Auto-post findings to GitHub/GitLab after every review — skips the PC prompt in quick workflow |
 
 ---
 

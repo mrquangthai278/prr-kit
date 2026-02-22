@@ -1,223 +1,47 @@
-<svg width="1200" height="340" viewBox="0 0 1200 340" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff" stroke-width="0.3" opacity="0.04"/>
-    </pattern>
-  </defs>
+<svg width="1200" height="280" viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg">
 
   <!-- Background -->
-  <rect width="1200" height="340" fill="#0d1117"/>
-  <rect width="1200" height="340" fill="url(#grid)"/>
+  <rect width="1200" height="280" fill="#000000"/>
 
-  <!-- Top accent line -->
-  <rect x="0" y="0" width="1200" height="2" fill="#e6edf3" opacity="0.7"/>
-
-  <!-- Left vertical accent bar -->
-  <rect x="64" y="60" width="2" height="220" fill="#e6edf3" opacity="0.2"/>
-
-  <!-- Magnifying glass icon -->
-  <g transform="translate(100, 108)">
-    <circle cx="28" cy="28" r="26" fill="none" stroke="#e6edf3" stroke-width="2.5" opacity="0.75"/>
-    <circle cx="28" cy="28" r="18" fill="none" stroke="#e6edf3" stroke-width="1" opacity="0.18"/>
-    <line x1="47" y1="47" x2="62" y2="62" stroke="#e6edf3" stroke-width="3.5" stroke-linecap="round" opacity="0.75"/>
-    <line x1="18" y1="23" x2="38" y2="23" stroke="#e6edf3" stroke-width="1.5" stroke-linecap="round" opacity="0.35"/>
-    <line x1="18" y1="30" x2="32" y2="30" stroke="#e6edf3" stroke-width="1.5" stroke-linecap="round" opacity="0.35"/>
-    <line x1="18" y1="37" x2="36" y2="37" stroke="#e6edf3" stroke-width="1.5" stroke-linecap="round" opacity="0.2"/>
+  <!-- Icon -->
+  <g transform="translate(80, 90)">
+    <circle cx="40" cy="40" r="32" fill="none" stroke="#ffffff" stroke-width="3"/>
+    <line x1="65" y1="65" x2="86" y2="86" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+    <line x1="26" y1="34" x2="54" y2="34" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+    <line x1="26" y1="42" x2="48" y2="42" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+    <line x1="26" y1="50" x2="52" y2="50" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
   </g>
 
-  <!-- Main title -->
-  <text x="190" y="138" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-        font-size="52" font-weight="700" letter-spacing="-1" fill="#ffffff">
+  <!-- Title -->
+  <text x="200" y="138"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="58" font-weight="700" letter-spacing="-2" fill="#ffffff">
     PR Review Kit
   </text>
 
-  <!-- Accent underline -->
-  <rect x="190" y="150" width="340" height="1.5" fill="#e6edf3" opacity="0.18" rx="1"/>
-
-  <!-- Subtitle -->
-  <text x="492" y="175" text-anchor="middle"
+  <!-- Tagline -->
+  <text x="200" y="176"
         font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-        font-size="15" font-weight="400" fill="#8b949e" letter-spacing="0.2">
-    Install the kit, configure it once, and start getting structured AI reviews on every PR.
+        font-size="17" font-weight="400" fill="#555555" letter-spacing="0.2">
+    What if your AI actually understood your codebase before reviewing?
   </text>
 
-  <!-- ── IDE Badges Row 1: Preferred ── -->
-  <g transform="translate(192, 200)">
-    <rect width="104" height="24" rx="12" fill="#21262d" stroke="#c9d1d9" stroke-width="1"/>
-    <circle cx="14" cy="12" r="4" fill="#c9d1d9"/>
-    <text x="24" y="16" font-family="monospace" font-size="10" fill="#c9d1d9">Claude Code</text>
+  <!-- Pills -->
+  <g transform="translate(200, 204)">
+    <rect width="130" height="28" rx="14" fill="none" stroke="#ffffff" stroke-width="1.2"/>
+    <text x="65" y="19" text-anchor="middle" font-family="monospace" font-size="11" fill="#ffffff">Stack-aware</text>
+
+    <rect x="142" width="120" height="28" rx="14" fill="none" stroke="#333333" stroke-width="1.2"/>
+    <text x="202" y="19" text-anchor="middle" font-family="monospace" font-size="11" fill="#555555">Context-first</text>
+
+    <rect x="274" width="136" height="28" rx="14" fill="none" stroke="#333333" stroke-width="1.2"/>
+    <text x="342" y="19" text-anchor="middle" font-family="monospace" font-size="11" fill="#555555">Any AI tool</text>
   </g>
 
-  <g transform="translate(304, 200)">
-    <rect width="64" height="24" rx="12" fill="#21262d" stroke="#c9d1d9" stroke-width="1"/>
-    <circle cx="14" cy="12" r="4" fill="#c9d1d9"/>
-    <text x="24" y="16" font-family="monospace" font-size="10" fill="#c9d1d9">Cursor</text>
-  </g>
+  <!-- Command block -->
+  <rect x="820" y="104" width="280" height="52" rx="4" fill="#0d0d0d"/>
+  <text x="840" y="126" font-family="monospace" font-size="11" fill="#444444">$ npx prr-kit init</text>
+  <line x1="840" y1="134" x2="1084" y2="134" stroke="#222222" stroke-width="1"/>
+  <text x="840" y="148" font-family="monospace" font-size="11" fill="#777777">/prr-quick</text>
 
-  <g transform="translate(376, 200)">
-    <rect width="76" height="24" rx="12" fill="#21262d" stroke="#c9d1d9" stroke-width="1"/>
-    <circle cx="14" cy="12" r="4" fill="#c9d1d9"/>
-    <text x="24" y="16" font-family="monospace" font-size="10" fill="#c9d1d9">Windsurf</text>
-  </g>
-
-  <g transform="translate(460, 200)">
-    <rect width="110" height="24" rx="12" fill="#21262d" stroke="#c9d1d9" stroke-width="1"/>
-    <circle cx="14" cy="12" r="4" fill="#c9d1d9"/>
-    <text x="24" y="16" font-family="monospace" font-size="10" fill="#c9d1d9">GitHub Copilot</text>
-  </g>
-
-  <g transform="translate(578, 200)">
-    <rect width="82" height="24" rx="12" fill="#21262d" stroke="#c9d1d9" stroke-width="1"/>
-    <circle cx="14" cy="12" r="4" fill="#c9d1d9"/>
-    <text x="24" y="16" font-family="monospace" font-size="10" fill="#c9d1d9">Gemini CLI</text>
-  </g>
-
-  <!-- ── IDE Badges Row 2 ── -->
-  <g transform="translate(192, 232)">
-    <rect width="50" height="20" rx="10" fill="#21262d" stroke="#484f58" stroke-width="1"/>
-    <circle cx="11" cy="10" r="3.5" fill="#6e7681"/>
-    <text x="19" y="14" font-family="monospace" font-size="9" fill="#6e7681">Cline</text>
-  </g>
-
-  <g transform="translate(249, 232)">
-    <rect width="70" height="20" rx="10" fill="#21262d" stroke="#484f58" stroke-width="1"/>
-    <circle cx="11" cy="10" r="3.5" fill="#6e7681"/>
-    <text x="19" y="14" font-family="monospace" font-size="9" fill="#6e7681">Roo Cline</text>
-  </g>
-
-  <g transform="translate(326, 232)">
-    <rect width="46" height="20" rx="10" fill="#21262d" stroke="#484f58" stroke-width="1"/>
-    <circle cx="11" cy="10" r="3.5" fill="#6e7681"/>
-    <text x="19" y="14" font-family="monospace" font-size="9" fill="#6e7681">Kiro</text>
-  </g>
-
-  <g transform="translate(379, 232)">
-    <rect width="74" height="20" rx="10" fill="#21262d" stroke="#484f58" stroke-width="1"/>
-    <circle cx="11" cy="10" r="3.5" fill="#6e7681"/>
-    <text x="19" y="14" font-family="monospace" font-size="9" fill="#6e7681">OpenCode</text>
-  </g>
-
-  <g transform="translate(460, 232)">
-    <rect width="82" height="20" rx="10" fill="#21262d" stroke="#484f58" stroke-width="1"/>
-    <circle cx="11" cy="10" r="3.5" fill="#6e7681"/>
-    <text x="19" y="14" font-family="monospace" font-size="9" fill="#6e7681">Antigravity</text>
-  </g>
-
-  <g transform="translate(549, 232)">
-    <rect width="56" height="20" rx="10" fill="#21262d" stroke="#484f58" stroke-width="1"/>
-    <circle cx="11" cy="10" r="3.5" fill="#6e7681"/>
-    <text x="19" y="14" font-family="monospace" font-size="9" fill="#6e7681">Auggie</text>
-  </g>
-
-  <g transform="translate(612, 232)">
-    <rect width="52" height="20" rx="10" fill="#21262d" stroke="#484f58" stroke-width="1"/>
-    <circle cx="11" cy="10" r="3.5" fill="#6e7681"/>
-    <text x="19" y="14" font-family="monospace" font-size="9" fill="#6e7681">Codex</text>
-  </g>
-
-  <g transform="translate(671, 232)">
-    <rect width="50" height="20" rx="10" fill="#21262d" stroke="#484f58" stroke-width="1"/>
-    <circle cx="11" cy="10" r="3.5" fill="#6e7681"/>
-    <text x="19" y="14" font-family="monospace" font-size="9" fill="#6e7681">Crush</text>
-  </g>
-
-  <!-- ── IDE Badges Row 3 ── -->
-  <g transform="translate(192, 260)">
-    <rect width="50" height="20" rx="10" fill="#21262d" stroke="#484f58" stroke-width="1"/>
-    <circle cx="11" cy="10" r="3.5" fill="#6e7681"/>
-    <text x="19" y="14" font-family="monospace" font-size="9" fill="#6e7681">iFlow</text>
-  </g>
-
-  <g transform="translate(249, 260)">
-    <rect width="74" height="20" rx="10" fill="#21262d" stroke="#484f58" stroke-width="1"/>
-    <circle cx="11" cy="10" r="3.5" fill="#6e7681"/>
-    <text x="19" y="14" font-family="monospace" font-size="9" fill="#6e7681">KiloCoder</text>
-  </g>
-
-  <g transform="translate(330, 260)">
-    <rect width="76" height="20" rx="10" fill="#21262d" stroke="#484f58" stroke-width="1"/>
-    <circle cx="11" cy="10" r="3.5" fill="#6e7681"/>
-    <text x="19" y="14" font-family="monospace" font-size="9" fill="#6e7681">QwenCoder</text>
-  </g>
-
-  <g transform="translate(413, 260)">
-    <rect width="68" height="20" rx="10" fill="#21262d" stroke="#484f58" stroke-width="1"/>
-    <circle cx="11" cy="10" r="3.5" fill="#6e7681"/>
-    <text x="19" y="14" font-family="monospace" font-size="9" fill="#6e7681">Rovo Dev</text>
-  </g>
-
-  <g transform="translate(488, 260)">
-    <rect width="46" height="20" rx="10" fill="#21262d" stroke="#484f58" stroke-width="1"/>
-    <circle cx="11" cy="10" r="3.5" fill="#6e7681"/>
-    <text x="19" y="14" font-family="monospace" font-size="9" fill="#6e7681">Trae</text>
-  </g>
-
-  <!-- ── Right side: review flow diagram ── -->
-  <g transform="translate(820, 60)" opacity="0.85">
-    <!-- SP -->
-    <rect x="0" y="0" width="80" height="30" rx="6" fill="#21262d" stroke="#484f58" stroke-width="1"/>
-    <text x="40" y="20" text-anchor="middle" font-family="monospace" font-size="12" fill="#c9d1d9" font-weight="600">SP</text>
-
-    <!-- Arrow SP→DP -->
-    <line x1="80" y1="15" x2="108" y2="15" stroke="#30363d" stroke-width="1.5"/>
-    <polygon points="108,11 116,15 108,19" fill="#30363d"/>
-
-    <!-- DP -->
-    <rect x="116" y="0" width="80" height="30" rx="6" fill="#21262d" stroke="#484f58" stroke-width="1"/>
-    <text x="156" y="20" text-anchor="middle" font-family="monospace" font-size="12" fill="#c9d1d9" font-weight="600">DP</text>
-
-    <!-- Vertical from DP -->
-    <line x1="156" y1="30" x2="156" y2="56" stroke="#30363d" stroke-width="1.5"/>
-    <line x1="28" y1="56" x2="276" y2="56" stroke="#30363d" stroke-width="1.5"/>
-
-    <!-- GR -->
-    <line x1="28" y1="56" x2="28" y2="76" stroke="#30363d" stroke-width="1.5"/>
-    <rect x="-12" y="76" width="80" height="28" rx="6" fill="#21262d" stroke="#30363d" stroke-width="1"/>
-    <text x="28" y="94" text-anchor="middle" font-family="monospace" font-size="11" fill="#8b949e">GR</text>
-
-    <!-- SR -->
-    <line x1="108" y1="56" x2="108" y2="76" stroke="#30363d" stroke-width="1.5"/>
-    <rect x="68" y="76" width="80" height="28" rx="6" fill="#21262d" stroke="#30363d" stroke-width="1"/>
-    <text x="108" y="94" text-anchor="middle" font-family="monospace" font-size="11" fill="#8b949e">SR</text>
-
-    <!-- PR -->
-    <line x1="196" y1="56" x2="196" y2="76" stroke="#30363d" stroke-width="1.5"/>
-    <rect x="156" y="76" width="80" height="28" rx="6" fill="#21262d" stroke="#30363d" stroke-width="1"/>
-    <text x="196" y="94" text-anchor="middle" font-family="monospace" font-size="11" fill="#8b949e">PR</text>
-
-    <!-- AR -->
-    <line x1="276" y1="56" x2="276" y2="76" stroke="#30363d" stroke-width="1.5"/>
-    <rect x="236" y="76" width="80" height="28" rx="6" fill="#21262d" stroke="#30363d" stroke-width="1"/>
-    <text x="276" y="94" text-anchor="middle" font-family="monospace" font-size="11" fill="#8b949e">AR</text>
-
-    <!-- Converge lines -->
-    <line x1="28" y1="104" x2="28" y2="132" stroke="#30363d" stroke-width="1.5"/>
-    <line x1="108" y1="104" x2="108" y2="132" stroke="#30363d" stroke-width="1.5"/>
-    <line x1="196" y1="104" x2="196" y2="132" stroke="#30363d" stroke-width="1.5"/>
-    <line x1="276" y1="104" x2="276" y2="132" stroke="#30363d" stroke-width="1.5"/>
-    <line x1="28" y1="132" x2="276" y2="132" stroke="#30363d" stroke-width="1.5"/>
-    <line x1="152" y1="132" x2="152" y2="152" stroke="#30363d" stroke-width="1.5"/>
-
-    <!-- RR -->
-    <rect x="112" y="152" width="80" height="30" rx="6" fill="#21262d" stroke="#c9d1d9" stroke-width="1.5"/>
-    <text x="152" y="172" text-anchor="middle" font-family="monospace" font-size="12" fill="#e6edf3" font-weight="600">RR</text>
-
-    <!-- Arrow RR→PC -->
-    <line x1="192" y1="167" x2="220" y2="167" stroke="#30363d" stroke-width="1.5"/>
-    <polygon points="220,163 228,167 220,171" fill="#30363d"/>
-
-    <!-- PC -->
-    <rect x="228" y="152" width="80" height="30" rx="6" fill="#21262d" stroke="#30363d" stroke-width="1"/>
-    <text x="268" y="172" text-anchor="middle" font-family="monospace" font-size="12" fill="#6e7681" font-weight="600">PC</text>
-
-    <!-- Labels -->
-    <text x="16" y="-10" font-family="monospace" font-size="10" fill="#484f58">Select PR</text>
-    <text x="120" y="-10" font-family="monospace" font-size="10" fill="#484f58">Describe</text>
-    <text x="0" y="122" font-family="monospace" font-size="9" fill="#484f58">Reviews</text>
-    <text x="112" y="202" font-family="monospace" font-size="10" fill="#484f58">Report</text>
-    <text x="232" y="202" font-family="monospace" font-size="10" fill="#484f58">Post</text>
-  </g>
-
-  <!-- Bottom accent line -->
-  <rect x="0" y="337" width="1200" height="2" fill="#e6edf3" opacity="0.12"/>
 </svg>

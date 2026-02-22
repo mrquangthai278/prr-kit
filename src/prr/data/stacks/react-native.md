@@ -1,46 +1,77 @@
 # React Native — Stack-Specific Review Rules
 
 > Applies to: GR · SR · PR · AR · BR
-> Detection signals: `react-native` in deps, `*.tsx` with RN imports (`View`, `Text`, `StyleSheet`), `metro.config.*`, `app.json` (Expo)
+> Detection signals: `react-native` in deps, `*.tsx` with RN imports (`View`, `Text`, `StyleSheet`), `metro.config.*`, `app.json`, `react-navigation`, `@react-native-`, New Architecture
 
 ---
 
 ## Security
 
-- **[CRITICAL]** Sensitive data (tokens, passwords) stored in `AsyncStorage` → not encrypted, readable on rooted devices. Use `react-native-encrypted-storage` or Keychain.
-- **[HIGH]** `WebView` with `javaScriptEnabled: true` loading user-controlled URLs → XSS and code injection. Whitelist URLs strictly.
-- **[HIGH]** Deep link handling without validation → malicious apps open the app with crafted params. Validate all deep link params.
-- **[HIGH]** `REACT_APP_*` / Expo `EXPO_PUBLIC_*` env vars containing secrets → bundled into JS, extractable from APK/IPA.
-- **[MEDIUM]** Missing certificate pinning for sensitive API calls → MITM on compromised networks.
-- **[MEDIUM]** Screenshot allowed on sensitive screens (PIN entry, payment) → use `FLAG_SECURE` (Android) or disable screenshot.
+- **[CRITICAL]** Sensitive data (tokens, passwords) in `AsyncStorage` → plaintext on device, accessible on rooted devices. Use `react-native-encrypted-storage` or Keychain/Keystore.
+- **[CRITICAL]** `WebView` with `javaScriptEnabled: true` loading user-controlled URLs → XSS and code injection. Allowlist URLs strictly or disable JS.
+- **[HIGH]** Deep link params not validated → malicious apps open with crafted data. Validate scheme, host, and all params.
+- **[HIGH]** `EXPO_PUBLIC_*` / `REACT_APP_*` env vars containing API secrets → bundled into JS bundle, extractable from APK/IPA.
+- **[HIGH]** Missing certificate pinning for sensitive API calls → MITM on compromised or public networks.
+- **[HIGH]** `WebView` with `onMessage` accepting arbitrary data without validation → message injection from malicious web content.
+- **[HIGH]** Native module exposing filesystem access without path validation → path traversal from JS layer.
+- **[MEDIUM]** Screenshot allowed on sensitive screens (PIN, payment) → use `FLAG_SECURE` (Android) or `allowScreenCapture: false`.
+- **[MEDIUM]** Biometric auth result trusted on JS side → native layer must be source of truth for auth decisions.
+- **[LOW]** Debug menu accessible in production builds → disable `__DEV__` checks properly.
 
 ---
 
 ## Performance
 
-- **[HIGH]** `FlatList` / `SectionList` not used for long lists — using `ScrollView` with `map()` → all items rendered at once, memory/FPS issues.
-- **[HIGH]** Inline function/object in render passed as prop to `React.memo` component → new reference every render, memo ineffective.
-- **[HIGH]** `useEffect` / `useState` causing re-render cascades in navigation-heavy screens → profile with Flipper.
-- **[MEDIUM]** JS thread doing heavy computation (image processing, large data transformation) → blocks UI. Use `InteractionManager.runAfterInteractions` or native module.
-- **[MEDIUM]** Images not resized for device — loading 4K image for 200x200 display → memory waste.
+- **[HIGH]** `ScrollView` with `map()` for long lists → all items rendered at once. Use `FlatList`/`SectionList` with `keyExtractor`.
+- **[HIGH]** Inline function/object as prop to `React.memo` or `FlatList` `renderItem` → new reference every render, memo ineffective.
+- **[HIGH]** Heavy computation on JS thread (image processing, large transforms) → blocks UI. Use `InteractionManager.runAfterInteractions`, `Reanimated worklets`, or native module.
+- **[HIGH]** `FlatList` missing `getItemLayout` for fixed-height items → scroll-to-index slow, no scroll optimization.
+- **[HIGH]** Images not sized for display — loading 4K for 200px display → excess memory, OOM on low-end devices.
+- **[HIGH]** Unoptimized re-renders causing dropped frames → profile with Flipper/React DevTools Profiler.
 - **[MEDIUM]** Missing `keyExtractor` on `FlatList` → React uses index, broken reconciliation on reorder.
-- **[LOW]** `StyleSheet.create` not used — inline style objects created on every render → garbage collection pressure.
+- **[MEDIUM]** `StyleSheet.create` not used → inline style objects created on every render → GC pressure.
+- **[MEDIUM]** `useEffect` cascade on navigation-heavy screens → multiple re-renders during transition.
+- **[MEDIUM]** Not using `Hermes` engine (default RN 0.70+) → slower startup without bytecode precompilation.
+- **[LOW]** Missing `removeClippedSubviews` on long `FlatList` → off-screen views kept in memory.
+- **[LOW]** Not using `useMemo` for expensive list data transformations.
 
 ---
 
 ## Architecture
 
-- **[HIGH]** Navigation state managed in Redux/Zustand instead of React Navigation → complex sync issues.
-- **[MEDIUM]** Platform-specific code scattered with `Platform.OS === 'ios'` checks → use `.ios.tsx`/`.android.tsx` file splitting.
-- **[MEDIUM]** Native module called without null check on older RN versions where module may not be linked.
-- **[LOW]** Missing `ErrorBoundary` for JS crashes → red screen in production. Use react-native-error-boundary.
+- **[HIGH]** Navigation state in Redux/Zustand instead of React Navigation → complex sync, back button issues.
+- **[HIGH]** Async operation in `useEffect` without cleanup → state update on unmounted screen (navigate back).
+- **[HIGH]** Not separating platform logic → `Platform.OS === 'ios'` scattered everywhere. Use `.ios.tsx`/`.android.tsx` file extensions.
+- **[HIGH]** Business logic in screen components → extract to hooks, services, or state management.
+- **[MEDIUM]** Not using React Navigation's `useNavigation` hook → prop drilling `navigation` prop deeply.
+- **[MEDIUM]** Native module called without null check → unlinked module on older RN or missing platform.
+- **[MEDIUM]** Not using `ErrorBoundary` for JS crashes → red screen in production. Use `react-native-error-boundary`.
+- **[MEDIUM]** Deep linking not handling all app states (cold start, background, foreground) differently.
+- **[LOW]** Not using `AppState` API to pause/resume work when app backgrounds.
+
+---
+
+## Code Quality
+
+- **[HIGH]** `Keyboard.dismiss()` not called before navigation → keyboard visible on next screen.
+- **[HIGH]** `StatusBar` style not set per-screen → wrong appearance on some screens.
+- **[MEDIUM]** `TouchableOpacity` vs `Pressable` not chosen consistently (prefer `Pressable` in RN 0.63+).
+- **[MEDIUM]** Hardcoded pixel values without `PixelRatio` or responsive scaling → poor tablet/accessibility experience.
+- **[MEDIUM]** `useRef` not used for values that should persist without causing re-renders (animation values, timers).
+- **[MEDIUM]** Missing `accessibilityLabel` on interactive elements → screen reader unusable.
+- **[LOW]** Console logs left in production → use `__DEV__` guard or logging service.
+- **[LOW]** Not using TypeScript strict mode → RN component prop types unchecked.
 
 ---
 
 ## Common Bugs & Pitfalls
 
-- **[HIGH]** `Keyboard.dismiss()` not called before navigation → keyboard stays visible on next screen.
-- **[HIGH]** Async operation started in `useEffect` without cleanup → state update on unmounted component (navigation back).
-- **[MEDIUM]** `TouchableOpacity` inside `ScrollView` with `nestedScrollEnabled` not set → touch conflict on Android.
-- **[MEDIUM]** `StatusBar` style not reset between screens → wrong color on some screens.
-- **[LOW]** Hardcoded font sizes without `PixelRatio` scaling → poor readability on tablet or accessibility font size.
+- **[HIGH]** `TouchableOpacity` inside `ScrollView` touch conflict on Android → `nestedScrollEnabled` or restructure.
+- **[HIGH]** Metro bundler caching stale files → `--reset-cache` needed after certain changes.
+- **[HIGH]** New Architecture (Fabric/TurboModules) not compatible with unupgraded native modules → runtime crash.
+- **[MEDIUM]** `Animated.Value` directly mutated instead of using `Animated.setValue()` → animation state corrupted.
+- **[MEDIUM]** Android back button not handled → exits app unexpectedly. Use `BackHandler.addEventListener`.
+- **[MEDIUM]** Orientation changes not handled → UI breaks on tablet or landscape mode.
+- **[MEDIUM]** `Linking.openURL()` without `canOpenURL()` check → crash on devices without handler.
+- **[LOW]** `Platform.Version` used for feature detection → use capability check instead.
+- **[LOW]** Not testing on low-end Android device → performance issues invisible on dev machine.

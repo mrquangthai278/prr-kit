@@ -1,53 +1,61 @@
-# Swift / iOS — Stack-Specific Review Rules
+# Swift Stack Rules
 
-> Applies to: GR · SR · PR · AR · BR
-> Detection signals: `*.swift` files · `import UIKit` · `import SwiftUI` · `import Foundation` · `Package.swift` · `*.xcodeproj` · `Podfile`
+## Detection Signals
+`*.swift` files · `import UIKit` · `import SwiftUI` · `import Foundation` · `Package.swift` · `*.xcodeproj` · `Podfile` · `*.xcworkspace`
 
 ---
 
 ## Security
 
-- **[HIGH]** `WKWebView` loading user-controlled URLs without scheme/host validation → open redirect, XSS from web content.
-- **[HIGH]** Sensitive data stored in `UserDefaults` → not encrypted, included in device backups, readable by other processes on jailbroken devices. Use Keychain.
-- **[HIGH]** Tokens, passwords, or private keys stored in `UserDefaults` or written to files → use `Security` framework (`SecItemAdd`) or `KeychainAccess` library.
-- **[MEDIUM]** `try!` on network or file I/O operations → crash on any failure. Use `try?` with nil handling or `do/catch`.
-- **[MEDIUM]** Hardcoded URLs, API keys, or secrets in source files → extractable from compiled binary. Use environment-specific config or obfuscation.
+**[CRITICAL]** Sensitive data (passwords, tokens, keys) stored in UserDefaults → not encrypted, included in device backups, and readable on jailbroken devices. Use Keychain via Security framework or KeychainAccess library for all sensitive values.
 
+**[CRITICAL]** Certificate validation disabled via custom URLSession delegate returning .useCredential for all challenges → MITM attack intercepts all network traffic in cleartext. Never bypass certificate validation; implement pinning correctly using SecTrustEvaluateWithError.
+
+**[HIGH]** WKWebView loading user-controlled URLs without scheme/host validation → open redirect, XSS from malicious web content reaching native bridges. Validate and allowlist URL schemes and hosts before loading.
+
+**[HIGH]** WebView with JavaScript enabled loading untrusted content → XSS in web content can access native message handlers and call Swift code. Disable JavaScript for untrusted content or use WKContentWorld isolation for message handlers.
+
+**[HIGH]** Hardcoded API keys, secrets, or connection strings in Swift source files → extractable from compiled binary using strings tool or Hopper. Use environment-specific xcconfig files, obfuscation, or a backend proxy for secrets.
+
+**[HIGH]** SQL injection via raw SQLite query constructed with string interpolation of user input → arbitrary SQL executed against local database. Use parameterized queries with sqlite3_bind_* functions instead of string interpolation.
+
+**[HIGH]** Sensitive content written to UIPasteboard.general without expiry date → pasteboard data persists across apps and is accessible to any app the user switches to. Set expirationDate on sensitive pasteboard items or clear after use.
+
+**[HIGH]** No jailbreak detection for high-security operations in banking or health apps → jailbroken device can bypass Keychain security, intercept traffic, and inspect memory. Implement jailbreak detection checks for sensitive operations in high-security contexts.
+
+**[MEDIUM]** Sensitive screens not protected from screenshots in app switcher → app switcher captures a snapshot of the last screen, potentially exposing sensitive data. Add a privacy overlay in applicationWillResignActive and remove it in applicationDidBecomeActive.
+
+**[MEDIUM]** Log statements containing sensitive data (tokens, PII, passwords) → visible in Xcode console during development and in device system logs. Use compile-time or runtime flags to strip sensitive log statements from release builds.
+
+**[MEDIUM]** try! on network or cryptographic operations → any failure crashes the app with a fatal error rather than being handled gracefully. Use do/catch for all throwing operations and handle errors explicitly.
+
+**[LOW]** Hardcoded bundle IDs or environment URLs in source code → changing environments requires source changes and recompilation. Use xcconfig files with per-scheme settings for bundle ID, URLs, and other environment-specific values.
 ---
 
 ## Performance
 
-- **[HIGH]** Retain cycle in closure: `self` captured strongly without `[weak self]` or `[unowned self]` → memory leak. ARC never releases the object.
-- **[HIGH]** `@Published` property updated from a background thread → SwiftUI view updates must happen on main thread. Use `DispatchQueue.main.async` or `@MainActor`.
-- **[MEDIUM]** `DispatchQueue.main.sync { }` called from the main thread → deadlock.
-- **[MEDIUM]** Large `Codable` model decoded synchronously on the main thread → UI freeze. Decode on a background queue.
-- **[LOW]** `Array` used where `Set` suffices for membership checks → O(n) `.contains()` vs O(1).
+**[CRITICAL]** Retain cycle in closure where self is captured strongly without [weak self] or [unowned self] → ARC never releases the object, memory leaks accumulate over the session lifetime. Always capture self weakly in escaping closures stored as properties.
 
----
+**[HIGH]** @Published property updated from a background thread → SwiftUI requires all UI updates on the main thread; background updates cause runtime warnings and undefined rendering behavior. Wrap background updates with DispatchQueue.main.async or mark the class @MainActor.
 
-## Architecture
+**[HIGH]** Synchronous URLSession call on main thread using dataTask with semaphore wait → UI freezes for the duration of the network call, watchdog kills the app after a few seconds. Always use async/await or completion handlers on a background queue.
 
-- **[HIGH]** Massive View Controller > 300 lines with network calls, data formatting, and UI logic mixed → extract to Coordinator, ViewModel, or dedicated service classes.
-- **[MEDIUM]** Strong `delegate` property → retain cycle between owner and delegate. Always declare `weak var delegate: MyDelegate?`.
-- **[MEDIUM]** `NotificationCenter` observer not removed in `deinit` (UIKit / pre-iOS 9 style) → dangling observer called after object is deallocated.
-- **[MEDIUM]** Singleton used for testable business logic → prefer dependency injection for unit testability.
-- **[LOW]** `class` used where `struct` would suffice → unnecessary reference semantics and heap allocation. Structs are value types, safer for state.
+**[HIGH]** Full-resolution image decoded in memory for thumbnail display → a 12MP JPEG decoded at full resolution uses hundreds of MB of memory, causing OOM and app termination. Use ImageIO with kCGImageSourceThumbnailMaxPixelSize to downsample at decode time.
 
----
+**[HIGH]** Core Data fetch request executed on the main thread with large datasets → UI freezes during the fetch; large datasets can cause ANR and app termination. Perform fetches using performAndWait on a background managed object context.
 
-## Code Quality
+**[HIGH]** Not using Swift Concurrency (async/await) for concurrent tasks → GCD DispatchQueue nesting creates callback pyramids, no structured cancellation, hard to reason about. Migrate to async/await with Task and TaskGroup for structured concurrency.
 
-- **[HIGH]** `!` (force unwrap) on `Optional` without prior `guard let` or `if let` → runtime crash when value is `nil`. Use `guard let` at function entry or optional chaining.
-- **[MEDIUM]** `@objc dynamic` on Swift-only code with no Objective-C interop requirement → unnecessary runtime overhead and binary size.
-- **[MEDIUM]** `class` `ObservableObject` properties stored in SwiftUI `View` as `@State` → `@State` is for value types. Use `@StateObject` or `@ObservedObject` for reference types.
-- **[LOW]** Long `guard` chains with multiple `else { return }` → extract into a validation function.
+**[MEDIUM]** DispatchQueue.main.sync called from the main thread → deadlock; the main thread blocks waiting for itself to complete the sync block. Always use DispatchQueue.main.async when dispatching to main from the main thread.
 
----
+**[MEDIUM]** Large Codable model decoded synchronously on the main thread → JSON decoding of large payloads freezes the UI noticeably. Decode on a background Task or DispatchQueue.global and update state on main.
 
-## Common Bugs & Pitfalls
+**[MEDIUM]** SwiftUI View body performing expensive computation (sorting, filtering large arrays) on every render → runs on every state change even for unrelated properties, causing jank. Cache results in @State or compute in ViewModel with @Published.
 
-- **[HIGH]** SwiftUI `@State` used for shared or injected state → `@State` is local to the view. Use `@StateObject` (owned) or `@ObservedObject` (injected) for `ObservableObject`.
-- **[HIGH]** `URLSession` completion handler updating UI directly → called on background thread by default. Dispatch to main: `DispatchQueue.main.async`.
-- **[MEDIUM]** `Timer.scheduledTimer(withTimeInterval:repeats:block:)` without `[weak self]` capture → strong reference to self prevents deallocation.
-- **[MEDIUM]** `async/await` task not cancelled on view disappear → long-running tasks continue after the view is gone, may attempt UI updates on deallocated objects.
-- **[LOW]** `Date()` captured in a model's initializer → records the time of model creation, not the time the value is used. Often intentional but worth verifying.
+**[MEDIUM]** Not using LazyVStack or LazyHStack for long lists in SwiftUI → all rows computed and laid out upfront even if off-screen, wasting memory and CPU. Use LazyVStack inside ScrollView or List for large collections.
+
+**[MEDIUM]** Heavy objects allocated inside SwiftUI View body initializer → recreated on every render cycle because View structs are value types. Move expensive objects to @StateObject or @EnvironmentObject so they survive re-renders.
+
+**[LOW]** Array used for membership testing in hot paths → contains() on Array is O(n); with large arrays called frequently this causes measurable performance degradation. Use Set for O(1) membership testing.
+
+**[LOW]** NotificationCenter callback performing UI work without main thread dispatch → notifications are delivered on the posting thread which may be a background thread, causing crashes or undefined UI behavior. Always dispatch UI work to DispatchQueue.main inside notification handlers.

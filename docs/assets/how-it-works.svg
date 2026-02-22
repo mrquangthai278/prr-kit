@@ -1,160 +1,87 @@
-<svg width="1200" height="340" viewBox="0 0 1200 340" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <filter id="boxGlow" x="-8%" y="-15%" width="116%" height="130%">
-      <feGaussianBlur stdDeviation="3" result="blur"/>
-      <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff" stroke-width="0.3" opacity="0.04"/>
-    </pattern>
-  </defs>
+<svg width="1200" height="240" viewBox="0 0 1200 240" xmlns="http://www.w3.org/2000/svg">
 
   <!-- Background -->
-  <rect width="1200" height="340" fill="#0d1117"/>
-  <rect width="1200" height="340" fill="url(#grid)"/>
-
-  <!-- Top accent line -->
-  <rect x="0" y="0" width="1200" height="2" fill="#e6edf3" opacity="0.7"/>
+  <rect width="1200" height="240" fill="#000000"/>
 
   <!-- Title -->
-  <text x="600" y="44" text-anchor="middle"
+  <text x="600" y="38" text-anchor="middle"
         font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-        font-size="24" font-weight="700" fill="#ffffff" letter-spacing="-0.5">How It Works</text>
-  <text x="600" y="66" text-anchor="middle"
-        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-        font-size="12" fill="#6e7681">
-    From PR selection to inline comments — context collected automatically, always fresh and PR-specific
-  </text>
-  <rect x="430" y="77" width="340" height="1" fill="#e6edf3" opacity="0.12" rx="1"/>
+        font-size="18" font-weight="700" fill="#ffffff" letter-spacing="-0.3">How It Works</text>
 
-  <!-- ══════════════════════ PIPELINE ══════════════════════ -->
+  <!-- ══════════ PIPELINE ══════════ -->
 
-  <!-- ── 01 · SP ── -->
-  <rect x="50" y="150" width="120" height="70" rx="8" fill="#21262d" stroke="#484f58" stroke-width="1.5"/>
-  <text x="110" y="170" text-anchor="middle" font-family="monospace"
-        font-size="8" fill="#484f58" letter-spacing="2">01</text>
-  <text x="110" y="191" text-anchor="middle" font-family="monospace"
-        font-size="20" fill="#e6edf3" font-weight="700">SP</text>
-  <text x="110" y="208" text-anchor="middle"
-        font-family="-apple-system, 'Segoe UI', sans-serif" font-size="10" fill="#6e7681">Select PR</text>
+  <!-- 01 Select PR -->
+  <g transform="translate(40, 62)">
+    <rect width="130" height="76" rx="5" fill="#0d0d0d"/>
+    <text x="65" y="22" text-anchor="middle" font-family="monospace" font-size="8" fill="#333333" letter-spacing="2">01</text>
+    <text x="65" y="48" text-anchor="middle" font-family="monospace" font-size="22" fill="#ffffff" font-weight="700">SP</text>
+    <text x="65" y="66" text-anchor="middle" font-family="-apple-system, 'Segoe UI', sans-serif" font-size="11" fill="#555555">Select PR</text>
+  </g>
 
-  <!-- Arrow SP → DP -->
-  <line x1="170" y1="185" x2="208" y2="185" stroke="#30363d" stroke-width="1.5"/>
-  <polygon points="208,181 216,185 208,189" fill="#30363d"/>
+  <line x1="170" y1="100" x2="196" y2="100" stroke="#2a2a2a" stroke-width="1.5"/>
+  <polygon points="196,96 204,100 196,104" fill="#2a2a2a"/>
 
-  <!-- ── 02 · DP ── -->
-  <rect x="216" y="150" width="120" height="70" rx="8" fill="#21262d" stroke="#484f58" stroke-width="1.5"/>
-  <text x="276" y="170" text-anchor="middle" font-family="monospace"
-        font-size="8" fill="#484f58" letter-spacing="2">02</text>
-  <text x="276" y="191" text-anchor="middle" font-family="monospace"
-        font-size="20" fill="#e6edf3" font-weight="700">DP</text>
-  <text x="276" y="208" text-anchor="middle"
-        font-family="-apple-system, 'Segoe UI', sans-serif" font-size="10" fill="#6e7681">Describe PR</text>
+  <!-- 02 Describe PR -->
+  <g transform="translate(204, 62)">
+    <rect width="130" height="76" rx="5" fill="#0d0d0d"/>
+    <text x="65" y="22" text-anchor="middle" font-family="monospace" font-size="8" fill="#333333" letter-spacing="2">02</text>
+    <text x="65" y="48" text-anchor="middle" font-family="monospace" font-size="22" fill="#ffffff" font-weight="700">DP</text>
+    <text x="65" y="66" text-anchor="middle" font-family="-apple-system, 'Segoe UI', sans-serif" font-size="11" fill="#555555">Describe PR</text>
+  </g>
 
-  <!-- Arrow DP → Context (dashed = automatic) -->
-  <line x1="336" y1="185" x2="356" y2="185" stroke="#484f58" stroke-width="1.5" stroke-dasharray="4,2"/>
-  <polygon points="356,181 364,185 356,189" fill="#484f58"/>
-  <text x="346" y="177" text-anchor="middle" font-family="monospace" font-size="8" fill="#484f58">auto</text>
+  <!-- dashed arrow = auto -->
+  <line x1="334" y1="100" x2="354" y2="100" stroke="#2a2a2a" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <polygon points="354,96 362,100 354,104" fill="#2a2a2a"/>
+  <text x="348" y="92" text-anchor="middle" font-family="monospace" font-size="8" fill="#333333">auto</text>
 
-  <!-- ── 03 · Collect Context (AUTO STEP) ── -->
-  <!-- Glow layer -->
-  <rect x="364" y="128" width="200" height="114" rx="8" fill="none"
-        stroke="#c9d1d9" stroke-width="2" filter="url(#boxGlow)" opacity="0.2"/>
-  <!-- Main box -->
-  <rect x="364" y="128" width="200" height="114" rx="8"
-        fill="#0d1117" stroke="#c9d1d9" stroke-width="1.5"/>
-  <!-- Step number -->
-  <text x="374" y="146" font-family="monospace" font-size="8" fill="#484f58" letter-spacing="1">03</text>
-  <!-- AUTO badge -->
-  <rect x="400" y="133" width="46" height="16" rx="8"
-        fill="none" stroke="#6e7681" stroke-width="0.8"/>
-  <text x="423" y="145" text-anchor="middle" font-family="monospace"
-        font-size="8" fill="#8b949e" font-weight="600">AUTO</text>
-  <!-- Title -->
-  <text x="464" y="168" text-anchor="middle" font-family="monospace"
-        font-size="13" fill="#e6edf3" font-weight="700">Collect Context</text>
-  <!-- Sources -->
-  <text x="464" y="186" text-anchor="middle" font-family="monospace"
-        font-size="9" fill="#484f58">ESLint · Prettier · CLAUDE.md</text>
-  <text x="464" y="201" text-anchor="middle" font-family="monospace"
-        font-size="9" fill="#484f58">CONTRIBUTING · annotations</text>
-  <!-- Output -->
-  <text x="464" y="221" text-anchor="middle" font-family="monospace"
-        font-size="8" fill="#8b949e">→ pr-context.yaml (fresh)</text>
+  <!-- 03 Collect Context (highlighted) -->
+  <g transform="translate(362, 50)">
+    <rect width="186" height="100" rx="5" fill="#0d0d0d" stroke="#ffffff" stroke-width="1.2"/>
+    <text x="12" y="20" font-family="monospace" font-size="8" fill="#333333" letter-spacing="1">03</text>
+    <text x="93" y="52" text-anchor="middle" font-family="monospace" font-size="15" fill="#ffffff" font-weight="700">Collect Context</text>
+    <text x="93" y="72" text-anchor="middle" font-family="monospace" font-size="9" fill="#444444">Reads your actual project config</text>
+    <text x="93" y="88" text-anchor="middle" font-family="monospace" font-size="9" fill="#333333">→ pr-context.yaml</text>
+  </g>
 
-  <!-- Arrow Context → Reviews -->
-  <line x1="564" y1="185" x2="584" y2="185" stroke="#30363d" stroke-width="1.5"/>
-  <polygon points="584,181 592,185 584,189" fill="#30363d"/>
+  <line x1="548" y1="100" x2="568" y2="100" stroke="#2a2a2a" stroke-width="1.5"/>
+  <polygon points="568,96 576,100 568,104" fill="#2a2a2a"/>
 
-  <!-- ── 04 · Reviews ── -->
-  <rect x="592" y="128" width="200" height="114" rx="8" fill="#21262d" stroke="#484f58" stroke-width="1.5"/>
-  <!-- Step number -->
-  <text x="602" y="146" font-family="monospace" font-size="8" fill="#484f58" letter-spacing="1">04</text>
-  <!-- Title -->
-  <text x="692" y="161" text-anchor="middle"
-        font-family="-apple-system, 'Segoe UI', sans-serif" font-size="11" fill="#c9d1d9" font-weight="600">Specialist Reviews</text>
-  <!-- GR badge -->
-  <rect x="604" y="168" width="38" height="22" rx="4" fill="#0d1117" stroke="#484f58" stroke-width="1"/>
-  <text x="623" y="184" text-anchor="middle" font-family="monospace" font-size="11" fill="#8b949e">GR</text>
-  <!-- SR badge -->
-  <rect x="650" y="168" width="38" height="22" rx="4" fill="#0d1117" stroke="#484f58" stroke-width="1"/>
-  <text x="669" y="184" text-anchor="middle" font-family="monospace" font-size="11" fill="#8b949e">SR</text>
-  <!-- PR badge -->
-  <rect x="696" y="168" width="38" height="22" rx="4" fill="#0d1117" stroke="#484f58" stroke-width="1"/>
-  <text x="715" y="184" text-anchor="middle" font-family="monospace" font-size="11" fill="#8b949e">PR</text>
-  <!-- AR badge -->
-  <rect x="742" y="168" width="38" height="22" rx="4" fill="#0d1117" stroke="#484f58" stroke-width="1"/>
-  <text x="761" y="184" text-anchor="middle" font-family="monospace" font-size="11" fill="#8b949e">AR</text>
-  <!-- Labels -->
-  <text x="692" y="208" text-anchor="middle" font-family="monospace" font-size="8" fill="#484f58">uses pr-context.yaml</text>
-  <text x="692" y="224" text-anchor="middle" font-family="monospace" font-size="8" fill="#484f58">outputs structured findings</text>
+  <!-- 04 Deep Review (mystery) -->
+  <g transform="translate(576, 50)">
+    <rect width="222" height="100" rx="5" fill="#0d0d0d"/>
+    <text x="12" y="20" font-family="monospace" font-size="8" fill="#333333" letter-spacing="1">04</text>
+    <text x="111" y="52" text-anchor="middle" font-family="-apple-system, 'Segoe UI', sans-serif" font-size="13" fill="#cccccc" font-weight="600">Deep Review</text>
+    <text x="111" y="72" text-anchor="middle" font-family="monospace" font-size="9" fill="#444444">Security · Perf · Arch · Bugs</text>
+    <text x="111" y="88" text-anchor="middle" font-family="monospace" font-size="9" fill="#333333">structured findings per concern</text>
+  </g>
 
-  <!-- Arrow Reviews → RR -->
-  <line x1="792" y1="185" x2="812" y2="185" stroke="#30363d" stroke-width="1.5"/>
-  <polygon points="812,181 820,185 812,189" fill="#30363d"/>
+  <line x1="798" y1="100" x2="818" y2="100" stroke="#2a2a2a" stroke-width="1.5"/>
+  <polygon points="818,96 826,100 818,104" fill="#2a2a2a"/>
 
-  <!-- ── 05 · RR ── -->
-  <rect x="820" y="150" width="120" height="70" rx="8" fill="#21262d" stroke="#c9d1d9" stroke-width="1.5"/>
-  <text x="880" y="170" text-anchor="middle" font-family="monospace"
-        font-size="8" fill="#484f58" letter-spacing="2">05</text>
-  <text x="880" y="191" text-anchor="middle" font-family="monospace"
-        font-size="20" fill="#e6edf3" font-weight="700">RR</text>
-  <text x="880" y="208" text-anchor="middle"
-        font-family="-apple-system, 'Segoe UI', sans-serif" font-size="10" fill="#6e7681">Generate Report</text>
+  <!-- 05 Report -->
+  <g transform="translate(826, 62)">
+    <rect width="130" height="76" rx="5" fill="#0d0d0d"/>
+    <text x="65" y="22" text-anchor="middle" font-family="monospace" font-size="8" fill="#333333" letter-spacing="2">05</text>
+    <text x="65" y="48" text-anchor="middle" font-family="monospace" font-size="22" fill="#ffffff" font-weight="700">RR</text>
+    <text x="65" y="66" text-anchor="middle" font-family="-apple-system, 'Segoe UI', sans-serif" font-size="11" fill="#555555">Report</text>
+  </g>
 
-  <!-- Arrow RR → PC -->
-  <line x1="940" y1="185" x2="960" y2="185" stroke="#30363d" stroke-width="1.5"/>
-  <polygon points="960,181 968,185 960,189" fill="#30363d"/>
+  <line x1="956" y1="100" x2="976" y2="100" stroke="#2a2a2a" stroke-width="1.5"/>
+  <polygon points="976,96 984,100 976,104" fill="#2a2a2a"/>
 
-  <!-- ── 06 · PC (optional) ── -->
-  <rect x="968" y="150" width="120" height="70" rx="8"
-        fill="#21262d" stroke="#30363d" stroke-width="1" opacity="0.5"/>
-  <text x="1028" y="170" text-anchor="middle" font-family="monospace"
-        font-size="8" fill="#484f58" opacity="0.5" letter-spacing="2">06</text>
-  <text x="1028" y="190" text-anchor="middle" font-family="monospace"
-        font-size="18" fill="#6e7681" font-weight="700">PC</text>
-  <text x="1028" y="207" text-anchor="middle"
-        font-family="-apple-system, 'Segoe UI', sans-serif" font-size="10" fill="#484f58">Post Comments</text>
-  <text x="1028" y="220" text-anchor="middle" font-family="monospace"
-        font-size="8" fill="#484f58">optional</text>
+  <!-- 06 Post Comments (optional, dimmed) -->
+  <g transform="translate(984, 62)" opacity="0.4">
+    <rect width="130" height="76" rx="5" fill="#0d0d0d"/>
+    <text x="65" y="22" text-anchor="middle" font-family="monospace" font-size="8" fill="#333333" letter-spacing="2">06</text>
+    <text x="65" y="48" text-anchor="middle" font-family="monospace" font-size="22" fill="#ffffff" font-weight="700">PC</text>
+    <text x="65" y="66" text-anchor="middle" font-family="-apple-system, 'Segoe UI', sans-serif" font-size="11" fill="#555555">Post Comments</text>
+  </g>
+  <text x="1049" y="153" text-anchor="middle" font-family="monospace" font-size="8" fill="#333333">optional</text>
 
-  <!-- ══════════════════════ LABELS BELOW ══════════════════════ -->
-  <text x="110" y="262" text-anchor="middle" font-family="monospace" font-size="9" fill="#484f58">git fetch · list PRs</text>
-  <text x="276" y="262" text-anchor="middle" font-family="monospace" font-size="9" fill="#484f58">classify · walkthrough</text>
-  <text x="464" y="262" text-anchor="middle" font-family="monospace" font-size="9" fill="#484f58">always fresh · PR-specific</text>
-  <text x="692" y="262" text-anchor="middle" font-family="monospace" font-size="9" fill="#484f58">parallel or sequential</text>
-  <text x="880" y="262" text-anchor="middle" font-family="monospace" font-size="9" fill="#484f58">severity sorted · .md</text>
-  <text x="1028" y="262" text-anchor="middle" font-family="monospace" font-size="9" fill="#484f58">inline code comments</text>
+  <!-- ══════════ Quick mode ══════════ -->
+  <rect x="40" y="178" width="400" height="30" rx="4" fill="#0d0d0d"/>
+  <text x="56" y="198" font-family="monospace" font-size="10" fill="#555555">Quick mode: </text>
+  <text x="136" y="198" font-family="monospace" font-size="10" fill="#ffffff">/prr-quick</text>
+  <text x="208" y="198" font-family="monospace" font-size="10" fill="#333333"> — one command, full pipeline</text>
 
-  <!-- ══════════════════════ QUICK MODE FOOTER ══════════════════════ -->
-  <rect x="50" y="278" width="1100" height="32" rx="6" fill="#21262d" stroke="#30363d" stroke-width="1"/>
-  <text x="70" y="299" font-family="monospace" font-size="10" fill="#c9d1d9" font-weight="600">Quick mode:</text>
-  <text x="156" y="299" font-family="monospace" font-size="10" fill="#e6edf3">/prr-quick</text>
-  <text x="226" y="299" font-family="monospace" font-size="10" fill="#484f58">— runs the full pipeline automatically, pausing once to select the PR/branch</text>
-
-  <!-- Bottom accent line -->
-  <rect x="0" y="337" width="1200" height="2" fill="#e6edf3" opacity="0.12"/>
 </svg>
