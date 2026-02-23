@@ -7,17 +7,16 @@ GitHub
 PR Review Kit runs a team of specialist AI agents, each focused on a different dimension of code
     quality. Every reviewer uses the same fresh PR-specific context collected before the review starts.
 </p> <h2 id="general">General Review</h2> <p>
-Covers overall code quality — the things every pull request should get right.
-</p> <ul> <li>Logic correctness and edge case handling</li> <li>Naming conventions and readability</li> <li>DRY principles and code reuse</li> <li>Test coverage and quality</li> <li>Code best practices for the detected stack</li> </ul> <h2 id="security">Security Review</h2> <p>
-Applies the OWASP Top 10 and common security patterns to every changed file.
-</p> <ul> <li>Injection vulnerabilities (SQL, command, XSS)</li> <li>Secret and credential exposure</li> <li>Authentication and session management</li> <li>Rate limiting and denial-of-service risks</li> <li>Insecure deserialization and broken access control</li> </ul> <h2 id="performance">Performance Review</h2> <p>
-Identifies efficiency problems that often slip through code review but hit hard in production.
-</p> <ul> <li>N+1 query patterns</li> <li>Memory leak risks</li> <li>Missing or incorrect <code>async</code>/<code>await</code> usage</li> <li>Caching opportunities</li> <li>Unnecessary re-renders and expensive computations</li> </ul> <h2 id="architecture">Architecture Review</h2> <p>
-Checks how the changes fit into the existing codebase structure and long-term maintainability.
-</p> <ul> <li>SOLID principles adherence</li> <li>Layer separation and boundary violations</li> <li>Coupling and cohesion analysis</li> <li>Consistency with existing patterns in the codebase</li> <li>Abstraction level appropriateness</li> </ul> <h2 id="business">Business Review</h2> <p>
-Runs last and translates technical findings into business language. This reviewer bridges the gap
-    between engineering and product.
-</p> <ul> <li>User-facing impact of the changes</li> <li>Business risk and feature completeness</li> <li>GDPR and data safety implications</li> <li>Migration safety for database or API changes</li> <li>Deployment recommendations and post-ship monitoring checklist</li> </ul> <h2 id="improve">Code improvement</h2> <p>
+Covers overall code quality — adapted to your stack with additional best practices generated from project context.
+</p> <ul> <li>Logic correctness and edge case handling</li> <li>Naming conventions and readability</li> <li>DRY principles and code reuse</li> <li>Test coverage and quality</li> <li>Code best practices for the detected stack</li> <li>Stack-specific and project-specific code quality checks</li> </ul> <h2 id="security">Security Review</h2> <p>
+Checks security concerns relevant to your project — categories that don't apply to your stack are skipped, and stack-specific threats are added on top.
+</p> <ul> <li>Injection vulnerabilities (SQL, command, XSS, etc.)</li> <li>Secret and credential exposure</li> <li>Authentication and session management</li> <li>Rate limiting and denial-of-service risks</li> <li>Insecure deserialization and broken access control</li> <li>Stack-specific and project-specific security threats</li> </ul> <h2 id="performance">Performance Review</h2> <p>
+Identifies efficiency problems relevant to your project — categories that don't apply to your stack are skipped, and stack-specific checks are added on top.
+</p> <ul> <li>N+1 query patterns</li> <li>Memory leak risks</li> <li>Missing or incorrect <code>async</code>/<code>await</code> usage</li> <li>Caching opportunities</li> <li>Unnecessary re-renders and expensive computations</li> <li>Stack-specific and project-specific performance patterns</li> </ul> <h2 id="architecture">Architecture Review</h2> <p>
+Checks how the changes fit into the existing codebase structure — categories that don't apply to your architecture are skipped, and project-specific patterns are added on top.
+</p> <ul> <li>SOLID principles adherence</li> <li>Layer separation and boundary violations</li> <li>Coupling and cohesion analysis</li> <li>Consistency with existing patterns in the codebase</li> <li>Abstraction level appropriateness</li> <li>Stack-specific and project-specific architectural patterns</li> </ul> <h2 id="business">Business Review</h2> <p>
+Runs last and translates technical findings into business language — adapted to your project with additional business checks generated from project context.
+</p> <ul> <li>User-facing impact of the changes</li> <li>Business risk and feature completeness</li> <li>GDPR and data safety implications</li> <li>Migration safety for database or API changes</li> <li>Deployment recommendations and post-ship monitoring checklist</li> <li>Project-specific business concerns</li> </ul> <h2 id="improve">Code improvement</h2> <p>
 After reviews are complete, the Improve Code step generates concrete before/after code suggestions
     for the most important findings. Each suggestion shows the original code and the improved version
     side by side.
