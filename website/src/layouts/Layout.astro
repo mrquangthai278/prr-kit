@@ -5,12 +5,18 @@ import '../styles/webcore.scss'
 interface Props {
   title?: string
   description?: string
+  canonical?: string
 }
 
 const {
   title = 'PR Review Kit — AI-Driven Pull Request Review',
-  description = 'AI-driven Pull Request code review — structured, multi-perspective, actionable. Works with GitHub, GitLab, Azure DevOps, and Bitbucket.'
+  description = 'AI-driven Pull Request code review — structured, multi-perspective, actionable. Works with GitHub, GitLab, Azure DevOps, and Bitbucket.',
+  canonical = 'https://prr-kit.dev',
 } = Astro.props
+
+const ogImage = `${canonical}/banner.svg`
+const siteName = 'PR Review Kit'
+const twitterHandle = '@prrkit'
 ---
 
 <!doctype html>
@@ -18,16 +24,47 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
 
+    <!-- Primary meta -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content="PR review, pull request review, AI code review, Claude Code, GitHub Copilot, Cursor, code review automation, static analysis, GitHub, GitLab, Azure DevOps, Bitbucket" />
+    <meta name="author" content="PR Review Kit" />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Robots -->
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+
     <!-- Open Graph -->
+    <meta property="og:site_name" content={siteName} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content="PR Review Kit — AI-Driven Pull Request Review" />
+    <meta property="og:locale" content="en_US" />
 
-    <!-- Favicon -->
+    <!-- Twitter / X Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content={twitterHandle} />
+    <meta name="twitter:creator" content={twitterHandle} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content="PR Review Kit — AI-Driven Pull Request Review" />
+
+    <!-- Theme -->
+    <meta name="theme-color" content="#000000" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="msapplication-TileColor" content="#000000" />
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
 
     <!-- Fonts: Inter + JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -36,8 +73,6 @@ const {
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
-
-    <title>{title}</title>
   </head>
   <body class="bg-black text-white antialiased" style="font-family: 'Inter', sans-serif;">
     <slot />
