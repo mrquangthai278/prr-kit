@@ -34,6 +34,8 @@ Then open your IDE in the installed project and use one of these commands to sta
 - `/prr-quick` — one command, full pipeline (select PR → review → report)
 - `/prr-master` — full menu with all options
 
+> **Note:** The exact command depends on your IDE. See [IDE Support](https://prrkit.sitenow.cloud/docs/ide-support) for the command specific to your IDE.
+
 ## How It Works
 
 <p align="center">
