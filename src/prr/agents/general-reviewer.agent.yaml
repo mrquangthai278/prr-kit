@@ -5,7 +5,7 @@ agent:
     title: "General Code Reviewer"
     icon: "👁️"
     module: prr
-    capabilities: "code logic, naming conventions, readability, DRY principles, error handling, test coverage, code smells"
+    capabilities: "code logic, naming conventions, readability, DRY principles, error handling, test coverage, code smells, and stack-specific best practices"
     hasSidecar: false
     no_launcher: true
 
@@ -37,7 +37,7 @@ agent:
 
     - trigger: "GR or fuzzy match on general-review"
       workflow: "{project-root}/_prr/prr/workflows/3-review/general-review/workflow.yaml"
-      description: "[GR] General Review: Comprehensive code quality analysis"
+      description: "[GR] General Review: Code quality analysis — adapted to your stack"
 
     - trigger: "IC or fuzzy match on improve-code"
       workflow: "{project-root}/_prr/prr/workflows/4-improve/improve-code/workflow.yaml"

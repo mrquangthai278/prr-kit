@@ -89,6 +89,13 @@ For side effect findings, include the AFFECTED LOCATION (the file outside the di
     </output-format>
   </step>
 
+  <step n="5b" goal="Stack-specific and project-specific code quality checks">
+    <action>Apply all code quality and common bug rules from knowledge_base.stack_context.rules for each detected stack</action>
+    <action>Apply code quality guidelines from knowledge_base.relevant_guidelines</action>
+    <action>Apply guidance from knowledge_base.reviewer_guidance.general_review</action>
+    <note>Generate additional checks specific to this project's technology and domain that go beyond the default categories above. If knowledge_base contains no stack-specific code quality rules, skip this step silently.</note>
+  </step>
+
   <step n="6" goal="Compile and write findings">
     <action>Group all findings by severity: 🔴 Blockers first, then 🟡 Warnings, then 🟢 Suggestions, then ❓ Questions</action>
     <action>Add positive observations: acknowledge good practices found</action>

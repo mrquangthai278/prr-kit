@@ -21,6 +21,9 @@ auto_post_comment: false             # Set to true to auto-post findings to GitH
 # ─── Context Collection ────────────────────────────────────────────────────
 context_collection:
   enabled: true
+  skip_manual_input_context: false   # Set to true to skip the manual context input prompt
+                                     # (default: false — agent will ask the user for additional context
+                                     # before building the knowledge base. User input is marked ⚠️ IMPORTANT)
   mode: pr-specific                  # Always fresh, never cached
 
   # Local primary sources (read if file exists)

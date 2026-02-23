@@ -5,7 +5,7 @@ agent:
     title: "Architecture Code Reviewer"
     icon: "🏗️"
     module: prr
-    capabilities: "SOLID principles, design patterns, layered architecture, coupling and cohesion, API design, consistency with existing codebase patterns"
+    capabilities: "SOLID principles, design patterns, layered architecture, coupling and cohesion, API design, consistency with existing codebase patterns, and stack-specific architectural patterns"
     hasSidecar: false
     no_launcher: true
 
@@ -38,7 +38,7 @@ agent:
 
     - trigger: "AR or fuzzy match on architecture-review"
       workflow: "{project-root}/_prr/prr/workflows/3-review/architecture-review/workflow.yaml"
-      description: "[AR] Architecture Review: SOLID, layering, coupling, codebase consistency"
+      description: "[AR] Architecture Review: Architecture analysis — adapted to your codebase"
 
     - trigger: "IC or fuzzy match on improve-code"
       workflow: "{project-root}/_prr/prr/workflows/4-improve/improve-code/workflow.yaml"

@@ -15,7 +15,7 @@ Go through the diff once per reviewer. Each reviewer applies rules from the PR k
 
 **👁️ Alex says:**
 
-[Alex reviews for: logic correctness, naming, readability, DRY violations, missing error handling, test coverage, side effects, resource cleanup]
+[Alex reviews for: logic correctness, naming, readability, DRY violations, missing error handling, test coverage, side effects, resource cleanup, and stack-specific code quality issues from knowledge base]
 
 Format each finding as:
 ```
@@ -27,7 +27,7 @@ Format each finding as:
 
 **🔒 Sam says:**
 
-[Sam reviews for: secrets/credentials, SQL injection, XSS, authentication checks, authorization, rate limiting, error message exposure, OWASP Top 10]
+[Sam reviews for: secrets/credentials, SQL injection, XSS, authentication checks, authorization, rate limiting, error message exposure, OWASP Top 10, and stack-specific security threats from knowledge base]
 
 Format each finding as:
 ```
@@ -40,7 +40,7 @@ Format each finding as:
 
 **⚡ Petra says:**
 
-[Petra reviews for: N+1 queries, missing indexes, sync I/O on hot paths, unbound queries, missing caching, large payloads, memory leaks, inefficient loops]
+[Petra reviews for: N+1 queries, missing indexes, sync I/O on hot paths, unbound queries, missing caching, large payloads, memory leaks, inefficient loops, and stack-specific performance issues from knowledge base]
 
 Format each finding as:
 ```
@@ -53,7 +53,7 @@ Format each finding as:
 
 **🏗️ Arch says:**
 
-[Arch reviews for: layer violations, circular dependencies, tight coupling, inconsistent patterns, shared module blast radius, backward compatibility breaks]
+[Arch reviews for: layer violations, circular dependencies, tight coupling, inconsistent patterns, shared module blast radius, backward compatibility breaks, and stack-specific architecture concerns from knowledge base]
 
 Format each finding as:
 ```
@@ -68,7 +68,7 @@ Format each finding as:
 
 **💼 Biz speaks last** — synthesizes findings from Alex/Sam/Petra/Arch into business impact:
 
-[Biz reviews for: user-facing regressions, feature completeness, data safety, deployment risk, observability gaps, compliance issues]
+[Biz reviews for: user-facing regressions, feature completeness, data safety, deployment risk, observability gaps, compliance issues, and project-specific business concerns from knowledge base]
 
 For each 🔴 finding from prior reviewers, Biz adds business consequence:
 ```

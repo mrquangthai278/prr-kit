@@ -48,23 +48,23 @@ agent:
 
     - trigger: "GR or fuzzy match on general-review"
       workflow: "{project-root}/_prr/prr/workflows/3-review/general-review/workflow.yaml"
-      description: "[GR] General Review: Logic, naming, readability, best practices"
+      description: "[GR] General Review: Code quality analysis — adapted to your stack"
 
     - trigger: "SR or fuzzy match on security-review"
       workflow: "{project-root}/_prr/prr/workflows/3-review/security-review/workflow.yaml"
-      description: "[SR] Security Review: OWASP top 10, injection, auth, API key exposure"
+      description: "[SR] Security Review: Security analysis — adapted to your project"
 
     - trigger: "PR or fuzzy match on performance-review"
       workflow: "{project-root}/_prr/prr/workflows/3-review/performance-review/workflow.yaml"
-      description: "[PR] Performance Review: N+1 queries, memory leaks, async patterns, bundle size"
+      description: "[PR] Performance Review: Performance analysis — adapted to your stack"
 
     - trigger: "AR or fuzzy match on architecture-review"
       workflow: "{project-root}/_prr/prr/workflows/3-review/architecture-review/workflow.yaml"
-      description: "[AR] Architecture Review: SOLID, layering, coupling, consistency with codebase"
+      description: "[AR] Architecture Review: Architecture analysis — adapted to your codebase"
 
     - trigger: "BR or fuzzy match on business-review"
       workflow: "{project-root}/_prr/prr/workflows/3-review/business-review/workflow.yaml"
-      description: "[BR] Business Review: User impact, business risk, feature completeness, data safety, observability"
+      description: "[BR] Business Review: Business impact analysis — adapted to your project"
 
     - trigger: "IC or fuzzy match on improve-code"
       workflow: "{project-root}/_prr/prr/workflows/4-improve/improve-code/workflow.yaml"

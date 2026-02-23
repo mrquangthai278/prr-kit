@@ -17,8 +17,8 @@ const toc = [
 
   <h2 id="quick-mode">Quick mode</h2>
   <p>
-    Quick mode runs the full pipeline in one command. It pauses only once to ask which PR or branch to
-    review, then handles everything else automatically.
+    Quick mode runs the full pipeline in one command. It pauses to ask which PR or branch to
+    review, and once more to ask for optional additional context, then handles everything else automatically.
   </p>
   <p>Start it from your AI IDE:</p>
   <pre><code>/prr-quick</code></pre>
@@ -45,13 +45,20 @@ const toc = [
     a file-by-file walkthrough of all changes.
   </p>
 
-  <h3>3. Collect context (automatic)</h3>
+  <h3>3. Collect context</h3>
   <p>
     Runs automatically after step 2. Analyzes the changed files to detect relevant domains, reads
     project config files and standards documents, extracts inline annotations from the diff, and
-    optionally queries MCP tools or RAG systems. The result is saved as a context file loaded by
-    all reviewer agents.
+    optionally queries MCP tools or RAG systems.
   </p>
+  <p>
+    After auto-collection, the agent pauses and asks you for any additional context — such as business
+    rationale, known trade-offs, or specific areas to focus on. If you provide input, it is marked
+    <strong>⚠️ IMPORTANT</strong> and all reviewer agents treat it as the highest-priority context.
+    You can skip this prompt by pressing Enter, or disable it permanently with
+    <code>skip_manual_input_context: true</code> in your config.
+  </p>
+  <p>The result is saved as a context file loaded by all reviewer agents.</p>
 
   <h3>4. Deep code review</h3>
   <p>

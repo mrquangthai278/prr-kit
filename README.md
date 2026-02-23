@@ -48,25 +48,75 @@ The framework installs into your project as a `_prr/` folder. Agents and workflo
 
 The installer handles configuration interactively — no manual file editing required. During `npx prr-kit install`, you'll be prompted for your name, language, output folder, target repo, and platform.
 
-All values are written automatically to `_prr/prr/config.yaml`:
+All values are written to `_prr/prr/config.yaml`. Full schema overview:
 
 ```yaml
-user_name: YourName
-communication_language: English
-target_repo: .
-platform: auto                        # auto-detect from git remote
-platform_repo: "owner/repo"           # optional — needed for PR listing and inline comments
-review_output: /abs/path/_prr-output/reviews
+# ─── Identity ──────────────────────────────────────────────────────────────
+user_name: YourName                    # Your name — used in review reports
+communication_language: English        # Any language: English | Vietnamese | Japanese | French | …
 
+# ─── Project ───────────────────────────────────────────────────────────────
+project_name: my-project               # Display name in reports (cosmetic only)
+target_repo: .                         # Path to git repo (. = current dir, or ../other-repo)
+
+# ─── Platform ──────────────────────────────────────────────────────────────
+platform: auto                         # auto | github | gitlab | azure | bitbucket | none
+platform_repo: "owner/repo"           # owner/repo slug — required for PR listing + inline comments
+                                       # leave blank for local-only mode (git diff only)
+
+# ─── Output ────────────────────────────────────────────────────────────────
+review_output: ./_prr-output/reviews   # Where review reports + context files are written
+auto_post_comment: false               # true → auto-post findings after every review (skips PC prompt)
+
+# ─── Context Collection ────────────────────────────────────────────────────
 context_collection:
-  enabled: true
-  mode: pr-specific                   # always fresh, never cached
+  enabled: true                        # false → disable context collection entirely
+  skip_manual_input_context: false     # true → skip the manual context input prompt
+                                       # false (default) → agent asks user for additional context
+                                       # before building the knowledge base; input is marked ⚠️ IMPORTANT
+  mode: pr-specific                    # only value: pr-specific (always fresh, never cached)
 
+  # Sources below are auto-detected — override only if needed:
+  # primary_sources:  [CLAUDE.md, AGENTS.md, .github/CLAUDE_CODE_RULES.md, .clauderules]
+  # config_files:     [.eslintrc*, .prettierrc*, tsconfig.json, vite.config.*, webpack.config.*, …]
+  # standards_docs:   [CONTRIBUTING.md, ARCHITECTURE.md, docs/**/*.md]
+  # inline_annotations: { enabled: true, patterns: [@context:, @security:, @pattern:, @rule:] }
+
+# ─── External Sources ──────────────────────────────────────────────────────
+# MCP tools + RAG systems available in your AI IDE session.
+# Agent auto-discovers tools and maps them to declared intents.
 external_sources:
-  enabled: false                      # set true to activate MCP + RAG enrichment
+  enabled: false                       # true → activate MCP + RAG enrichment
+
+  mcp:
+    enabled: true                      # toggle MCP independently of master switch
+    intents:                           # what kinds of context to fetch via MCP tools
+      - knowledge_base                 # Confluence, Notion → team standards, ADRs
+      - project_management             # Jira, Linear → linked issue + acceptance criteria
+      - design                         # Figma, Zeplin → design specs (UI PRs only)
+      # - code_intelligence            # Sourcegraph → similar patterns
+    hints:
+      branch_issue_pattern: "([A-Z]+-\\d+)"  # regex to extract issue key from branch name
+                                              # e.g. feature/ENG-123-auth → ENG-123
+
+  rag:
+    enabled: false                     # true → query RAG systems (vector DB, embeddings)
+    intents:
+      - similar_patterns               # find similar code in the codebase
+      - past_decisions                 # previous review decisions for similar code
+      # - architecture_examples        # embedded architecture docs
+
+  sources: []                          # plain URL sources — always fetched via WebFetch
+  # sources:
+  #   - type: url
+  #     name: Shared ESLint config
+  #     url: https://raw.githubusercontent.com/org/standards/main/eslint.md
+  #   - type: url
+  #     name: Security guidelines
+  #     url: https://wiki.company.com/public/security-standards
 ```
 
-> See **[CONFIGURATION.md](CONFIGURATION.md)** for the full schema reference — including MCP tool intents, RAG systems, inline annotations, and URL sources.
+> See **[CONFIGURATION.md](CONFIGURATION.md)** for detailed explanations, examples, and FAQs.
 
 ## Platform Support
 
@@ -101,11 +151,11 @@ Only pauses once to ask which PR/branch to review.
 |------|---------|-------------|
 | `SP` | Select PR | Fetch latest → list open PRs (via `gh`) or branches → select head + base → load diff |
 | `DP` | Describe PR | Classify PR type, generate summary, file-by-file walkthrough |
-| `GR` | General Review | Logic, naming, readability, DRY, best practices |
+| `GR` | General Review | Logic, naming, readability, DRY, best practices, etc. — adapted to your stack |
 | `SR` | Security Review | OWASP Top 10, secrets, auth, rate limits, injection, etc. — adapted to your project |
 | `PR` | Performance Review | N+1 queries, memory leaks, async patterns, caching, etc. — adapted to your stack |
 | `AR` | Architecture Review | SOLID, layers, coupling, consistency with codebase, etc. — adapted to your architecture |
-| `BR` | Business Review | User impact, business risk, feature completeness, data safety, observability |
+| `BR` | Business Review | User impact, business risk, feature completeness, data safety, observability — adapted to your project |
 | `IC` | Improve Code | Concrete BEFORE/AFTER code suggestions |
 | `AK` | Ask Code | Q&A about specific changes in this PR |
 | `RR` | Generate Report | Compile all findings → Markdown report in `_prr-output/reviews/` |
@@ -147,11 +197,11 @@ Specialist reviewer agents are orchestrated internally by the master agent and p
 
 | Reviewer | Focus | Key questions |
 |---|---|---|
-| 👁️ General (GR) | Code quality | Is the logic correct? Naming clear? DRY? Tests present? |
+| 👁️ General (GR) | Code quality + stack practices | Is the logic correct? Naming clear? DRY? Tests present? *(adapted to your stack)* |
 | 🔒 Security (SR) | OWASP Top 10 + stack threats | XSS? Injection? Secrets exposed? Auth correct? *(adapted to your stack)* |
 | ⚡ Performance (PR) | Efficiency + stack patterns | N+1 queries? Memory leaks? Missing await? *(adapted to your stack)* |
 | 🏗️ Architecture (AR) | Structure + conventions | Layer violations? Coupling? Consistent with codebase? *(adapted to your architecture)* |
-| 💼 Business (BR) | Real-world impact | User impact? Business risk? Feature completeness? Data safe? Observability? |
+| 💼 Business (BR) | Real-world impact | User impact? Business risk? Feature completeness? Data safe? Observability? *(adapted to your project)* |
 
 > Checks are adaptive — each reviewer skips categories not relevant to your project and generates additional checks based on detected stacks, project guidelines, and inline annotations.
 

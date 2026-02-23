@@ -5,7 +5,7 @@ agent:
     title: "Performance Code Reviewer"
     icon: "⚡"
     module: prr
-    capabilities: "N+1 query detection, memory leak analysis, async/await patterns, bundle size, caching strategies, database query optimization"
+    capabilities: "N+1 query detection, memory leak analysis, async/await patterns, bundle size, caching strategies, database query optimization, and stack-specific performance patterns"
     hasSidecar: false
     no_launcher: true
 
@@ -38,7 +38,7 @@ agent:
 
     - trigger: "PR or fuzzy match on performance-review"
       workflow: "{project-root}/_prr/prr/workflows/3-review/performance-review/workflow.yaml"
-      description: "[PR] Performance Review: N+1, memory, async, bundle size analysis"
+      description: "[PR] Performance Review: Performance analysis — adapted to your stack"
 
     - trigger: "IC or fuzzy match on improve-code"
       workflow: "{project-root}/_prr/prr/workflows/4-improve/improve-code/workflow.yaml"

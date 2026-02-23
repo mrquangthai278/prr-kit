@@ -21,11 +21,11 @@ Use `/prr-help` anytime for guidance on what to do.
 
 ### Available Reviews
 
-- **[GR] General Reviewer** 👁️ — Logic, naming, readability, DRY, best practices
-- **[SR] Security Reviewer** 🔒 — OWASP Top 10, injection, auth, secrets, API key exposure
-- **[PR] Performance Reviewer** ⚡ — N+1 queries, memory leaks, async patterns, bundle size
-- **[AR] Architecture Reviewer** 🏗️ — SOLID, layering, coupling, consistency, blast radius
-- **[BR] Business Reviewer** 💼 — User impact, business risk, feature completeness, data safety, observability
+- **[GR] General Reviewer** 👁️ — Logic, naming, readability, DRY, best practices, etc. — adapted to your stack
+- **[SR] Security Reviewer** 🔒 — OWASP Top 10, injection, auth, secrets, etc. — adapted to your project
+- **[PR] Performance Reviewer** ⚡ — N+1 queries, memory leaks, async patterns, etc. — adapted to your stack
+- **[AR] Architecture Reviewer** 🏗️ — SOLID, layering, coupling, consistency, etc. — adapted to your architecture
+- **[BR] Business Reviewer** 💼 — User impact, business risk, feature completeness, data safety, etc. — adapted to your project
 
 ### Finding Severity Levels
 

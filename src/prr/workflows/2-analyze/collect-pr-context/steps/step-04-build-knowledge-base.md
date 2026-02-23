@@ -1,9 +1,9 @@
 ---
-name: "step-03-build-knowledge-base"
+name: "step-04-build-knowledge-base"
 description: "Build structured PR-specific knowledge base for reviewers"
 ---
 
-# Step 3: Build PR-Specific Knowledge Base
+# Step 4: Build PR-Specific Knowledge Base
 
 ## Goal
 Transform collected data into structured knowledge base optimized for reviewers.
@@ -31,6 +31,16 @@ pr_metadata:
   base_branch: {base_branch}
   files_changed: {n}
   collected_at: {ISO timestamp}
+
+# ⚠️  IMPORTANT — Human-provided context from the PR author.
+# All reviewers MUST read this section before starting any review.
+# Align all findings and focus areas against this input.
+manual_context:
+  # Populated only when the user provided input in step-03-manual-context-input.
+  # If provided: true — treat this content as the highest-priority context in this file.
+  provided: {true|false}
+  content: |
+    {manual_context text, or null if not provided}
 
 files_analysis:
   changed_files:
@@ -235,6 +245,7 @@ external_context:
 
 review_priorities:
   # Guide reviewers on what to focus on
+  # ⚠️  If manual_context.provided is true — reviewers MUST check findings against it first.
   critical:
     - "Verify no v-html with user input (security requirement)"
     - "Check ESLint error-level rules compliance"
@@ -250,6 +261,7 @@ review_priorities:
     - "Optional optimizations"
 
 reviewer_guidance:
+  # ⚠️  If manual_context.provided is true — read manual_context BEFORE starting any review.
   general_review:
     - "Check for ESLint rule violations (no-var, prefer-const)"
     - "Verify component naming follows standards"
@@ -275,6 +287,7 @@ context_sources:
   config_files: [.eslintrc.js, .prettierrc]
   standards_docs: [CONTRIBUTING.md, ARCHITECTURE.md]
   inline_annotations: yes
+  manual_context: {true|false}    # true if user provided input in step-03
   mcp_tools: []                   # list of MCP tools actually used
   rag_systems: []                 # list of RAG systems queried
   url_sources: []                 # list of plain URLs fetched
@@ -309,6 +322,9 @@ Example: `_prr-output/pr-123-context.yaml`
    • ESLint rules: {n}
    • Guidelines: {m}
    • Inline annotations: {k}
+   • Manual context: ⚠️ YES — reviewers will prioritize this ({char_count} chars)
+     OR
+   • Manual context: none
    • MCP tools used: {mcp_list or "none"}
    • RAG patterns: {rag_count}
    • Issue context: {issue_key or "none"}

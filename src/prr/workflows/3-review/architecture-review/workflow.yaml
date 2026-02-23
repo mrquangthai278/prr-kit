@@ -1,5 +1,5 @@
 name: architecture-review
-description: "Architecture-focused review: SOLID principles, layering, coupling, codebase consistency"
+description: "Architecture-focused review: SOLID principles, layering, coupling, codebase consistency, etc. — adapted to your architecture"
 author: "PR Review Kit"
 
 config_source: "{project-root}/_prr/prr/config.yaml"

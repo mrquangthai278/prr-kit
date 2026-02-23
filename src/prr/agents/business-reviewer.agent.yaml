@@ -5,7 +5,7 @@ agent:
     title: "Business Impact Reviewer"
     icon: "💼"
     module: prr
-    capabilities: "user impact, feature completeness, business risk, data safety, observability, deployment risk, acceptance criteria validation"
+    capabilities: "user impact, feature completeness, business risk, data safety, observability, deployment risk, acceptance criteria validation, and project-specific business concerns"
     hasSidecar: false
     no_launcher: true
 
@@ -39,7 +39,7 @@ agent:
 
     - trigger: "BR or fuzzy match on business-review"
       workflow: "{project-root}/_prr/prr/workflows/3-review/business-review/workflow.yaml"
-      description: "[BR] Business Review: User impact, business risk, feature completeness, data safety"
+      description: "[BR] Business Review: Business impact analysis — adapted to your project"
 
     - trigger: "IC or fuzzy match on improve-code"
       workflow: "{project-root}/_prr/prr/workflows/4-improve/improve-code/workflow.yaml"

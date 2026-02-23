@@ -202,12 +202,12 @@ Print to screen:
 ---
 
 ## PHASE 2.5 — COLLECT PR-SPECIFIC CONTEXT
-*Execute automatically, no user input.*
+*Execute automatically. May pause once to ask the user for additional context (unless `skip_manual_input_context: true` in config).*
 
 Execute the collect-pr-context workflow in full:
 `{project-root}/_prr/prr/workflows/2-analyze/collect-pr-context/workflow.md`
 
-This workflow analyzes changed files, detects technology stacks, collects relevant context from all sources (primary docs, config files, standards docs, inline annotations, stack-specific rules, external MCP/RAG tools), and builds a structured PR-specific knowledge base at `{review_output}/pr-{pr_number}-context.yaml`.
+This workflow analyzes changed files, detects technology stacks, collects relevant context from all sources (primary docs, config files, standards docs, inline annotations, stack-specific rules, external MCP/RAG tools), asks the user for any additional context (marked ⚠️ IMPORTANT if provided), and builds a structured PR-specific knowledge base at `{review_output}/pr-{pr_number}-context.yaml`.
 
 On completion, store `pr_knowledge_base` = path to the generated context file.
 

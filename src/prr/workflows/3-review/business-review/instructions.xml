@@ -127,6 +127,8 @@ PR type: {pr_type} | Prior reviews loaded: {completed_reviews}
       MINIMAL  = additive feature, no regressions, low risk changes
     </risk-matrix>
 
+    <action>Apply any business-specific guidance from knowledge_base.reviewer_guidance.business_review and knowledge_base.relevant_guidelines to generate additional business checks beyond the default categories above. If no project-specific business guidance exists, skip silently.</action>
+
     <action>Structure the output by category, ordered by severity within each section:
       - Feature Completeness gaps (🔴 first, then 🟡, 🟢, ❓)
       - User Impact issues

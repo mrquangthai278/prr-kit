@@ -22,6 +22,7 @@ auto_post_comment: false
 
 context_collection:
   enabled: true
+  skip_manual_input_context: false
   mode: pr-specific
 
 external_sources:
@@ -47,22 +48,44 @@ external_sources:
 
 ## 3. Context collection
 
-After describing the PR, the agent automatically collects fresh context relevant to the changed files. This context is loaded by all reviewer agents. Collection happens in three steps:
+After describing the PR, the agent automatically collects fresh context relevant to the changed files. This context is loaded by all reviewer agents. Collection happens in four steps:
 
 1. **Analyze changed files** — detect file types, categories (`vue-component`, `pinia-store`, etc.) and domains (`authentication`, `state-management`, etc.)
 2. **Collect from matching sources** — only sources relevant to the changed files and domains are read
-3. **Build knowledge base** — written to `pr-{branch}-context.yaml`, loaded by all reviewers
+3. **Manual context input** — the agent pauses and asks the user for any additional context (business rationale, focus areas, known trade-offs). If the user provides input, it is marked **⚠️ IMPORTANT** and all reviewers treat it as the highest-priority context. Set `skip_manual_input_context: true` to skip this prompt
+4. **Build knowledge base** — written to `pr-{branch}-context.yaml`, loaded by all reviewers
 
 ```yaml
 context_collection:
   enabled: true
+  skip_manual_input_context: false
   mode: pr-specific
 ```
 
 | Option | Example | Description |
 |---|---|---|
 | `enabled` | `true` | Set to `false` to disable automatic context collection entirely |
+| `skip_manual_input_context` | `false` | Set to `true` to skip the manual context input prompt. Default `false` — the agent will pause and ask the user for additional context before building the knowledge base |
 | `mode` | `pr-specific` | Only supported value: `pr-specific` — always fresh context per PR, never cached |
+
+### 3.0 Manual context input
+
+After auto-collection, the agent pauses and asks:
+
+```
+💬 Do you have any additional context for the reviewers?
+
+You can share:
+  • Business context or requirements behind this PR
+  • Known trade-offs or constraints you accepted
+  • Specific areas you'd like reviewers to focus on
+  • Known issues or technical debt to be aware of
+  • Links to related tickets, designs, or decisions
+```
+
+If you provide a response, it is stored in the knowledge base under `manual_context` and flagged as **⚠️ IMPORTANT**. All reviewer agents read this section before starting their analysis and align their findings against it. Type `skip` or press Enter without input to continue without adding context.
+
+Set `skip_manual_input_context: true` in your config to bypass this prompt entirely (useful for fully automated pipelines).
 
 ### 3.1 What the agent collects
 

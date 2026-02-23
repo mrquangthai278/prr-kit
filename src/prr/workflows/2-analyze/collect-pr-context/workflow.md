@@ -105,10 +105,11 @@ If a stack has no matching data file, skip it silently and proceed with general 
 
 ## WORKFLOW ARCHITECTURE
 
-3-step process:
+4-step process:
 1. **Analyze files** changed in PR — extract metadata, domains, and **detect technology stacks**
 2. **Collect context** from all sources: primary docs, config files, standards docs, inline annotations, **stack-specific rules**, MCP tools, RAG systems
-3. **Build PR-specific knowledge base** — structured YAML with all context, stack rules, and reviewer guidance
+3. **Manual context input** — prompt the user for any additional context (business rationale, focus areas, known trade-offs). Skip automatically if `context_collection.skip_manual_input_context: true` in config. If the user provides input, it is marked **⚠️ IMPORTANT** and reviewers treat it as highest-priority context
+4. **Build PR-specific knowledge base** — structured YAML with all context, stack rules, manual context, and reviewer guidance
 
 ## INITIALIZATION
 

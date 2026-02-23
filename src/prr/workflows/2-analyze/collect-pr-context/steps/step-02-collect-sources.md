@@ -1,7 +1,7 @@
 ---
 name: "step-02-collect-sources"
 description: "Collect context from all identified sources"
-nextStepFile: "./step-03-build-knowledge-base.md"
+nextStepFile: "./step-03-manual-context-input.md"
 ---
 
 # Step 2: Collect Context from Sources
@@ -449,3 +449,4 @@ collected_data:
 ### 9. Load Next Step
 
 Add `step-02-collect-sources` to `stepsCompleted`. Load: `{nextStepFile}`
+

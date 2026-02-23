@@ -5,7 +5,7 @@ agent:
     title: "Security Code Reviewer"
     icon: "🔒"
     module: prr
-    capabilities: "OWASP top 10, SQL injection, XSS, auth vulnerabilities, API key exposure, dependency vulnerabilities, cryptography misuse"
+    capabilities: "OWASP top 10, SQL injection, XSS, auth vulnerabilities, API key exposure, dependency vulnerabilities, cryptography misuse, and stack-specific security threats"
     hasSidecar: false
     no_launcher: true
 
@@ -40,7 +40,7 @@ agent:
 
     - trigger: "SR or fuzzy match on security-review"
       workflow: "{project-root}/_prr/prr/workflows/3-review/security-review/workflow.yaml"
-      description: "[SR] Security Review: Full OWASP-based security analysis"
+      description: "[SR] Security Review: Security analysis — adapted to your project"
 
     - trigger: "IC or fuzzy match on improve-code"
       workflow: "{project-root}/_prr/prr/workflows/4-improve/improve-code/workflow.yaml"

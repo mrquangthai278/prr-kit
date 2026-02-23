@@ -1,5 +1,5 @@
 name: security-review
-description: "Security-focused code review: OWASP top 10, injection, auth, secrets, dependencies"
+description: "Security-focused code review: OWASP top 10, injection, auth, secrets, dependencies, etc. — adapted to your project"
 author: "PR Review Kit"
 
 config_source: "{project-root}/_prr/prr/config.yaml"

@@ -1,5 +1,5 @@
 name: business-review
-description: "Business impact review: user impact, business risk, feature completeness, data safety, observability"
+description: "Business impact review: user impact, business risk, feature completeness, data safety, observability — adapted to your project"
 author: "PR Review Kit"
 
 config_source: "{project-root}/_prr/prr/config.yaml"
