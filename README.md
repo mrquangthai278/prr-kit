@@ -7,11 +7,14 @@
 [![Version](https://img.shields.io/npm/v/prr-kit?color=blue&label=version)](https://www.npmjs.com/package/prr-kit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen)](https://nodejs.org)
-[![npm downloads](https://img.shields.io/npm/dm/prr-kit?color=orange&label=downloads)](https://www.npmjs.com/package/prr-kit)
+[![Website](https://img.shields.io/npm/dm/prr-kit?color=orange&label=downloads)](https://prrkit.sitenow.cloud)
+[![Docs](https://img.shields.io/badge/docs-prrkit.sitenow.cloud-blue)](https://prrkit.sitenow.cloud/docs)
 
 > AI-driven Pull Request code review — structured, multi-perspective, actionable.
 
 Module system, agent YAML, step-file workflows, CLI installer with full IDE integration.
+
+**[🌐 Website](https://prrkit.sitenow.cloud)** **[📖 Full Documentation](https://prrkit.sitenow.cloud/docs)**
 
 ## Quick Start
 
@@ -26,7 +29,10 @@ npx pr-review install
 npx prr-kit install --directory /path/to/repo --modules prr --tools claude-code --yes
 ```
 
-Then open your IDE in the installed project and use `/prr-master` to start.
+Then open your IDE in the installed project and use one of these commands to start:
+
+- `/prr-quick` — one command, full pipeline (select PR → review → report)
+- `/prr-master` — full menu with all options
 
 ## How It Works
 

@@ -4,6 +4,8 @@
 
 A full template is available at [`src/prr/config-template.yaml`](src/prr/config-template.yaml).
 
+> **Quick start:** After installing, open your IDE and run `/prr-quick` for the full pipeline in one command, or `/prr-master` for the full menu.
+
 ---
 
 ## 1. config.yaml overview

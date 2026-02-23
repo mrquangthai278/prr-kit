@@ -18,11 +18,10 @@ The framework installs into your project as a <code>_prr/</code> folder. Agents 
 </p> <h2 id="features">Key features</h2> <ul> <li><strong>100% local</strong> — code never leaves your machine. Safe for NDA projects and corporate environments.</li> <li><strong>Free forever</strong> — MIT license, no subscription, no usage limits, unlimited repos.</li> <li><strong>Five specialist reviewers</strong> — General, Security, Performance, Architecture, and Business Review.</li> <li><strong>Works with 18+ AI IDEs</strong> — Claude Code, Cursor, Windsurf, GitHub Copilot, and more.</li> <li><strong>All major platforms</strong> — GitHub, GitLab, Azure DevOps, and Bitbucket. Or run locally with no CLI.</li> <li><strong>Open source and extensible</strong> — every workflow is a Markdown or YAML file you can fork and adapt.</li> </ul> <h2 id="quick-start">Quick start</h2> <p>Run the installer in any project directory:</p> <pre><code>npx prr-kit install</code></pre> <p>
 The interactive installer asks a few questions — your name, preferred language, platform repo, and IDE —
     then writes everything to <code>_prr/prr/config.yaml</code>. No manual file editing required.
-</p> <div class="docs-callout"> <strong>Silent install:</strong> add <code>--yes</code> to skip all prompts and use defaults.<br> <code>npx prr-kit install --directory /path/to/repo --modules prr --tools claude-code --yes</code> </div> <h2 id="how-it-works">How it works</h2> <p>
-After installation, open your project in your AI IDE and start the master agent. It presents a full
-    review menu. Select a PR, and the pipeline runs automatically: it loads the diff, collects
-    project-specific context, runs the reviewer agents, compiles a report, and optionally posts inline
-    comments back to your platform.
+</p> <p>Then open your IDE in the installed project and run one of these commands to start:</p> <ul> <li><code>/prr-quick</code> — one command, full pipeline (select PR → review → report)</li> <li><code>/prr-master</code> — full menu with all options</li> </ul> <div class="docs-callout"> <strong>Silent install:</strong> add <code>--yes</code> to skip all prompts and use defaults.<br> <code>npx prr-kit install --directory /path/to/repo --modules prr --tools claude-code --yes</code> </div> <h2 id="how-it-works">How it works</h2> <p>
+After installation, open your project in your AI IDE and run <code>/prr-quick</code> for the fastest
+    path — it runs the full pipeline automatically: select PR, collect context, run all reviewers, and
+    compile a report. Or use <code>/prr-master</code> for the full menu with individual step control.
 </p> <p>
 All processing happens through your IDE's built-in AI. No additional API key is required beyond what
     your IDE already uses.
