@@ -14,15 +14,18 @@
     <action>Load PR-specific knowledge base from {pr_knowledge_base}</action>
     <action>Extract architectural patterns from knowledge_base.relevant_guidelines (ARCHITECTURE.md sections, ADRs)</action>
     <action>Check pattern annotations from knowledge_base.inline_context (@pattern:)</action>
+    <action>Adapt review scope: use knowledge_base.stack_context, knowledge_base.files_analysis, and knowledge_base.reviewer_guidance.architecture_review to evaluate which of the default check categories below are relevant to this project and this PR. Categories that have no applicability to the project's architectural style should be skipped or reduced.</action>
+    <action>Identify stack-specific architecture rules from knowledge_base.stack_context.rules — these will be applied as additional checks in the dedicated step below.</action>
     <action>Also examine surrounding non-changed files to understand existing patterns</action>
     <output>🏗️ Starting Architecture Review
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Focus: Layer violations | Coupling | SOLID | Codebase consistency
-Context: Loaded architectural patterns & ADRs from ARCHITECTURE.md
+Scope: Adapted to project architecture and detected stack
+Context: Loaded architectural patterns & ADRs from project docs
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</output>
   </step>
 
   <step n="2" goal="Check layer/separation of concerns violations">
+    <note>Run only if relevant to the project type and the changes in this PR. Skip entirely if this category has no applicability.</note>
     <check-list id="layers">
       <item>Business logic in controllers/routes (should be in services)</item>
       <item>Database queries in wrong layer (direct DB access from controller bypassing service)</item>
@@ -33,6 +36,7 @@ Context: Loaded architectural patterns & ADRs from ARCHITECTURE.md
   </step>
 
   <step n="3" goal="Check coupling and cohesion">
+    <note>Run only if relevant to the project type and the changes in this PR. Skip entirely if this category has no applicability.</note>
     <check-list id="coupling">
       <item>Tight coupling: does this change force changes in many unrelated files?</item>
       <item>New module dependencies: are new imports appropriate? circular dependencies introduced?</item>
@@ -42,6 +46,7 @@ Context: Loaded architectural patterns & ADRs from ARCHITECTURE.md
   </step>
 
   <step n="4" goal="Check consistency with existing codebase patterns">
+    <note>Run only if relevant to the project type and the changes in this PR. Skip entirely if this category has no applicability.</note>
     <check-list id="consistency">
       <item>Naming conventions: matches existing naming style (camelCase vs snake_case, etc.)?</item>
       <item>File/folder structure: new files placed where convention dictates?</item>
@@ -52,7 +57,7 @@ Context: Loaded architectural patterns & ADRs from ARCHITECTURE.md
   </step>
 
   <step n="5" goal="Shared module blast radius and backward compatibility">
-    <note>A change to any shared/common/generic module is high-risk because it affects all consumers — not just the code in this PR. This step must always run when any such file is changed.</note>
+    <note>Skip if no shared/common/generic modules are changed in this PR. When shared modules ARE changed, always run this step — it is high-risk because it affects all consumers, not just the code in this PR.</note>
     <check-list id="blast-radius">
       <item>Identify: is the changed file a shared/common/generic resource? (utility modules, shared libraries, base classes, common interfaces/headers, core services, shared data models, global state)</item>
       <item>Consumer count: search for all files importing or using this module and list them. Any breaking change is a 🔴 BLOCKER regardless of consumer count — high consumer count amplifies urgency but is not the deciding factor.</item>
@@ -74,6 +79,7 @@ Context: Loaded architectural patterns & ADRs from ARCHITECTURE.md
   </step>
 
   <step n="6" goal="SOLID principles (only flag real violations, not theoretical ones)">
+    <note>Run only if relevant to the project type and the changes in this PR. Skip entirely if this category has no applicability.</note>
     <check-list id="solid">
       <item>SRP: class/module doing more than one thing AND causing maintenance problems?</item>
       <item>OCP: existing code modified instead of extended (when extension was clearly better)?</item>
@@ -82,6 +88,13 @@ Context: Loaded architectural patterns & ADRs from ARCHITECTURE.md
       <item>DIP: high-level module depends directly on low-level implementation (not abstraction)?</item>
     </check-list>
     <note>Only flag SOLID violations when they cause REAL maintainability or extensibility problems — not theoretical purity</note>
+  </step>
+
+  <step n="6b" goal="Stack-specific and project-specific architecture checks">
+    <action>Apply all architecture rules from knowledge_base.stack_context.rules for each detected stack</action>
+    <action>Apply architecture-related guidelines from knowledge_base.relevant_guidelines and any ADRs found</action>
+    <action>Apply guidance from knowledge_base.reviewer_guidance.architecture_review</action>
+    <note>Generate additional checks specific to this project's architectural patterns and domain that go beyond the default categories above. If knowledge_base contains no stack-specific architecture rules, skip this step silently.</note>
   </step>
 
   <step n="7" goal="Compile and write findings">

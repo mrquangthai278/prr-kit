@@ -14,6 +14,7 @@
 
     <action>Read {pr_context} to get: target_branch, base_branch, pr_type, pr_knowledge_base, completed_reviews</action>
     <action>Load PR-specific knowledge base from {pr_knowledge_base} — extract issue_context (acceptance criteria) if available from MCP tools</action>
+    <action>Adapt review scope: use knowledge_base.stack_context, knowledge_base.files_analysis, and knowledge_base.reviewer_guidance.business_review to adjust business focus based on detected project type and domain.</action>
     <action>Load findings already collected from completed reviews (GR, SR, PR, AR) to translate them into business impact</action>
     <action>Run: git diff {base_branch}...{target_branch} --stat in {target_repo} for file scope</action>
 

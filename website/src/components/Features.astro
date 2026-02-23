@@ -13,22 +13,22 @@ const features = [
     icon: `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg>`,
     tag: 'SR',
     title: 'Security Review',
-    description: 'OWASP Top 10 coverage, secret detection, auth patterns, rate limiting, injection vulnerabilities. Security as a first-class review.',
-    checks: ['OWASP Top 10', 'Secret detection', 'Auth & sessions', 'Injection prevention'],
+    description: 'Secrets, auth patterns, injection vulnerabilities, and threat categories relevant to your project — adapted beyond OWASP to match your stack.',
+    checks: ['Secret detection', 'Auth & sessions', 'Injection prevention', 'Stack-specific threats'],
   },
   {
     icon: `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>`,
     tag: 'PR',
     title: 'Performance Review',
-    description: 'N+1 query detection, memory leak patterns, async/await correctness, caching opportunities. Catch bottlenecks before they hit production.',
-    checks: ['N+1 queries', 'Memory leaks', 'Async patterns', 'Caching strategies'],
+    description: 'Bottleneck detection adapted to your stack — common patterns like N+1 queries and memory leaks, plus project-specific performance issues.',
+    checks: ['N+1 queries', 'Memory leaks', 'Async patterns', 'Stack-specific issues'],
   },
   {
     icon: `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 01-1.125-1.125v-3.75zM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 01-1.125-1.125v-8.25zM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 01-1.125-1.125v-2.25z" /></svg>`,
     tag: 'AR',
     title: 'Architecture Review',
-    description: 'SOLID principles, layer separation, coupling analysis, consistency with existing codebase patterns. Keep your architecture clean.',
-    checks: ['SOLID principles', 'Layer separation', 'Coupling analysis', 'Pattern consistency'],
+    description: 'Structural analysis adapted to your codebase — layer violations, coupling, consistency, and architectural patterns specific to your project.',
+    checks: ['SOLID principles', 'Layer separation', 'Coupling analysis', 'Stack-specific patterns'],
   },
 ]
 ---

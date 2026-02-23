@@ -14,11 +14,13 @@
     <action>Load PR-specific knowledge base from {pr_knowledge_base}</action>
     <action>Extract security guidelines from knowledge_base.relevant_guidelines</action>
     <action>Check for security annotations from knowledge_base.inline_context (@security:)</action>
+    <action>Adapt review scope: use knowledge_base.stack_context, knowledge_base.files_analysis, and knowledge_base.reviewer_guidance.security_review to evaluate which of the default check categories below are relevant to this project and this PR. Step 2 (hardcoded secrets) always runs. Other categories should be evaluated for relevance before running.</action>
+    <action>Identify stack-specific security rules from knowledge_base.stack_context.rules — these will be applied as additional checks in the dedicated step below.</action>
     <action>Run: git diff {base_branch}...{target_branch} in {target_repo}</action>
     <output>🔒 Starting Security Review — Thinking like an attacker
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-OWASP Top 10 scan + secrets detection + auth review
-Context: Loaded security guidelines from CLAUDE.md/CONTRIBUTING.md
+Scope: Secrets scan (always) + adapted checks for detected stack
+Context: Loaded security guidelines from project docs
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</output>
   </step>
 
@@ -35,6 +37,7 @@ Context: Loaded security guidelines from CLAUDE.md/CONTRIBUTING.md
   </step>
 
   <step n="3" goal="OWASP A01-A05: Broken Access Control, Crypto, Injection, Insecure Design, Misconfiguration">
+    <note>Run only if relevant to the project type and the changes in this PR. Skip entirely if this category has no applicability.</note>
     <check-list id="owasp-1-5">
       <item>A01 Broken Access Control: authorization checks present? role-based? privilege escalation possible?</item>
       <item>A02 Cryptographic Failures: weak hashing (MD5/SHA1)? HTTP instead of HTTPS? key management?</item>
@@ -45,6 +48,7 @@ Context: Loaded security guidelines from CLAUDE.md/CONTRIBUTING.md
   </step>
 
   <step n="4" goal="OWASP A06-A10: Vulnerable Components, Auth, Integrity, Logging, SSRF">
+    <note>Run only if relevant to the project type and the changes in this PR. Skip entirely if this category has no applicability.</note>
     <check-list id="owasp-6-10">
       <item>A06 Vulnerable Components: new dependencies added? check for known CVEs</item>
       <item>A07 Auth Failures: session management? password policies? brute force protection? JWT validation?</item>
@@ -55,12 +59,20 @@ Context: Loaded security guidelines from CLAUDE.md/CONTRIBUTING.md
   </step>
 
   <step n="5" goal="Rate limiting and input validation">
+    <note>Run only if relevant to the project type and the changes in this PR. Skip entirely if this category has no applicability.</note>
     <check-list id="input-rate">
       <item>Rate limiting on auth endpoints (login, register, password reset)</item>
       <item>Input length limits enforced server-side</item>
       <item>File upload: type validation, size limits, storage location security</item>
       <item>CORS configuration: not wildcard (*) on sensitive endpoints</item>
     </check-list>
+  </step>
+
+  <step n="5b" goal="Stack-specific and project-specific security checks">
+    <action>Apply all security rules from knowledge_base.stack_context.rules for each detected stack</action>
+    <action>Apply security-related guidelines from knowledge_base.relevant_guidelines</action>
+    <action>Apply guidance from knowledge_base.reviewer_guidance.security_review</action>
+    <note>Generate additional checks specific to this project's technology and domain that go beyond the default categories above. If knowledge_base contains no stack-specific security rules, skip this step silently.</note>
   </step>
 
   <step n="6" goal="Compile and write security findings">

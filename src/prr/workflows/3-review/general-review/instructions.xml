@@ -14,6 +14,7 @@
     <action>Read {pr_context} to get: target_branch, base_branch, diff_strategy, files_changed, pr_knowledge_base</action>
     <action>Load PR-specific knowledge base from {pr_knowledge_base} (e.g., pr-123-context.yaml)</action>
     <note>Knowledge base contains: relevant ESLint rules, guidelines from CLAUDE.md/CONTRIBUTING.md/ARCHITECTURE.md, inline annotations, external rules</note>
+    <action>Adapt review scope: use knowledge_base.stack_context, knowledge_base.files_analysis, and knowledge_base.reviewer_guidance.general_review to adjust focus based on detected technology and project patterns.</action>
     <action>Run: git diff {base_branch}...{target_branch} in {target_repo}</action>
     <action>Note diff_strategy: if 'chunked', process file by file</action>
 

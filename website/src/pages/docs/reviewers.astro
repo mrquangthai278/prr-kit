@@ -32,19 +32,20 @@ const toc = [
 
   <h2 id="security">Security Review</h2>
   <p>
-    Applies the OWASP Top 10 and common security patterns to every changed file.
+    Checks security concerns relevant to your project — categories that don't apply to your stack are skipped, and stack-specific threats are added on top.
   </p>
   <ul>
-    <li>Injection vulnerabilities (SQL, command, XSS)</li>
+    <li>Injection vulnerabilities (SQL, command, XSS, etc.)</li>
     <li>Secret and credential exposure</li>
     <li>Authentication and session management</li>
     <li>Rate limiting and denial-of-service risks</li>
     <li>Insecure deserialization and broken access control</li>
+    <li>Stack-specific and project-specific security threats</li>
   </ul>
 
   <h2 id="performance">Performance Review</h2>
   <p>
-    Identifies efficiency problems that often slip through code review but hit hard in production.
+    Identifies efficiency problems relevant to your project — categories that don't apply to your stack are skipped, and stack-specific checks are added on top.
   </p>
   <ul>
     <li>N+1 query patterns</li>
@@ -52,11 +53,12 @@ const toc = [
     <li>Missing or incorrect <code>async</code>/<code>await</code> usage</li>
     <li>Caching opportunities</li>
     <li>Unnecessary re-renders and expensive computations</li>
+    <li>Stack-specific and project-specific performance patterns</li>
   </ul>
 
   <h2 id="architecture">Architecture Review</h2>
   <p>
-    Checks how the changes fit into the existing codebase structure and long-term maintainability.
+    Checks how the changes fit into the existing codebase structure — categories that don't apply to your architecture are skipped, and project-specific patterns are added on top.
   </p>
   <ul>
     <li>SOLID principles adherence</li>
@@ -64,6 +66,7 @@ const toc = [
     <li>Coupling and cohesion analysis</li>
     <li>Consistency with existing patterns in the codebase</li>
     <li>Abstraction level appropriateness</li>
+    <li>Stack-specific and project-specific architectural patterns</li>
   </ul>
 
   <h2 id="business">Business Review</h2>

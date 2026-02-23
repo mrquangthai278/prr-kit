@@ -102,9 +102,9 @@ Only pauses once to ask which PR/branch to review.
 | `SP` | Select PR | Fetch latest → list open PRs (via `gh`) or branches → select head + base → load diff |
 | `DP` | Describe PR | Classify PR type, generate summary, file-by-file walkthrough |
 | `GR` | General Review | Logic, naming, readability, DRY, best practices |
-| `SR` | Security Review | OWASP Top 10, secrets, auth, rate limits, injection |
-| `PR` | Performance Review | N+1 queries, memory leaks, async patterns, caching |
-| `AR` | Architecture Review | SOLID, layers, coupling, consistency with codebase |
+| `SR` | Security Review | OWASP Top 10, secrets, auth, rate limits, injection, etc. — adapted to your project |
+| `PR` | Performance Review | N+1 queries, memory leaks, async patterns, caching, etc. — adapted to your stack |
+| `AR` | Architecture Review | SOLID, layers, coupling, consistency with codebase, etc. — adapted to your architecture |
 | `BR` | Business Review | User impact, business risk, feature completeness, data safety, observability |
 | `IC` | Improve Code | Concrete BEFORE/AFTER code suggestions |
 | `AK` | Ask Code | Q&A about specific changes in this PR |
@@ -148,10 +148,12 @@ Specialist reviewer agents are orchestrated internally by the master agent and p
 | Reviewer | Focus | Key questions |
 |---|---|---|
 | 👁️ General (GR) | Code quality | Is the logic correct? Naming clear? DRY? Tests present? |
-| 🔒 Security (SR) | OWASP Top 10 | XSS? Injection? Secrets exposed? Auth correct? |
-| ⚡ Performance (PR) | Efficiency | N+1 queries? Memory leaks? Missing await? |
-| 🏗️ Architecture (AR) | Structure | Layer violations? Coupling? Consistent with codebase? |
+| 🔒 Security (SR) | OWASP Top 10 + stack threats | XSS? Injection? Secrets exposed? Auth correct? *(adapted to your stack)* |
+| ⚡ Performance (PR) | Efficiency + stack patterns | N+1 queries? Memory leaks? Missing await? *(adapted to your stack)* |
+| 🏗️ Architecture (AR) | Structure + conventions | Layer violations? Coupling? Consistent with codebase? *(adapted to your architecture)* |
 | 💼 Business (BR) | Real-world impact | User impact? Business risk? Feature completeness? Data safe? Observability? |
+
+> Checks are adaptive — each reviewer skips categories not relevant to your project and generates additional checks based on detected stacks, project guidelines, and inline annotations.
 
 **Business Review (BR)** runs last and translates technical findings into business language — user impact, GDPR risk, migration safety, deployment recommendations, and post-ship monitoring checklist.
 

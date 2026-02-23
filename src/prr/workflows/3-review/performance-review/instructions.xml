@@ -13,14 +13,17 @@
     <action>Read {pr_context} and load git diff</action>
     <action>Load PR-specific knowledge base from {pr_knowledge_base}</action>
     <action>Extract performance guidelines from knowledge_base.relevant_guidelines</action>
+    <action>Adapt review scope: use knowledge_base.stack_context, knowledge_base.files_analysis, and knowledge_base.reviewer_guidance.performance_review to evaluate which of the default check categories below are relevant to this project and this PR. Categories that have no applicability to the detected project type should be skipped entirely.</action>
+    <action>Identify stack-specific performance rules from knowledge_base.stack_context.rules — these will be applied as additional checks in the dedicated step below.</action>
     <output>⚡ Starting Performance Review
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Focus: N+1 queries | Memory | Async | Bundle size | Caching
+Scope: Adapted to detected stack and project context
 Context: Loaded performance best practices from docs
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</output>
   </step>
 
   <step n="2" goal="Database and query performance">
+    <note>Run only if relevant to the project type and the changes in this PR. Skip entirely if this category has no applicability.</note>
     <check-list id="database">
       <item>N+1 queries: DB call inside a loop? Should use batch/join instead</item>
       <item>Missing pagination: queries that could return unbounded result sets</item>
@@ -32,6 +35,7 @@ Context: Loaded performance best practices from docs
   </step>
 
   <step n="3" goal="Async and concurrency patterns">
+    <note>Run only if relevant to the project type and the changes in this PR. Skip entirely if this category has no applicability.</note>
     <check-list id="async">
       <item>Sequential awaits in loop: `for (x of arr) { await fn(x) }` should be Promise.all</item>
       <item>Unnecessary await: async function that doesn't need to be async</item>
@@ -42,6 +46,7 @@ Context: Loaded performance best practices from docs
   </step>
 
   <step n="4" goal="Memory management">
+    <note>Run only if relevant to the project type and the changes in this PR. Skip entirely if this category has no applicability.</note>
     <check-list id="memory">
       <item>Event listener cleanup: listeners added but not removed (memory leak pattern)</item>
       <item>Large objects held in closure/module scope unnecessarily</item>
@@ -52,6 +57,7 @@ Context: Loaded performance best practices from docs
   </step>
 
   <step n="5" goal="Frontend performance (if applicable)">
+    <note>Run only if relevant to the project type and the changes in this PR. Skip entirely if this category has no applicability.</note>
     <check-list id="frontend">
       <item>Bundle size: large new dependencies imported? Is tree-shaking possible?</item>
       <item>Unnecessary re-renders: state changes causing full component re-renders</item>
@@ -59,6 +65,13 @@ Context: Loaded performance best practices from docs
       <item>Blocking scripts or render-blocking resources</item>
       <item>Expensive computations in render path (should be memoized)</item>
     </check-list>
+  </step>
+
+  <step n="5b" goal="Stack-specific and project-specific performance checks">
+    <action>Apply all performance rules from knowledge_base.stack_context.rules for each detected stack</action>
+    <action>Apply performance-related guidelines from knowledge_base.relevant_guidelines</action>
+    <action>Apply guidance from knowledge_base.reviewer_guidance.performance_review</action>
+    <note>Generate additional checks specific to this project's technology and domain that go beyond the default categories above. If knowledge_base contains no stack-specific performance rules, skip this step silently.</note>
   </step>
 
   <step n="6" goal="Compile and write findings">
