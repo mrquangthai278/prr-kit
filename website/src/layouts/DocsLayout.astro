@@ -83,7 +83,7 @@ function isActive(href: string): boolean {
 <Layout title={`${title} — PR Review Kit Docs`} description={description}>
   <!-- Docs header -->
   <header class="fixed top-0 left-0 right-0 z-50 h-14 border-b border-white/10 bg-black/95 backdrop-blur-md flex items-center px-5 gap-4">
-    <div class="flex items-center gap-2.5 w-60 flex-shrink-0">
+    <div class="flex items-center gap-2.5 md:w-60 flex-shrink-0">
       <a href="/" class="flex items-center gap-2 group flex-shrink-0">
         <div class="w-7 h-7 bg-white rounded-md flex items-center justify-center">
           <svg width="14" height="14" viewBox="0 0 18 18" fill="none">
@@ -91,7 +91,7 @@ function isActive(href: string): boolean {
             <path d="M9 13.5H15" stroke="#000" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </div>
-        <span class="font-bold text-white text-sm tracking-tight">PR Review Kit</span>
+        <span class="hidden md:inline font-bold text-white text-sm tracking-tight">PR Review Kit</span>
       </a>
       <span class="text-white/20">/</span>
       <span class="text-white/40 text-sm font-medium">Docs</span>

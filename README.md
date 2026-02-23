@@ -162,7 +162,7 @@ All findings use a standard format:
 - 🔴 **[BLOCKER]** — Must fix before merge
 - 🟡 **[WARNING]** — Should fix (with explanation)
 - 🟢 **[SUGGESTION]** — Nice-to-have improvement
-- 📌 **[QUESTION]** — Needs clarification from author
+- ❓ **[QUESTION]** — Needs clarification from author
 
 ## Context Collection
 

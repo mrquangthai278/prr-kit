@@ -38,7 +38,7 @@ const steps = [
 
     <div class="grid md:grid-cols-3 gap-6 mb-12">
       {steps.map((step) => (
-        <div class="relative">
+        <div class="relative min-w-0">
           <!-- Step number -->
           <div class="flex items-center gap-3 mb-4">
             <div class="w-8 h-8 bg-white text-black rounded-full flex items-center justify-center text-sm font-black flex-shrink-0">
@@ -62,7 +62,7 @@ const steps = [
                 Copy
               </button>
             </div>
-            <pre class="min-h-[170px] p-4 text-xs font-mono text-white/70 overflow-hidden leading-relaxed"><code>{step.code}</code></pre>
+            <pre class="min-h-[170px] p-4 text-xs font-mono text-white/70 overflow-x-auto leading-relaxed"><code>{step.code}</code></pre>
           </div>
 
           <p class="text-xs text-white/40 leading-relaxed">{step.description}</p>
@@ -70,7 +70,7 @@ const steps = [
       ))}
 
       <!-- Step 3: dynamically updated based on selected IDE -->
-      <div class="relative">
+      <div class="relative min-w-0">
         <div class="flex items-center gap-3 mb-4">
           <div class="w-8 h-8 bg-white text-black rounded-full flex items-center justify-center text-sm font-black flex-shrink-0">3</div>
           <h3 class="font-bold text-white text-sm">Start reviewing</h3>
